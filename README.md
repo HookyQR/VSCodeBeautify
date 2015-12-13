@@ -1,13 +1,12 @@
-# README
-## This is the README for your extension "beautify" 
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+# js-beautify for VS Code 
 
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
+Enables running [js-beautify](http://jsbeautifier.org/) in VS Code.
+Searches for `.jsbeautifyrc` file in the files path tree. 
 
-### For more information
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+See [js-beautify on gitHub](https://github.com/beautify-web/js-beautify) for available options. The file must be valid JSON to be used. Only the first file of the correct name found will be used. If the format is bad, the default js-beautify settings will be used.
+
+Also runs http and css beautify from the same package, as determined by the file extension. If the file is unsaved, js-beautify will be attempted by default.
+
+Embeded version of js-beautify is v1.5.10.
 
 ** Enjoy!**
