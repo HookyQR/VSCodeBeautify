@@ -23,11 +23,6 @@
 	"devDependencies": {
 		"vscode": "0.10.x"
 	},
-	"keybindings":[{
-		"key": "F5",
-		"command":"HookyQR.beautify",
-		"when":"editorTextFocus"
-	}],
   "dependencies": {
 	  "js-beautify":"^1.5.0"
   }
