@@ -1,0 +1,29 @@
+{
+	"name": "beautify",
+	"displayName": "beautify",
+	"description": "Beautify code in place for VS Code",
+	"version": "0.0.1",
+	"publisher": "HookyQR",
+	"engines": {
+		"vscode": "^0.10.1"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:HookyQR.beautify"
+	],
+	"main": "./extension",
+	"contributes": {
+		"commands": [{
+			"command": "HookyQR.beautify",
+			"title": "Beautify"
+		}]
+	},
+	"devDependencies": {
+		"vscode": "0.10.x"
+	},
+  "dependencies": {
+	  "js-beautify":"^1.5.0"
+  }
+}
