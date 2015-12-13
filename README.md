@@ -1,6 +1,6 @@
 # js-beautify for VS Code 
 
-[![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](http://travis-ci.org/beautify-web/js-beautify)
+[![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify)
 
 VS Code has its own code formater. But it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, and searches for `.jsbeautifyrc` file in the files path tree to load *your* code styling.
 
