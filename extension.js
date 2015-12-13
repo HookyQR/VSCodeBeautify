@@ -14,6 +14,22 @@ function findRecursive(dir, fileName) {
 }
 //register on activation
 function activate(context) {
+
+	var doBeautify = function (active, doc, opts) {
+		var better = doc.getText();
+		var type = doc.isUntitled ? "js" : doc.fileName.split('.').pop().toLowerCase();
+
+		if (type === 'htm' || type === 'html') better = beautify.html(better, opts);
+		else if (type === 'css') better = beautify.css(better, opts);
+		else if (type === 'js' || type === 'json') better = beautify.js(better, opts);
+		else return;
+
+		//get the whole file:
+		var range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
+		//and make the change:
+		active.edit(editor => editor.replace(range, better));
+	};
+
 	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function () {
 		var active = vscode.window.activeTextEditor;
 		if (!active) return;
@@ -21,30 +37,23 @@ function activate(context) {
 		if (!doc) return;
 		//get a settings file
 		var base = vscode.workspace.rootPath;
+
 		if (!doc.isUntitled) base = doc.fileName;
-		var beautFile = findRecursive(base, ".jsbeautifyrc");
-		
+		var beautFile;
+		if (base) beautFile = findRecursive(base, ".jsbeautifyrc");
+
 		//walk to find a .jsbeautifyrc
 		if (beautFile) fs.readFile(beautFile, function (ee, d) {
 			if (ee && !d) d = "{}";
-			var better = doc.getText();
 			var opts = {};
 			try {
 				opts = JSON.parse(d.toString());
 			} catch (e) {
-				opts = {};//just use the default opts
+				opts = {}; //just use the default opts
 			}
-			var type = doc.isUntitled ? "js" : doc.fileName.split('.').pop();
-
-			if (type === 'htm' || type === 'html') better = beautify.html(better, opts);
-			else if (type === 'css') better = beautify.css(better, opts);
-			else if (type === 'js') better = beautify.js(better, opts);
-			else return;
-			//get the whole file:
-			var range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
-			//and make the change:
-			active.edit(editor=> editor.replace(range, better));
+			doBeautify(active, doc, opts);
 		});
+		else doBeautify(active, doc, {});
 	});
 	context.subscriptions.push(disposable);
 }
