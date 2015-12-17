@@ -18,12 +18,17 @@ function activate(context) {
 	var doBeautify = function (active, doc, opts) {
 		var better = doc.getText();
 		var type = doc.isUntitled ? "js" : doc.fileName.split('.').pop().toLowerCase();
-
-		if (type === 'htm' || type === 'html') better = beautify.html(better, opts);
-		else if (type === 'css') better = beautify.css(better, opts);
-		else if (type === 'js' || type === 'json') better = beautify.js(better, opts);
+		var cfg = vscode.workspace.getConfiguration('beautify');
+		if ( cfg.HTMLfiles.indexOf(type)+1){
+			better = beautify.html(better, opts);
+		}
+		else if (cfg.CSSfiles.indexOf(type)+1){
+			better = beautify.css(better, opts);
+		}
+		else if (cfg.JSfiles.indexOf(type)+1){
+			better = beautify.js(better, opts);
+		}
 		else return;
-
 		//get the whole file:
 		var range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
 		//and make the change:

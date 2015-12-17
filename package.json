@@ -1,35 +1,54 @@
 {
-	"name": "beautify",
-	"displayName": "beautify",
-	"description": "Beautify code in place for VS Code",
-	"version": "0.0.1",
-	"publisher": "HookyQR",
-	"engines": {
-		"vscode": "^0.10.1"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:HookyQR.beautify"
-	],
-	"main": "./extension",
-	"contributes": {
-		"commands": [
-			{
-				"command": "HookyQR.beautify",
-				"title": "Beautify"
-			}
-		]
-	},
-	"devDependencies": {
-		"vscode": "0.10.x"
-	},
-	"dependencies": {
-		"js-beautify": "^1.5.0"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/HookyQR/VSCodeBeautify"
-	}
+    "name": "beautify",
+    "displayName": "beautify",
+    "description": "Beautify code in place for VS Code",
+    "version": "0.0.2",
+    "publisher": "HookyQR",
+    "engines": {
+        "vscode": "^0.10.1"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:HookyQR.beautify"
+    ],
+    "main": "./extension",
+    "contributes": {
+        "commands": [{
+            "command": "HookyQR.beautify",
+            "title": "Beautify"
+        }],
+        "configuration": {
+            "type": "object",
+            "title": "Beautify config",
+            "properties": {
+                "beautify.JSfiles": {
+                    "type": "array",
+                    "default": ["js","json","jsbeautifyrc","jshintrc"],
+                    "description": "File extensions that can be minified as javascript or JSON."
+                },
+                "beautify.HTMLfiles": {
+                    "type": "array",
+                    "default": ["htm","html"],
+                    "description": "File extensions that can be minified as HTML."
+                },
+                "beautify.CSSfiles": {
+                    "type": "array",
+                    "default": ["css"],
+                    "description": "File extensions that can be minified as CSS."
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "vscode": "0.10.x"
+    },
+    "dependencies": {
+        "js-beautify": "^1.5.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/HookyQR/VSCodeBeautify"
+    }
 }
