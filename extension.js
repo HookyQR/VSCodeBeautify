@@ -15,19 +15,20 @@ function findRecursive(dir, fileName) {
 }
 //register on activation
 function activate(context) {
-
+	
 	var doBeautify = function(active, doc, opts) {
-		var better = doc.getText();
-		var type = doc.isUntitled ? "js" : doc.fileName.split('.')
+		var original = doc.getText();
+		var type = doc.isUntitled ? "" : doc.fileName.split('.')
 			.pop()
 			.toLowerCase();
 		var cfg = vscode.workspace.getConfiguration('beautify');
 		//if a type is set on the window, use that
-		console.log(vscode.window.activeTextEditor);
 		//check if the file is in the users json schema set
 		var jsSchema = vscode.workspace.getConfiguration('json')
 			.schemas;
-		var range;
+		//get the whole file:
+		var range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
+		var result;
 		if (jsSchema) {
 			var matcher = [];
 			var extMatch = n => ({
@@ -43,24 +44,43 @@ function activate(context) {
 			});
 			if (vscode.languages.match(matcher, doc)) {
 				//beautify as javascript
-				better = beautify.js(better, opts);
+				result = beautify.js(original, opts);
 				//get the whole file:
 				range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
 				//and make the change:
-				active.edit(editor => editor.replace(range, better));
+				active.edit(editor => editor.replace(range, result));
+				return;
 			}
 		}
 		if (cfg.HTMLfiles.indexOf(type) + 1) {
-			better = beautify.html(better, opts);
+			result = beautify.html(original, opts);
 		} else if (cfg.CSSfiles.indexOf(type) + 1) {
-			better = beautify.css(better, opts);
+			result = beautify.css(original, opts);
 		} else if (cfg.JSfiles.indexOf(type) + 1) {
-			better = beautify.js(better, opts);
-		} else return;
-		//get the whole file:
-		range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
+			result = beautify.js(original, opts);
+		} else {
+			//Ask what they want to do:
+			vscode.window.showQuickPick([{
+					label: "JS",
+					description: "Does JavaScript and JSON"
+				}, {
+					label: "CSS"
+				}, {
+					label: "HTML"
+				}], {
+					matchOnDescription: true,
+					placeHolder: "Couldn't determine type to beautify, pleae choose."
+				})
+				.then(function(choice) {
+					if (!choice || !choice.label) return;
+					result=beautify[choice.label.toLowerCase()](original, opts);
+					
+					active.edit(editor => editor.replace(range, result));
+				});
+			return;
+		}
 		//and make the change:
-		active.edit(editor => editor.replace(range, better));
+		active.edit(editor => editor.replace(range, result));
 	};
 
 	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function() {
