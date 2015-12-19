@@ -3,3 +3,4 @@ node_modules
 .vscodeignore
 typings
 .vscode
+.jshintrc

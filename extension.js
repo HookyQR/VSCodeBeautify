@@ -1,3 +1,4 @@
+"use strict";
 var vscode = require('vscode');
 var beautify = require('js-beautify');
 var path = require('path');
@@ -15,27 +16,54 @@ function findRecursive(dir, fileName) {
 //register on activation
 function activate(context) {
 
-	var doBeautify = function (active, doc, opts) {
+	var doBeautify = function(active, doc, opts) {
 		var better = doc.getText();
-		var type = doc.isUntitled ? "js" : doc.fileName.split('.').pop().toLowerCase();
+		var type = doc.isUntitled ? "js" : doc.fileName.split('.')
+			.pop()
+			.toLowerCase();
 		var cfg = vscode.workspace.getConfiguration('beautify');
-		if ( cfg.HTMLfiles.indexOf(type)+1){
+		//if a type is set on the window, use that
+		console.log(vscode.window.activeTextEditor);
+		//check if the file is in the users json schema set
+		var jsSchema = vscode.workspace.getConfiguration('json')
+			.schemas;
+		var range;
+		if (jsSchema) {
+			var matcher = [];
+			var extMatch = n => ({
+				pattern: n.startsWith("**/") ? n : ("**/" + n)
+			});
+			jsSchema.forEach(schema => {
+				if (typeof schema.fileMatch === 'string') {
+					matcher.push(extMatch(schema.fileMatch));
+				} else {
+					var t = schema.fileMatch.map(extMatch);
+					matcher = matcher.concat(t);
+				}
+			});
+			if (vscode.languages.match(matcher, doc)) {
+				//beautify as javascript
+				better = beautify.js(better, opts);
+				//get the whole file:
+				range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
+				//and make the change:
+				active.edit(editor => editor.replace(range, better));
+			}
+		}
+		if (cfg.HTMLfiles.indexOf(type) + 1) {
 			better = beautify.html(better, opts);
-		}
-		else if (cfg.CSSfiles.indexOf(type)+1){
+		} else if (cfg.CSSfiles.indexOf(type) + 1) {
 			better = beautify.css(better, opts);
-		}
-		else if (cfg.JSfiles.indexOf(type)+1){
+		} else if (cfg.JSfiles.indexOf(type) + 1) {
 			better = beautify.js(better, opts);
-		}
-		else return;
+		} else return;
 		//get the whole file:
-		var range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
+		range = new vscode.Range(new vscode.Position(0, 0), doc.positionAt(Infinity));
 		//and make the change:
 		active.edit(editor => editor.replace(range, better));
 	};
 
-	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function () {
+	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function() {
 		var active = vscode.window.activeTextEditor;
 		if (!active) return;
 		var doc = active.document;
@@ -48,7 +76,7 @@ function activate(context) {
 		if (base) beautFile = findRecursive(base, ".jsbeautifyrc");
 
 		//walk to find a .jsbeautifyrc
-		if (beautFile) fs.readFile(beautFile, function (ee, d) {
+		if (beautFile) fs.readFile(beautFile, function(ee, d) {
 			if (ee && !d) d = "{}";
 			var opts = {};
 			try {

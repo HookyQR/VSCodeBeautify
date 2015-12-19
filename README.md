@@ -13,6 +13,11 @@ Extra file extenstion may be added under user or workspace settings.
 Embeded version of js-beautify is v1.5.10.
 
 ## Changes:
+### 0.0.3: 19 Dec 2015
+* _Tries_ to mark any elements in `json.schema` settings as JSON, and thus beautify as JS.
+* Added schema for `.jsbeautifyrc` file.
+* Added language type so `.jsbeautifyrc` is recognised as JSON.
+
 ### 0.0.2: 17 Dec 2015
 * Add options for other file extensions.
 
