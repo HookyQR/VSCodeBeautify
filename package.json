@@ -1,67 +1,72 @@
 {
-    "name": "beautify",
-    "displayName": "beautify",
-    "description": "Beautify code in place for VS Code",
-    "version": "0.0.5",
-    "publisher": "HookyQR",
-    "engines": {
-        "vscode": "^0.10.1"
-    },
-    "categories": [
+	"name": "beautify",
+	"displayName": "beautify",
+	"description": "Beautify code in place for VS Code",
+	"version": "0.0.5",
+	"publisher": "HookyQR",
+	"engines": {
+		"vscode": "^0.10.1"
+	},
+	"categories": [
         "Other"
     ],
-    "activationEvents": [
+	"activationEvents": [
         "onCommand:HookyQR.beautify"
     ],
-    "license": "MIT",
-    "main": "./extension",
-    "contributes": {
-        "languages": [{
-            "id": "json",
-            "aliases": ["JSON"],
-            "extensions": [".jsbeautifyrc"]
+	"icon":"icon.svg",
+	"galleryBanner": {
+		"color": "#e8e030",
+		"theme": "light"
+	},
+	"license": "MIT",
+	"main": "./extension",
+	"contributes": {
+		"languages": [{
+			"id": "json",
+			"aliases": ["JSON"],
+			"extensions": [".jsbeautifyrc"]
         }],
-        "jsonValidation": [{
-            "fileMatch": ".jsbeautifyrc",
-            "url": "./schema/beautifyrc.json"
+		"jsonValidation": [{
+			"fileMatch": ".jsbeautifyrc",
+			"url": "./schema/beautifyrc.json"
         }],
-        "commands": [{
-            "command": "HookyQR.beautify",
-            "title": "Beautify"
+		"commands": [{
+			"command": "HookyQR.beautify",
+			"title": "Beautify"
         }],
-        "configuration": {
-            "type": "object",
-            "title": "Beautify config",
-            "properties": {
-                "beautify.JSfiles": {
-                    "type": "array",
-                    "default": ["js", "json", "jsbeautifyrc", "jshintrc"],
-                    "description": "File extensions that can be minified as javascript or JSON."
-                },
-                "beautify.HTMLfiles": {
-                    "type": "array",
-                    "default": ["htm", "html"],
-                    "description": "File extensions that can be minified as HTML."
-                },
-                "beautify.CSSfiles": {
-                    "type": "array",
-                    "default": ["css"],
-                    "description": "File extensions that can be minified as CSS."
-                }
-            }
-        }
-    },
-    "devDependencies": {
-        "vscode": "0.10.x"
-    },
-    "dependencies": {
-        "js-beautify": "^1.5.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/HookyQR/VSCodeBeautify"
-    },
-	"bugs":{
-		"url":"https://github.com/HookyQR/VSCodeBeautify/issues"
+		"configuration": {
+			"type": "object",
+			"title": "Beautify config",
+			"properties": {
+				"beautify.JSfiles": {
+					"type": "array",
+					"default": ["js", "json", "jsbeautifyrc", "jshintrc"],
+					"description": "File extensions that can be minified as javascript or JSON."
+				},
+				"beautify.HTMLfiles": {
+					"type": "array",
+					"default": ["htm", "html"],
+					"description": "File extensions that can be minified as HTML."
+				},
+				"beautify.CSSfiles": {
+					"type": "array",
+					"default": ["css"],
+					"description": "File extensions that can be minified as CSS."
+				}
+			}
+		}
+	},
+	"devDependencies": {
+		"vscode": "0.10.x"
+	},
+	"dependencies": {
+		"js-beautify": "^1.5.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/HookyQR/VSCodeBeautify"
+	},
+	"bugs": {
+		"url": "https://github.com/HookyQR/VSCodeBeautify/issues"
 	}
 }

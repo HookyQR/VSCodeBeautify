@@ -28,14 +28,13 @@ var dropWithRegEx = function(text, re) {
 	}
 	if (lastEnd < text.length) oText += text.slice(lastEnd, text.length);
 	return oText;
-}
+};
 var dropMultiLineComments = inText => dropWithRegEx(inText, /\/\*.*\*\//g);
 var dropSingleLineComments = inText => dropWithRegEx(inText, /\/\/.*(?:[\r\n]|$)/g);
 var dropComments = inText => dropSingleLineComments(dropMultiLineComments(inText));
 
 //register on activation
 function activate(context) {
-
 	var doBeautify = function(active, doc, opts) {
 		var original = doc.getText();
 		var type = doc.isUntitled ? "" : doc.fileName.split('.')
