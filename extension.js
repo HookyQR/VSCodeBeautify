@@ -13,9 +13,29 @@ function findRecursive(dir, fileName) {
 	}
 	return result;
 }
+
+var dropWithRegEx = function(text, re) {
+	if (!re.global) //I'm not doing that for ever
+		return text;
+	var oText = "";
+	var match = re.exec(text);
+	var lastEnd = 0;
+	while (match) {
+		if (lastEnd < match.index)
+			oText += text.slice(lastEnd, match.index);
+		lastEnd = match.index + match[0].length;
+		match = re.exec(text);
+	}
+	if (lastEnd < text.length) oText += text.slice(lastEnd, text.length);
+	return oText;
+}
+var dropMultiLineComments = inText => dropWithRegEx(inText, /\/\*.*\*\//g);
+var dropSingleLineComments = inText => dropWithRegEx(inText, /\/\/.*(?:[\r\n]|$)/g);
+var dropComments = inText => dropSingleLineComments(dropMultiLineComments(inText));
+
 //register on activation
 function activate(context) {
-	
+
 	var doBeautify = function(active, doc, opts) {
 		var original = doc.getText();
 		var type = doc.isUntitled ? "" : doc.fileName.split('.')
@@ -52,13 +72,10 @@ function activate(context) {
 				return;
 			}
 		}
-		if (cfg.HTMLfiles.indexOf(type) + 1) {
-			result = beautify.html(original, opts);
-		} else if (cfg.CSSfiles.indexOf(type) + 1) {
-			result = beautify.css(original, opts);
-		} else if (cfg.JSfiles.indexOf(type) + 1) {
-			result = beautify.js(original, opts);
-		} else {
+		if (cfg.HTMLfiles.indexOf(type) + 1) result = beautify.html(original, opts);
+		else if (cfg.CSSfiles.indexOf(type) + 1) result = beautify.css(original, opts);
+		else if (cfg.JSfiles.indexOf(type) + 1) result = beautify.js(original, opts);
+		else {
 			//Ask what they want to do:
 			vscode.window.showQuickPick([{
 					label: "JS",
@@ -73,8 +90,7 @@ function activate(context) {
 				})
 				.then(function(choice) {
 					if (!choice || !choice.label) return;
-					result=beautify[choice.label.toLowerCase()](original, opts);
-					
+					result = beautify[choice.label.toLowerCase()](original, opts);
 					active.edit(editor => editor.replace(range, result));
 				});
 			return;
@@ -82,7 +98,8 @@ function activate(context) {
 		//and make the change:
 		active.edit(editor => editor.replace(range, result));
 	};
-
+	//it's ok to build and pass the re from outside of here, we always run
+	//to completion.
 	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function() {
 		var active = vscode.window.activeTextEditor;
 		if (!active) return;
@@ -97,11 +114,14 @@ function activate(context) {
 
 		//walk to find a .jsbeautifyrc
 		if (beautFile) fs.readFile(beautFile, function(ee, d) {
-			if (ee && !d) d = "{}";
+			if (!d) d = "{}";
 			var opts = {};
 			try {
-				opts = JSON.parse(d.toString());
+				var unCommented = dropComments(d.toString());
+				opts = JSON.parse(unCommented);
 			} catch (e) {
+				//put a warning in here
+				vscode.window.showWarningMessage("Found a .jsbeautifyrc file, but it didn't parse correctly.");
 				opts = {}; //just use the default opts
 			}
 			doBeautify(active, doc, opts);
