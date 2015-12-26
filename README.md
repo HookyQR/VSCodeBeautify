@@ -42,6 +42,7 @@ Embedded version of js-beautify is v1.5.10.
 ## Changes:
 ### 0.0.6: 27 Dec 2015
 * Added allowing sub elements in config. Fixes [Issue #3: Allow separation of settings for html, css and js options like sublime.](https://github.com/HookyQR/VSCodeBeautify/issues/3)
+* Changed embeded schema to allow the type sub elements.
 
 
 ### 0.0.5: 24 Dec 2015
