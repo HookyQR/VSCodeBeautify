@@ -12,10 +12,25 @@ This package includes hints when editing your `.jsbeautifyrc`. Only the first fi
 		"fileMatch": ["**/.jsbeautifyrc"],
 		"url": "http://json.schemastore.org/jsbeautifyrc"
 	}
-]
-```
+]```
+
 
 Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
+
+
+The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css` so that different settings can be used for each of the beautifiers (like sublime allows). Note that this will cause the config file to be incorrectly structure for running `js-beautify` from the command line.
+
+Settings are inherited from the base of the file. Thus:
+
+```json
+{
+	"indent_size": 4,
+	"indent_char": " ",
+	"css": {
+		"indent_size": 2
+	}
+}```
+Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for css. All will get the same `intent_char` setting.
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
@@ -25,6 +40,10 @@ Extra (permanent) file extension may be added under user or workspace settings.
 Embedded version of js-beautify is v1.5.10.
 
 ## Changes:
+### 0.0.6: 27 Dec 2015
+* Added allowing sub elements in config. Fixes [Issue #3: Allow separation of settings for html, css and js options like sublime.](https://github.com/HookyQR/VSCodeBeautify/issues/3)
+
+
 ### 0.0.5: 24 Dec 2015
 * Schema published at http://json.schemastore.org/jsbeautifyrc.
 * Added README details for schema install for users of VSCode < v0.10.5
