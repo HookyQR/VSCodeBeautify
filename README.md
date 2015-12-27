@@ -12,7 +12,8 @@ This package includes hints when editing your `.jsbeautifyrc`. Only the first fi
 		"fileMatch": ["**/.jsbeautifyrc"],
 		"url": "http://json.schemastore.org/jsbeautifyrc"
 	}
-]```
+]
+```
 
 
 Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
@@ -29,7 +30,9 @@ Settings are inherited from the base of the file. Thus:
 	"css": {
 		"indent_size": 2
 	}
-}```
+}
+```
+
 Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for css. All will get the same `intent_char` setting.
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
