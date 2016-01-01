@@ -44,7 +44,7 @@ function activate(context) {
 				//check if the file is in the users json schema set
 				var jsSchema = vscode.workspace.getConfiguration('json')
 					.schemas;
-				if (jsSchema) {
+				if (jsSchema.length) {
 					var matcher = [];
 					var extMatch = n => ({
 						pattern: n.startsWith("**/") ? n : ("**/" + n)
@@ -116,13 +116,9 @@ function activate(context) {
 					var opts = {};
 					try {
 						var unCommented = dropComments(d.toString());
-						console.log(unCommented);
 						opts = JSON.parse(unCommented);
 						opts = mergeOpts(opts, type);
-						console.log(opts);
 					} catch (e) {
-						console.log(e.message);
-						//put a warning in here
 						vscode.window.showWarningMessage("Found a .jsbeautifyrc file, but it didn't parse correctly.");
 						opts = {}; //just use the default opts
 					}

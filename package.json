@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -41,17 +41,17 @@
 				"beautify.JSfiles": {
 					"type": "array",
 					"default": ["js", "json", "jsbeautifyrc", "jshintrc"],
-					"description": "File extensions that can be minified as javascript or JSON."
+					"description": "File extensions that can be beautified as javascript or JSON."
 				},
 				"beautify.HTMLfiles": {
 					"type": "array",
 					"default": ["htm", "html"],
-					"description": "File extensions that can be minified as HTML."
+					"description": "File extensions that can be beautified as HTML."
 				},
 				"beautify.CSSfiles": {
 					"type": "array",
 					"default": ["css"],
-					"description": "File extensions that can be minified as CSS."
+					"description": "File extensions that can be beautified as CSS."
 				}
 			}
 		}
