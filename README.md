@@ -33,7 +33,7 @@ Settings are inherited from the base of the file. Thus:
 }
 ```
 
-Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for css. All will get the same `intent_char` setting.
+Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for css. All will get the same `indent_char` setting.
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
