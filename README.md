@@ -40,10 +40,14 @@ If the file is unsaved, or the type is undetermined, you'll be prompted for whic
 Extra (permanent) file extension may be added under user or workspace settings.
 
 
-Embedded version of js-beautify is v1.5.10.
+Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
-### 0.0.7: 02 Jan 2015
+### 0.0.8: 13 Feb 2016
+* Update js-beautify version to v1.6.2. See [js-beautify change log](https://github.com/beautify-web/js-beautify/blob/852919d2241476d877656312238f4539688abba1/CHANGELOG.md)
+* Updated schema to match js-beautify v1.6.2 options
+
+### 0.0.7: 02 Jan 2016
 * Fix bad type matching when no json schema in user settings.
 
 ### 0.0.6: 27 Dec 2015

@@ -17,15 +17,20 @@
 					"default": " ",
 					"maxLength": 1
 				},
-				"indent_with_tabs": {
-					"description": "Indent with tabs, overrides 'indent_size' and 'indent_char' [JS,CSS,HTML]",
-					"type": "boolean",
-					"default": false
-				},
 				"eol": {
 					"description": "Character(s) to use as line terminators. [JS,CSS,HTML]",
 					"type": "string",
 					"default": "\\n"
+				},
+				"indent_level": {
+					"description": "Initial indentation level. [JS]",
+					"type": "integer",
+					"default": 0
+				},
+				"indent_with_tabs": {
+					"description": "Indent with tabs, overrides 'indent_size' and 'indent_char' [JS,CSS,HTML]",
+					"type": "boolean",
+					"default": false
 				},
 				"preserve_newlines": {
 					"description": "Preserve line-breaks. [JS,HTML]",
@@ -37,13 +42,13 @@
 					"type": "integer",
 					"default": 10
 				},
-				"indent_level": {
-					"description": "Initial indentation level. [JS]",
-					"type": "integer",
-					"default": 0
-				},
 				"space_in_paren": {
 					"description": "Add padding spaces within parentheses, ie. f( a, b ). [JS]",
+					"type": "boolean",
+					"default": false
+				},
+				"space_in_empty_paren": {
+					"description": "Leave space in empty parentheses, ie. f( ). [JS]",
 					"type": "boolean",
 					"default": false
 				},
@@ -58,7 +63,7 @@
 					"default": false
 				},
 				"brace_style": {
-					"description": "[collapse|expand|end-expand|none] [JS,HTML]",
+					"description": "[collapse-preserve-inline|collapse|expand|end-expand|none] [JS,HTML]",
 					"type": "string",
 					"default": "collapse",
 					"enum": [
@@ -108,7 +113,7 @@
 					"type": "number"
 				},
 				"end_with_newline": {
-					"description": "Ensure newline at end of file. [JS,HTML]",
+					"description": "Ensure newline at end of file. [JS,CSS,HTML]",
 					"type": "boolean",
 					"default": false
 				},
@@ -131,7 +136,12 @@
 					"items": {
 						"type": "string"
 					},
-					"default": ["inline"]
+					"default": ["a", "abbr", "area", "audio", "b", "bdi", "bdo", "br", "button", "canvas", "cite", "code", "data",
+						"datalist", "del", "dfn", "em", "embed", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "map",
+						"mark", "math", "meter", "noscript", "object", "output", "progress", "q", "ruby", "s", "samp", "select", "small",
+						"span", "strong", "sub", "sup", "svg", "template", "textarea", "time", "u", "var", "video", "wbr", "text",
+						"acronym", "address", "big", "dt", "ins", "small", "strike", "tt", "pre", "h1", "h2", "h3", "h4", "h5", "h6"
+        ]
 				},
 				"extra_liners": {
 					"description": "List of tags that should have an extra newline before them. [HTML]",
@@ -160,6 +170,11 @@
 					"description": "Add a newline between multiple selectors. [CSS]",
 					"type": "boolean",
 					"default": true
+				},
+				"indent_handlebars": {
+					"description": "format and indent {{#foo}} and {{/foo}}. [HTML]",
+					"type": "boolean",
+					"default": false
 				}
 			}
 		}
@@ -167,20 +182,22 @@
 	"allOf": [
 		{
 			"$ref": "#/definitions/coreProperties"
-		}, {"properties":{
-			"css": {
-				"type":"object",
-				"$ref": "#/definitions/coreProperties"
-			},
-			"js": {
-				"type":"object",
-				"$ref": "#/definitions/coreProperties"
-			},
-			"html": {
-				"type":"object",
-				"$ref": "#/definitions/coreProperties"
+		}, {
+			"properties": {
+				"css": {
+					"type": "object",
+					"$ref": "#/definitions/coreProperties"
+				},
+				"js": {
+					"type": "object",
+					"$ref": "#/definitions/coreProperties"
+				},
+				"html": {
+					"type": "object",
+					"$ref": "#/definitions/coreProperties"
+				}
 			}
-		}}
+		}
 	]
 
 }
