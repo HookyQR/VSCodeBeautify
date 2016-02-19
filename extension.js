@@ -95,10 +95,17 @@ function activate(context) {
 	//it's ok to build and pass the re from outside of here, we always run
 	//to completion.
 	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function() {
-		var active = vscode.window.activeTextEditor;
+		let active, doc;
+		
+		try{
+			active = vscode.window.activeTextEditor;
 		if (!active) return;
-		var doc = active.document;
+		doc = active.document;
 		if (!doc) return;
+		}
+		catch(e){
+			console.dir(e);
+		}
 		//get a settings file
 		var base = vscode.workspace.rootPath;
 
