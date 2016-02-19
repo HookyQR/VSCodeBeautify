@@ -43,6 +43,9 @@ Extra (permanent) file extension may be added under user or workspace settings.
 Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
+### 0.0.9: 19 Feb 2016
+* Show info message when VS Code doesn't provide document info and beautify can't run. (Generally caused when file is too large)
+
 ### 0.0.8: 13 Feb 2016
 * Update js-beautify version to v1.6.2. See [js-beautify change log](https://github.com/beautify-web/js-beautify/blob/852919d2241476d877656312238f4539688abba1/CHANGELOG.md)
 * Updated schema to match js-beautify v1.6.2 options
