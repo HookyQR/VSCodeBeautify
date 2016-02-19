@@ -94,17 +94,16 @@ function activate(context) {
 	};
 	//it's ok to build and pass the re from outside of here, we always run
 	//to completion.
+
 	var disposable = vscode.commands.registerCommand('HookyQR.beautify', function() {
 		let active, doc;
-		
-		try{
+		try {
 			active = vscode.window.activeTextEditor;
-		if (!active) return;
-		doc = active.document;
-		if (!doc) return;
-		}
-		catch(e){
-			console.dir(e);
+			if (!active) return;
+			doc = active.document;
+			if (!doc) return;
+		} catch (e) {
+			return vscode.window.showInformationMessage("Beautify can't get the file information because the editor won't supply it. (File probably too large)");
 		}
 		//get a settings file
 		var base = vscode.workspace.rootPath;
