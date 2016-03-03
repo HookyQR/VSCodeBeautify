@@ -75,7 +75,7 @@ function activate(context) {
 							label: "HTML"
 						}], {
 							matchOnDescription: true,
-							placeHolder: "Couldn't determine type to beautify, pleae choose."
+							placeHolder: "Couldn't determine type to beautify, please choose."
 						})
 						.then(function(choice) {
 							if (!choice || !choice.label) return;
