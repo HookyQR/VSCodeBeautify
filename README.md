@@ -15,9 +15,7 @@ This package includes hints when editing your `.jsbeautifyrc`. Only the first fi
 ]
 ```
 
-
 Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
-
 
 The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css` so that different settings can be used for each of the beautifiers (like sublime allows). Note that this will cause the config file to be incorrectly structure for running `js-beautify` from the command line.
 
@@ -39,10 +37,28 @@ If the file is unsaved, or the type is undetermined, you'll be prompted for whic
 
 Extra (permanent) file extension may be added under user or workspace settings.
 
+Beautify on save can be enables for all, or just specific file types. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
 
+```javascript
+"beautify.onSave": true, // beautify HTML, CSS, JavaScript, and JSON on save
+  //or
+"beautify.onSave": ["js","json"], //only beautify JavaScript and JSON files on save
+
+"beautify.onSaveIgnore": [
+    "**/minified/**", //don't beautify any file in any 'minified' directory, at any depth
+    "**/*+(.|_|-)min.*", //don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting)
+  ]
+``` 
+
+If you wish to include the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
+ 
 Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
+### 0.1.0: 13 Mar 2016
+* Add beautify on save option. [Issue #5: Add Beautify on Save](https://github.com/HookyQR/VSCodeBeautify/issues/5)
+* Added `css`, and `html` beautifiers to the system range formatters. This means that beautify will run as the system `Format code` option.
+
 ### 0.0.10: 03 Mar 2016
 * Fix typo: [Issue #7](https://github.com/HookyQR/VSCodeBeautify/pull/7)
 
