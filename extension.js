@@ -142,6 +142,15 @@ function extendRange(doc, rng) {
 	return r;
 }
 
+function rangeEditByType(type) {
+	return (doc, rng) => {
+		rng = extendRange(doc, rng);
+		return beautifyDoc(doc, rng, type)
+			.then(newText => documentEdit(rng, newText))
+			.catch(dumpError);
+	};
+}
+
 function beautifyOnSave(doc) {
 
 	if (doc.beautified) {
@@ -197,25 +206,17 @@ function activate(context) {
 	//VS Code won't allow the formatters to run for json, or js. The inbuild
 	//js-beautify runs instead
 	context.subscriptions.push(
-		vscode.languages.registerDocumentRangeFormattingEditProvider({
-			language: 'html'
-		}, {
-			provideDocumentRangeFormattingEdits: (doc, rng) => {
-				rng = extendRange(doc, rng);
-				return beautifyDoc(doc, rng, 'html')
-					.then(newText => documentEdit(rng, newText))
-					.catch(dumpError);
-			}
+		vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
+			provideDocumentRangeFormattingEdits: rangeEditByType('html')
 		}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider({
-		language: 'css'
-	}, {
-		provideDocumentRangeFormattingEdits: (doc, rng) => {
-			rng = extendRange(doc, rng);
-			return beautifyDoc(doc, rng, 'css')
-				.then(newText => documentEdit(rng, newText))
-				.catch(dumpError);
-		}
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('css', {
+		provideDocumentRangeFormattingEdits: rangeEditByType('css')
+	}));
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('javascript', {
+		provideDocumentRangeFormattingEdits: rangeEditByType('js')
+	}));
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('json', {
+		provideDocumentRangeFormattingEdits: rangeEditByType('js')
 	}));
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
 
