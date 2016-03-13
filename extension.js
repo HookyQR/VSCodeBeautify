@@ -6,7 +6,7 @@ const vscode = require('vscode'),
 	minimatch = require('minimatch');
 
 const dumpError = e => {
-	if (e) console.log(e);
+	if (e) console.log('beautify err:', e);
 	return [];
 };
 const dropComments = inText => inText.replace(/(\/\*.*\*\/)|\/\/.*(?:[\r\n]|$)/g, "");
@@ -78,11 +78,11 @@ const getBeautifyType = function(doc) {
 			return vscode.window.showQuickPick([{
 					label: "JS",
 					description: "Does JavaScript and JSON"
-				}, {
+                }, {
 					label: "CSS"
-				}, {
+                }, {
 					label: "HTML"
-				}], {
+                }], {
 					matchOnDescription: true,
 					placeHolder: "Couldn't determine type to beautify, please choose."
 				})
@@ -142,6 +142,46 @@ function extendRange(doc, rng) {
 	return r;
 }
 
+function beautifyOnSave(doc) {
+
+	if (doc.beautified) {
+		delete doc.beautified;
+		return;
+	}
+	const cfg = vscode.workspace.getConfiguration('beautify');
+	let matcher = cfg.onSaveIgnore || ["**/*+(.|_|-)min.*"];
+	if (typeof matcher === 'string') matcher = [matcher];
+	if (Array.isArray(matcher)) {
+
+		let fName = doc.fileName;
+		if (fName.startsWith(vscode.workspace.rootPath)) {
+			fName.slice(vscode.workspace.rootPath.length);
+			if (fName[0] === '/' || fName[0] === '\\') fName.slice(1);
+		}
+		if (matcher.some(m => minimatch(fName, m))) return;
+	}
+
+	let refType = doc.languageId;
+
+	if (refType === 'javascript') refType = 'js';
+	if (['json', 'js', 'html', 'css'].indexOf(refType) === -1) return;
+
+	if (cfg.onSave === true || (
+			Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0
+		)) {
+		const range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
+		beautifyDoc(doc, range)
+			.then(newText => {
+				let we = new vscode.WorkspaceEdit();
+				we.replace(doc.uri, range, newText);
+				doc.beautified = true;
+				return vscode.workspace.applyEdit(we);
+			})
+			.then(() => doc.save())
+			.then(() => 1, () => 1);
+	}
+}
+
 //register on activation
 function activate(context) {
 	context.subscriptions.push(vscode.commands.registerCommand('HookyQR.beautify', () => {
@@ -177,45 +217,7 @@ function activate(context) {
 				.catch(dumpError);
 		}
 	}));
-
-	vscode.workspace.onDidSaveTextDocument(doc => {
-		if (doc.beautified) {
-			delete doc.beautified;
-			return;
-		}
-		const cfg = vscode.workspace.getConfiguration('beautify');
-		let matcher = cfg.onSaveIgnore || ["**/*+(.|_|-)min.*"];
-		if (typeof matcher === 'string') matcher = [matcher];
-		if (Array.isArray(matcher)) {
-      
-			let fName = doc.fileName;
-      if ( fName.startsWith(vscode.workspace.rootPath)){
-        fName.slice(vscode.workspace.rootPath.length);
-        if (fName[0]==='/'||fName[0]==='\\') fName.slice(1);
-      }
-			if (matcher.some(m => minimatch(fName, m))) return;
-		}
-
-		let refType = doc.languageId;
-
-		if (refType === 'javascript') refType = 'js';
-		if (['json', 'js', 'html', 'css'].indexOf(refType) === -1) return;
-
-		if (cfg.onSave === true || (
-				Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0
-			)) {
-			const range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
-			beautifyDoc(doc, range)
-				.then(newText => {
-					let we = new vscode.WorkspaceEdit();
-					we.replace(doc.uri, range, newText);
-					doc.beautified = true;
-					return vscode.workspace.applyEdit(we);
-				})
-				.then(() => doc.save())
-				.then(() => 1, () => 1);
-		}
-	});
+	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
 
 }
 exports.activate = activate;
