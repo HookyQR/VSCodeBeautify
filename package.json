@@ -2,18 +2,23 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.0.10",
+	"version": "0.1.0",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
 	},
 	"categories": [
-        "Other"
+        "Other",
+        "Languages"
     ],
 	"activationEvents": [
-        "onCommand:HookyQR.beautify"
+        "onCommand:HookyQR.beautify",
+        "onLanguage:javascript",
+        "onLanguage:json",
+        "onLanguage:html",
+        "onLanguage:css"
     ],
-	"icon":"icon.svg",
+	"icon": "icon.svg",
 	"galleryBanner": {
 		"color": "#e8e030",
 		"theme": "light"
@@ -24,7 +29,7 @@
 		"languages": [{
 			"id": "json",
 			"aliases": ["JSON"],
-			"extensions": [".jsbeautifyrc"]
+			"filenames": [".jsbeautifyrc"]
         }],
 		"jsonValidation": [{
 			"fileMatch": ".jsbeautifyrc",
@@ -38,6 +43,21 @@
 			"type": "object",
 			"title": "Beautify config",
 			"properties": {
+				"beautify.onSave": {
+					"type": ["array", "boolean"],
+					"default": false,
+					"description": "Automatically beautify files on save. Set to true to run for JSON, javascript, html and css. Use array to set indiviaul types to beautify: [\"js\", \"json\", \"html\", \"css\"]",
+					"items": {
+						"type": "string",
+						"enum": ["js", "json", "html", "css"],
+						"description": "Set to beautify only provided types on save."
+					}
+				},
+				"beautify.onSaveIgnore": {
+					"type": ["array"],
+					"description": "Set path/file matchers to ignore when attempting to beautify on save. Uses glob path matching.",
+					"default": ["**/*+(.|_|-)min.*"]
+				},
 				"beautify.JSfiles": {
 					"type": "array",
 					"default": ["js", "json", "jsbeautifyrc", "jshintrc"],
@@ -56,11 +76,9 @@
 			}
 		}
 	},
-	"devDependencies": {
-		"vscode": "0.10.x"
-	},
 	"dependencies": {
-		"js-beautify": "^1.5.0"
+		"js-beautify": "^1.6.2",
+    "minimatch": "^3.0.0"
 	},
 	"repository": {
 		"type": "git",
