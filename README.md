@@ -55,6 +55,10 @@ If you wish to include the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
+### 0.1.1: 15 Mar 2016
+* Allow beautify on save to work with types in `beautify.*Files` settings. [Issue #9](https://github.com/HookyQR/VSCodeBeautify/issues/9)
+* Fix `beautify.*Files` settings requiring a `.` before the extension (both styles are now accepted).
+
 ### 0.1.0: 13 Mar 2016
 * Add beautify on save option. [Issue #5: Add Beautify on Save](https://github.com/HookyQR/VSCodeBeautify/issues/5)
 * Added `css`, and `html` beautifiers to the system range formatters. This means that beautify will run as the system `Format code` option.

@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -12,11 +12,7 @@
         "Languages"
     ],
 	"activationEvents": [
-        "onCommand:HookyQR.beautify",
-        "onLanguage:javascript",
-        "onLanguage:json",
-        "onLanguage:html",
-        "onLanguage:css"
+        "*"
     ],
 	"icon": "icon.svg",
 	"galleryBanner": {
@@ -78,7 +74,7 @@
 	},
 	"dependencies": {
 		"js-beautify": "^1.6.2",
-    "minimatch": "^3.0.0"
+		"minimatch": "^3.0.0"
 	},
 	"repository": {
 		"type": "git",

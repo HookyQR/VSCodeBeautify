@@ -42,55 +42,49 @@ const extMatch = n => ({
 	pattern: n.startsWith("**/") ? n : ("**/" + n)
 });
 
-const getBeautifyType = function(doc) {
+const getBeautifyType = function(doc, dontAsk) {
 	if (doc.languageId === 'javascript') return 'js';
 	if (doc.languageId === 'json') return 'js';
 	if (doc.languageId === 'html') return 'html';
 	if (doc.languageId === 'css') return 'css';
 
+	const type = doc.isUntitled ? "" : path.extname(doc.fileName)
+		.toLowerCase();
+	const cfg = vscode.workspace.getConfiguration('beautify');
+	//if a type is set on the window, use that
+	//check if the file is in the users json schema set
+	const jsSchema = vscode.workspace.getConfiguration('json')
+		.schemas;
+	if (jsSchema.length) {
+		let matcher = [];
+		jsSchema.forEach(schema => {
+			if (typeof schema.fileMatch === 'string') matcher.push(extMatch(schema.fileMatch));
+			else matcher = matcher.concat(schema.fileMatch.map(extMatch));
+		});
+		if (vscode.languages.match(matcher, doc)) return "js";
+	}
+	if (cfg.HTMLfiles.indexOf(type) + 1 || cfg.HTMLfiles.indexOf(type.slice(1)) + 1) return 'html';
+	else if (cfg.CSSfiles.indexOf(type) + 1 || cfg.CSSfiles.indexOf(type.slice(1)) + 1) return 'css';
+	else if (cfg.JSfiles.indexOf(type) + 1 || cfg.JSfiles.indexOf(type.slice(1)) + 1) return 'js';
+	if (dontAsk) return;
+
 	return new Promise((resolve, reject) => {
-		const type = doc.isUntitled ? "" : path.extname(doc.fileName)
-			.toLowerCase();
-		const cfg = vscode.workspace.getConfiguration('beautify');
-		//if a type is set on the window, use that
-		//check if the file is in the users json schema set
-		const jsSchema = vscode.workspace.getConfiguration('json')
-			.schemas;
-		if (jsSchema.length) {
-			let matcher = [];
-			jsSchema.forEach(schema => {
-				if (typeof schema.fileMatch === 'string') matcher.push(extMatch(schema.fileMatch));
-				else matcher = matcher.concat(schema.fileMatch.map(extMatch));
-			});
-			if (vscode.languages.match(matcher, doc)) return resolve("js");
-		}
-		if (cfg.HTMLfiles.indexOf(type) + 1) {
-			//showDepWarning();
-			return resolve("html");
-		} else if (cfg.CSSfiles.indexOf(type) + 1) {
-			//showDepWarning();
-			return resolve("css");
-		} else if (cfg.JSfiles.indexOf(type) + 1) {
-			//showDepWarning();
-			return resolve("js");
-		} else {
-			//Ask what they want to do:
-			return vscode.window.showQuickPick([{
-					label: "JS",
-					description: "Does JavaScript and JSON"
+		//Ask what they want to do:
+		return vscode.window.showQuickPick([{
+				label: "JS",
+				description: "Does JavaScript and JSON"
                 }, {
-					label: "CSS"
+				label: "CSS"
                 }, {
-					label: "HTML"
+				label: "HTML"
                 }], {
-					matchOnDescription: true,
-					placeHolder: "Couldn't determine type to beautify, please choose."
-				})
-				.then(function(choice) {
-					if (!choice || !choice.label) return reject('no beautify type selected');
-					return resolve(choice.label.toLowerCase());
-				});
-		}
+				matchOnDescription: true,
+				placeHolder: "Couldn't determine type to beautify, please choose."
+			})
+			.then(function(choice) {
+				if (!choice || !choice.label) return reject('no beautify type selected');
+				return resolve(choice.label.toLowerCase());
+			});
 	});
 };
 
@@ -173,8 +167,10 @@ function beautifyOnSave(doc) {
 	let refType = doc.languageId;
 
 	if (refType === 'javascript') refType = 'js';
-	if (['json', 'js', 'html', 'css'].indexOf(refType) === -1) return;
-
+	if (['json', 'js', 'html', 'css'].indexOf(refType) === -1) {
+		refType = getBeautifyType(doc, true);
+		if (!refType) return;
+	}
 	if (cfg.onSave === true || (
 			Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0
 		)) {
