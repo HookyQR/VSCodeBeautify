@@ -2,18 +2,18 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
 	},
 	"categories": [
-        "Other",
-        "Languages"
-    ],
+		"Other",
+		"Languages"
+	],
 	"activationEvents": [
-        "*"
-    ],
+		"*"
+	],
 	"icon": "icon.svg",
 	"galleryBanner": {
 		"color": "#e8e030",
@@ -26,15 +26,15 @@
 			"id": "json",
 			"aliases": ["JSON"],
 			"filenames": [".jsbeautifyrc"]
-        }],
+		}],
 		"jsonValidation": [{
 			"fileMatch": ".jsbeautifyrc",
 			"url": "./schema/beautifyrc.json"
-        }],
+		}],
 		"commands": [{
 			"command": "HookyQR.beautify",
 			"title": "Beautify"
-        }],
+		}],
 		"configuration": {
 			"type": "object",
 			"title": "Beautify config",

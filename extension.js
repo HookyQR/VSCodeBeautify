@@ -9,6 +9,7 @@ const dumpError = e => {
 	if (e) console.log('beautify err:', e);
 	return [];
 };
+
 const dropComments = inText => inText.replace(/(\/\*.*\*\/)|\/\/.*(?:[\r\n]|$)/g, "");
 
 const mergeOpts = function(opts, type) {
@@ -73,54 +74,53 @@ const getBeautifyType = function(doc, dontAsk) {
 		return vscode.window.showQuickPick([{
 				label: "JS",
 				description: "Does JavaScript and JSON"
-                }, {
+			}, {
 				label: "CSS"
-                }, {
+			}, {
 				label: "HTML"
-                }], {
+			}], {
 				matchOnDescription: true,
 				placeHolder: "Couldn't determine type to beautify, please choose."
 			})
 			.then(function(choice) {
 				if (!choice || !choice.label) return reject('no beautify type selected');
 				return resolve(choice.label.toLowerCase());
-			});
+			}, () => 0);
 	});
 };
 
-function getConfigFor(doc, type) {
+function getConfigFor(doc, defaultOptions, type) {
 
 	let base = vscode.workspace.rootPath;
 
 	if (!doc.isUntitled) base = path.dirname(doc.fileName);
-	if (!base) return Promise.resolve({});
+	if (!base) return Promise.resolve(defaultOptions);
 	let configFile = findRecursive(base, '.jsbeautifyrc');
-	if (!configFile) return Promise.resolve({});
+	if (!configFile) return Promise.resolve(defaultOptions);
 	return new Promise(resolve => {
 		fs.readFile(configFile, 'utf8', (e, d) => {
-			if (!d) d = '{}';
-			let opts = {};
+			let opts = defaultOptions;
+			if (!d) return resolve(opts);
 			try {
 				const unCommented = dropComments(d.toString());
 				opts = JSON.parse(unCommented);
 				opts = mergeOpts(opts, type);
 			} catch (e) {
 				vscode.window.showWarningMessage(`Found a .jsbeautifyrc file [${configFile}], but it didn't parse correctly.`);
-				opts = {}; //just use the default opts
 			}
 			resolve(opts);
 		});
 	});
 }
 
-function beautifyDoc(doc, range, type) {
+function beautifyDoc(doc, range, defaultOptions, type) {
 	if (!doc) {
 		vscode.window.showInformationMessage(
 			"Beautify can't get the file information because the editor won't supply it. (File probably too large)");
 		throw "";
 	}
-	return (Promise.resolve(type ? type : getBeautifyType(doc)))
-		.then(type => getConfigFor(doc, type)
+	return Promise.resolve(type ? type : getBeautifyType(doc))
+		.then(type => getConfigFor(doc, defaultOptions, type)
 			.then(config => {
 				const original = doc.getText(doc.validateRange(range));
 				return beautify[type](original, config);
@@ -136,12 +136,19 @@ function extendRange(doc, rng) {
 	return r;
 }
 
+function optionsFromFormat(formattingOptions) {
+	return {
+		indent_with_tabs: !formattingOptions.insertSpaces,
+		indent_size: formattingOptions.tabSize,
+		indent_char: ' '
+	};
+}
+
 function rangeEditByType(type) {
-	return (doc, rng) => {
+	return (doc, rng, formattingOptions) => {
 		rng = extendRange(doc, rng);
-		return beautifyDoc(doc, rng, type)
-			.then(newText => documentEdit(rng, newText))
-			.catch(dumpError);
+		return beautifyDoc(doc, rng, optionsFromFormat(formattingOptions), type)
+			.then(newText => documentEdit(rng, newText), dumpError);
 	};
 }
 
@@ -175,7 +182,15 @@ function beautifyOnSave(doc) {
 			Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0
 		)) {
 		const range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
-		beautifyDoc(doc, range)
+		//determine a default options
+		let defaultOptions = optionsFromFormat(vscode.workspace.getConfiguration('editor'));
+		//if this document is open, use the settings from that window
+		vscode.window.visibleTextEditors.some(editor => {
+			if (editor.document && editor.document.fileName === doc.fileName) {
+				return (defaultOptions = optionsFromFormat(editor.options));
+			}
+		});
+		beautifyDoc(doc, range, defaultOptions, refType)
 			.then(newText => {
 				let we = new vscode.WorkspaceEdit();
 				we.replace(doc.uri, range, newText);
@@ -194,9 +209,9 @@ function activate(context) {
 		if (!active) return;
 		if (!active.document) return;
 		const range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
-		beautifyDoc(active.document, range)
-			.then(newText => active.edit(editor => editor.replace(range, newText)))
-			.catch(dumpError);
+		
+		beautifyDoc(active.document, range, optionsFromFormat(active.options))
+			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
 
 	//VS Code won't allow the formatters to run for json, or js. The inbuild

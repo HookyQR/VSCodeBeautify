@@ -55,6 +55,9 @@ If you wish to include the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
+### 0.1.2: 20 Mar 2016
+* Beautify with no .jsbeautifyrc file in path tree will use workspace settings for tabs/spaces indent. [Issue #11](https://github.com/HookyQR/VSCodeBeautify/issues/11)<br>Will use the editor setting if the file being beautified is visible, or workspace/user setting if it is not visible. (Beautify of a non-visible file can be envoked when beautify on save is enabled.)
+
 ### 0.1.1: 15 Mar 2016
 * Allow beautify on save to work with types in `beautify.*Files` settings. [Issue #9](https://github.com/HookyQR/VSCodeBeautify/issues/9)
 * Fix `beautify.*Files` settings requiring a `.` before the extension (both styles are now accepted).
