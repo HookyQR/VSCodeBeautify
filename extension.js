@@ -12,7 +12,7 @@ const dumpError = e => {
 
 const dropComments = inText => inText.replace(/(\/\*.*\*\/)|\/\/.*(?:[\r\n]|$)/g, "");
 
-const mergeOpts = function(opts, type) {
+const mergeOpts = function(opts, kind) {
 	const finOpts = {};
 	for (let a in opts) {
 		if (a !== 'js' && a !== 'html' && a !== 'css') {
@@ -20,10 +20,10 @@ const mergeOpts = function(opts, type) {
 		}
 	}
 	//merge in the per type settings
-	if (type in opts) {
-		for (let b in opts[type]) {
+	if (kind in opts) {
+		for (let b in opts[kind]) {
 			if (b === 'allowed_file_extensions') continue;
-			finOpts[b] = opts[type][b];
+			finOpts[b] = opts[kind][b];
 		}
 	}
 	return finOpts;
@@ -64,9 +64,9 @@ const getBeautifyType = function(doc, dontAsk) {
 		});
 		if (vscode.languages.match(matcher, doc)) return "js";
 	}
-	if (cfg.HTMLfiles.indexOf(type) + 1 || cfg.HTMLfiles.indexOf(type.slice(1)) + 1) return 'html';
-	else if (cfg.CSSfiles.indexOf(type) + 1 || cfg.CSSfiles.indexOf(type.slice(1)) + 1) return 'css';
-	else if (cfg.JSfiles.indexOf(type) + 1 || cfg.JSfiles.indexOf(type.slice(1)) + 1) return 'js';
+	if (cfg.HTMLfiles.includes(type) || cfg.HTMLfiles.includes(type.slice(1))) return 'html';
+	else if (cfg.CSSfiles.includes(type) || cfg.CSSfiles.includes(type.slice(1))) return 'css';
+	else if (cfg.JSfiles.includes(type) || cfg.JSfiles.includes(type.slice(1))) return 'js';
 	if (dontAsk) return;
 
 	return new Promise((resolve, reject) => {
@@ -178,10 +178,9 @@ function beautifyOnSave(doc) {
 		refType = getBeautifyType(doc, true);
 		if (!refType) return;
 	}
-	if (cfg.onSave === true || (
-			Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0
-		)) {
-		const range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
+	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
+		let range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
+		range = doc.validateRange(range);
 		//determine a default options
 		let defaultOptions = optionsFromFormat(vscode.workspace.getConfiguration('editor'));
 		//if this document is open, use the settings from that window
@@ -208,14 +207,14 @@ function activate(context) {
 		const active = vscode.window.activeTextEditor;
 		if (!active) return;
 		if (!active.document) return;
-		const range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
-		
-		beautifyDoc(active.document, range, optionsFromFormat(active.options))
+		let range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
+
+		range = active.document.validateRange(range);
+
+		return beautifyDoc(active.document, range, optionsFromFormat(active.options))
 			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
 
-	//VS Code won't allow the formatters to run for json, or js. The inbuild
-	//js-beautify runs instead
 	context.subscriptions.push(
 		vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
 			provideDocumentRangeFormattingEdits: rangeEditByType('html')
@@ -223,6 +222,8 @@ function activate(context) {
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('css', {
 		provideDocumentRangeFormattingEdits: rangeEditByType('css')
 	}));
+	//VS Code won't allow the formatters to run for json, or js. The inbuild
+	//js-beautify runs instead
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('javascript', {
 		provideDocumentRangeFormattingEdits: rangeEditByType('js')
 	}));
@@ -230,6 +231,5 @@ function activate(context) {
 		provideDocumentRangeFormattingEdits: rangeEditByType('js')
 	}));
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
-
 }
 exports.activate = activate;

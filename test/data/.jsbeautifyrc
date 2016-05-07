@@ -1,0 +1,14 @@
+{
+	"indent_with_tabs": true,
+	"css": {
+		"selector_separator_newline": true
+	},
+	"js": {
+		"break_chained_methods": true,
+		"max_preserve_newlines": 2
+	},
+	"html": {
+		"brace_style": "none",
+		"preserve_newlines": false
+	}
+}

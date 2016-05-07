@@ -1,6 +1,7 @@
 node_modules
 *.vsix
 .vscodeignore
-typings
+.vscode-test
 .vscode
 .jshintrc
+typings
