@@ -9,11 +9,6 @@ before_install:
       sleep 3;
     fi
 
-env:
-  - CODE_VERSION="0.10.1"
-  - CODE_VERSION="0.10.9"
-  - CODE_VERSION="1.0.0"
-
 install:
   - npm install
 
