@@ -4,20 +4,11 @@
 
 VS Code uses js-beautify internally, bit it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify`.
 
-This package includes hints when editing your `.jsbeautifyrc`. Only the first file found will be used. If the format is bad, the default js-beautify settings will be used, but a warning will be issued to let you know. Comments in your settings file are acceptable (they're removed before the file is parsed). The embedded schema for `.jsbeautifyrc` has also been published at [JSON Schema Store](http://schemastore.org) which allows users of VSCode 0.10.3 to add it manually to their user or workspace settings:
-
-```json
-"json.schemas": [
-	{
-		"fileMatch": ["**/.jsbeautifyrc"],
-		"url": "http://json.schemastore.org/jsbeautifyrc"
-	}
-]
-```
+This package includes hints when editing your `.jsbeautifyrc`. Only the first file found will be used. If the format is bad, the default js-beautify settings will be used, but a warning will be issued to let you know. Comments in your settings file are acceptable (they're removed before the file is parsed).
 
 Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
 
-The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css` so that different settings can be used for each of the beautifiers (like sublime allows). Note that this will cause the config file to be incorrectly structure for running `js-beautify` from the command line.
+The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css` so that different settings can be used for each of the beautifiers (like sublime allows). Note that this will cause the config file to be incorrectly structured for running `js-beautify` from the command line.
 
 Settings are inherited from the base of the file. Thus:
 
@@ -35,7 +26,15 @@ Will result in the `indent_size` being set to 4 for Javascript and HTML, but set
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
-Extra (permanent) file extension may be added under user or workspace settings.
+Extra (permanent) file extension may be added under user or workspace settings as shown below. (Defaults shown)
+
+```javascript
+{
+  "beautify.CSSfiles":  ["css"],
+  "beautify.JSfiles":   ["js", "json", "jsbeautifyrc", "jshintrc"],
+  "beautify.HTMLfiles": ["htm", "html"]
+}
+```
 
 Beautify on save can be enables for all, or just specific file types. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
 
@@ -45,12 +44,14 @@ Beautify on save can be enables for all, or just specific file types. Files that
 "beautify.onSave": ["js","json"], //only beautify JavaScript and JSON files on save
 
 "beautify.onSaveIgnore": [
-    "**/minified/**", //don't beautify any file in any 'minified' directory, at any depth
-    "**/*+(.|_|-)min.*", //don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting)
+    //don't beautify any file in any 'minified' directory, at any depth:
+    "**/minified/**", 
+    //don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting):
+    "**/*+(.|_|-)min.*", 
   ]
 ``` 
 
-If you wish to include the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
+If you wish to exclude the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
  
 Embedded version of js-beautify is v1.6.2.
 
