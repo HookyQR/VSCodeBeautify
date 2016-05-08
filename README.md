@@ -61,6 +61,7 @@ Embedded version of js-beautify is v1.6.2.
 ### 0.1.3: 08 May 2016
 * Fix [Issue #14: Full file beautify doubles text on version 1.1.0](https://github.com/HookyQR/VSCodeBeautify/issues/11)
 * Add tests for supported formats and nested settings.
+* Cosmetic changes to readme/icon
 
 ### 0.1.2: 20 Mar 2016
 * Beautify with no .jsbeautifyrc file in path tree will use workspace settings for tabs/spaces indent. [Issue #11](https://github.com/HookyQR/VSCodeBeautify/issues/11)<br>Will use the editor setting if the file being beautified is visible, or workspace/user setting if it is not visible. (Beautify of a non-visible file can be envoked when beautify on save is enabled.)
