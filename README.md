@@ -58,8 +58,11 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
+### 0.1.4: 09 May 2019
+* Fix [Issue #15: Fail to correctly use workspace setting for file types](https://github.com/HookyQR/VSCodeBeautify/issues/14) - introduced in version 0.1.3 (oops)
+
 ### 0.1.3: 08 May 2016
-* Fix [Issue #14: Full file beautify doubles text on version 1.1.0](https://github.com/HookyQR/VSCodeBeautify/issues/11)
+* Fix [Issue #14: Full file beautify doubles text on version 1.1.0](https://github.com/HookyQR/VSCodeBeautify/issues/14)
 * Add tests for supported formats and nested settings.
 * Cosmetic changes to readme/icon
 

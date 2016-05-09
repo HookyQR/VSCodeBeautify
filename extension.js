@@ -64,9 +64,9 @@ const getBeautifyType = function(doc, dontAsk) {
 		});
 		if (vscode.languages.match(matcher, doc)) return "js";
 	}
-	if (cfg.HTMLfiles.includes(type) || cfg.HTMLfiles.includes(type.slice(1))) return 'html';
-	else if (cfg.CSSfiles.includes(type) || cfg.CSSfiles.includes(type.slice(1))) return 'css';
-	else if (cfg.JSfiles.includes(type) || cfg.JSfiles.includes(type.slice(1))) return 'js';
+	if (cfg.HTMLfiles.indexOf(type) >= 0 || (type[0] === '.' && cfg.HTMLfiles.indexOf(type.slice(1)) >= 0)) return 'html';
+	else if (cfg.CSSfiles.indexOf(type) >= 0 || (type[0] === '.' && cfg.CSSfiles.indexOf(type.slice(1)) >= 0)) return 'css';
+	else if (cfg.JSfiles.indexOf(type) >= 0 || (type[0] === '.' && cfg.JSfiles.indexOf(type.slice(1)) >= 0)) return 'js';
 	if (dontAsk) return;
 
 	return new Promise((resolve, reject) => {
