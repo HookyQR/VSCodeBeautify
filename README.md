@@ -58,6 +58,9 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.2.
 
 ## Changes:
+### 0.1.5: 08 May 2016
+* Fix [Issue #18: Duplication](https://github.com/HookyQR/VSCodeBeautify/issues/18) - same cause as #14 (VS Code changed the way ranges are processed)
+
 ### 0.1.4: 09 May 2019
 * Fix [Issue #15: Fail to correctly use workspace setting for file types](https://github.com/HookyQR/VSCodeBeautify/issues/14) - introduced in version 0.1.3 (oops)
 
