@@ -50,31 +50,3 @@ describe('with nested options in .jsbeautify', () => {
 						.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))))));
 
 });
-
-describe('change settings', () =>{
-	beforeEach(() => {
-		let cfg = vscode.workspace.getConfiguration('beautify');
-		cfg.HTMLfiles = ['test'];
-		fs.writeFileSync(path.join(root, '.jsbeautifyrc'),
-		`{
-	"indent_with_tabs": true,
-	"css": {
-		"selector_separator_newline": true
-	},
-	"js": {
-		"break_chained_methods": true,
-		"max_preserve_newlines": 2
-	},
-	"html": {
-		"brace_style": "none",
-		"preserve_newlines": false
-	}
-}`
-	)
-	});
-	it("beautify of 'test'", () => vscode.workspace.openTextDocument(path.join(root, 'test.test'))
-			.then(doc => vscode.window.showTextDocument(doc)
-				.then(() => vscode.commands.executeCommand('HookyQR.beautify')
-					.then(() => expect(doc.getText())
-						.to.be(fs.readFileSync(path.join(root, 'test.1.test'), 'utf8'))))))
-});
