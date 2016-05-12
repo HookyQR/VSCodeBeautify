@@ -6,7 +6,8 @@ let vscode = require('vscode'),
 
 let root = path.join(path.dirname(__filename), 'data');
 
-describe('with empty .jsbeautify', () => {
+describe('with empty .jsbeautify', function() {
+	this.timeout(4000);
 	beforeEach(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
 	
 	['.js', '.html', '.json', '.css'].forEach(extension =>
@@ -24,7 +25,8 @@ describe('with empty .jsbeautify', () => {
 						.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))))));
 });
 
-describe('with nested options in .jsbeautify', () => {
+describe('with nested options in .jsbeautify', function() {
+	this.timeout(4000);
 	beforeEach(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'),
 		`{
 	"indent_with_tabs": true,
