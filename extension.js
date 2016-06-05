@@ -12,7 +12,7 @@ const dumpError = e => {
 
 const dropComments = inText => inText.replace(/(\/\*.*\*\/)|\/\/.*(?:[\r\n]|$)/g, "");
 
-const mergeOpts = function (opts, kind) {
+const mergeOpts = function(opts, kind) {
 	const finOpts = {};
 	for (let a in opts) {
 		if (a !== 'js' && a !== 'html' && a !== 'css') {
@@ -43,7 +43,7 @@ const extMatch = n => ({
 	pattern: n.startsWith("**/") ? n : ("**/" + n)
 });
 
-const getBeautifyType = function (doc, dontAsk) {
+const getBeautifyType = function(doc, dontAsk) {
 	if (doc.languageId === 'javascript') return 'js';
 	if (doc.languageId === 'json') return 'js';
 	if (doc.languageId === 'html') return 'html';
@@ -72,8 +72,8 @@ const getBeautifyType = function (doc, dontAsk) {
 	return new Promise((resolve, reject) => {
 		//Ask what they want to do:
 		return vscode.window.showQuickPick([{
-			label: "JS",
-			description: "Does JavaScript and JSON"
+				label: "JS",
+				description: "Does JavaScript and JSON"
 		}, {
 				label: "CSS"
 			}, {
@@ -82,7 +82,7 @@ const getBeautifyType = function (doc, dontAsk) {
 				matchOnDescription: true,
 				placeHolder: "Couldn't determine type to beautify, please choose."
 			})
-			.then(function (choice) {
+			.then(function(choice) {
 				if (!choice || !choice.label) return reject('no beautify type selected');
 				return resolve(choice.label.toLowerCase());
 			}, () => 0);

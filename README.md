@@ -55,9 +55,12 @@ Beautify on save can be enables for all, or just specific file types. Files that
 
 If you wish to exclude the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
  
-Embedded version of js-beautify is v1.6.2.
+Embedded version of js-beautify is v1.6.3.
 
 ## Changes:
+### 0.1.6: 05 Jun 2016
+* Bump js-beautify version to v1.6.3. Adds: `operator_position`(js), and `space_around_selector_separator`(css)
+
 ### 0.1.5: 08 May 2016
 * Fix [Issue #18: Duplication](https://github.com/HookyQR/VSCodeBeautify/issues/18) - same cause as #14 (VS Code changed the way ranges are processed)
 

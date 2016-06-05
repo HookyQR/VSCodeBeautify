@@ -66,8 +66,7 @@
 					"description": "[collapse-preserve-inline|collapse|expand|end-expand|none] [JS,HTML]",
 					"type": "string",
 					"default": "collapse",
-					"enum": [
-				"collapse", "expand", "end-expand", "none"
+					"enum": ["collapse-preserve-inline", "collapse", "expand", "end-expand", "none"
 			]
 				},
 				"break_chained_methods": {
@@ -126,9 +125,7 @@
 					"description": "[keep|separate|normal] [HTML]",
 					"type": "string",
 					"default": "normal",
-					"enum": [
-			"keep", "separate", "normal"
-		]
+					"enum": ["keep", "separate", "normal"]
 				},
 				"unformatted": {
 					"description": "List of tags that should not be reformatted. [HTML]",
@@ -140,8 +137,7 @@
 						"datalist", "del", "dfn", "em", "embed", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "map",
 						"mark", "math", "meter", "noscript", "object", "output", "progress", "q", "ruby", "s", "samp", "select", "small",
 						"span", "strong", "sub", "sup", "svg", "template", "textarea", "time", "u", "var", "video", "wbr", "text",
-						"acronym", "address", "big", "dt", "ins", "small", "strike", "tt", "pre", "h1", "h2", "h3", "h4", "h5", "h6"
-        ]
+						"acronym", "address", "big", "dt", "ins", "small", "strike", "tt", "pre", "h1", "h2", "h3", "h4", "h5", "h6"]
 				},
 				"extra_liners": {
 					"description": "List of tags that should have an extra newline before them. [HTML]",
@@ -156,13 +152,14 @@
 					"type": "boolean",
 					"default": false
 				},
-				"e4x": {
-					"description": "Pass E4X xml literals through untouched. [JS]",
-					"type": "boolean",
+				"operator_position": {
+					"description": "Move operators to before or after a new line, or keep as is. [JS]",
+					"type": "array",
+					"enum": ["before-newline", "after-newline", "preserve-newline"],
 					"default": false
 				},
-				"newline_between_rules": {
-					"description": "Add a newline between CSS rules. [CSS]",
+				"e4x": {
+					"description": "Pass E4X xml literals through untouched. [JS]",
 					"type": "boolean",
 					"default": false
 				},
@@ -170,6 +167,16 @@
 					"description": "Add a newline between multiple selectors. [CSS]",
 					"type": "boolean",
 					"default": true
+				},
+				"newline_between_rules": {
+					"description": "Add a newline between CSS rules. [CSS]",
+					"type": "boolean",
+					"default": false
+				},
+				"space_around_selector_separator": {
+					"description": "Ensure space around selector separators (>+~). [CSS]",
+					"type": "boolean",
+					"default": false
 				},
 				"indent_handlebars": {
 					"description": "format and indent {{#foo}} and {{/foo}}. [HTML]",
@@ -199,5 +206,4 @@
 			}
 		}
 	]
-
 }
