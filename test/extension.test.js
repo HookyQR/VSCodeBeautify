@@ -56,85 +56,90 @@ describe('with nested options in .jsbeautify', function() {
 				.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))));
 
 });
-describe('saving a file with onSave true', function() {
-	this.slow(350);
-	before(done => {
-		fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": true}');
-		fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
-		setTimeout(done, 400);
+describe('on save', function () {
+	this.timeout(16000);
+	before(()=>fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
+	describe('saving a file with onSave true', function() {
+		this.timeout(4000);
+		this.slow(350);
+		before(done => {
+			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": true}');
+			fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
+			setTimeout(done, 400);
+		});
+		['.js', '.html', '.json', '.css'].forEach(extension => {
+			it('beautify of "' + extension + "'", () => vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+					extension))
+				.then(doc => vscode.window.showTextDocument(doc)
+					.then(editor =>
+						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+							path.join(root, 'in' + extension), 'utf8') + ' ')))
+					.then(() => doc.save())
+					//have to wait for the second save
+					.then(() => new Promise(r => setTimeout(r, 50)))
+					.then(() => expect(doc.getText())
+						.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
+		});
 	});
-	['.js', '.html', '.json', '.css'].forEach(extension => {
-		it('beautify of "' + extension + "'", () => vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-				extension))
-			.then(doc => vscode.window.showTextDocument(doc)
-				.then(editor =>
-					editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-						path.join(root, 'in' + extension), 'utf8') + ' ')))
-				.then(() => doc.save())
-				//have to wait for the second save
-				.then(() => new Promise(r => setTimeout(r, 50)))
-				.then(() => expect(doc.getText())
-					.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
+	describe('saving a file with onSave false', function() {
+		this.timeout(4000);
+		this.slow(350);
+		before(done => {
+			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": false}');
+			//wait for vscodde toread the workspace settings
+			setTimeout(done, 400);
+		});
+		['.js', '.html', '.json', '.css'].forEach(extension => {
+			it('no beautify of "' + extension + "'", () =>
+				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+					extension))
+				.then(doc => vscode.window.showTextDocument(doc)
+					.then(editor =>
+						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+							path.join(root, 'in' + extension), 'utf8') + ' ')))
+					.then(() => doc.save())
+					//have to wait for the second save (to not happen here)
+					.then(() => new Promise(r => setTimeout(r, 50)))
+					.then(() => expect(doc.getText())
+						.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
+		});
 	});
-});
-describe('saving a file with onSave false', function() {
-	this.slow(350);
-	before(done => {
-		fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": false}');
-		fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
-		//wait for vscodde toread the workspace settings
-		setTimeout(done, 400);
-	});
-	['.js', '.html', '.json', '.css'].forEach(extension => {
-		it('no beautify of "' + extension + "'", () =>
-			vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-				extension))
-			.then(doc => vscode.window.showTextDocument(doc)
-				.then(editor =>
-					editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-						path.join(root, 'in' + extension), 'utf8') + ' ')))
-				.then(() => doc.save())
-				//have to wait for the second save (to not happen here)
-				.then(() => new Promise(r => setTimeout(r, 50)))
-				.then(() => expect(doc.getText())
-					.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
-	});
-});
 
-describe('saving a file with onSave specific', function() {
-	this.slow(350);
-	before(done => {
-		fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": ["js","html"]}');
-		fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
-		//wait for vscodde toread the workspace settings
-		setTimeout(done, 400);
-	});
-	['.js', '.html'].forEach(extension => {
-		it('no beautify of "' + extension + "'", () =>
-			vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-				extension))
-			.then(doc => vscode.window.showTextDocument(doc)
-				.then(editor =>
-					editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-						path.join(root, 'in' + extension), 'utf8') + ' ')))
-				.then(() => doc.save())
-				//have to wait for the second save
-				.then(() => new Promise(r => setTimeout(r, 50)))
-				.then(() => expect(doc.getText())
-					.to.eql(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
-	});
-	['.json', '.css'].forEach(extension => {
-		it('no beautify of "' + extension + "'", () =>
-			vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-				extension))
-			.then(doc => vscode.window.showTextDocument(doc)
-				.then(editor =>
-					editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-						path.join(root, 'in' + extension), 'utf8') + ' ')))
-				.then(() => doc.save())
-				//have to wait for the second save (to not happen here)
-				.then(() => new Promise(r => setTimeout(r, 50)))
-				.then(() => expect(doc.getText())
-					.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
+	describe('saving a file with onSave specific', function() {
+		this.timeout(4000);
+		this.slow(350);
+		before(done => {
+			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": ["js","html"]}');
+			//wait for vscodde toread the workspace settings
+			setTimeout(done, 400);
+		});
+		['.js', '.html'].forEach(extension => {
+			it('no beautify of "' + extension + "'", () =>
+				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+					extension))
+				.then(doc => vscode.window.showTextDocument(doc)
+					.then(editor =>
+						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+							path.join(root, 'in' + extension), 'utf8') + ' ')))
+					.then(() => doc.save())
+					//have to wait for the second save
+					.then(() => new Promise(r => setTimeout(r, 50)))
+					.then(() => expect(doc.getText())
+						.to.eql(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
+		});
+		['.json', '.css'].forEach(extension => {
+			it('no beautify of "' + extension + "'", () =>
+				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+					extension))
+				.then(doc => vscode.window.showTextDocument(doc)
+					.then(editor =>
+						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+							path.join(root, 'in' + extension), 'utf8') + ' ')))
+					.then(() => doc.save())
+					//have to wait for the second save (to not happen here)
+					.then(() => new Promise(r => setTimeout(r, 50)))
+					.then(() => expect(doc.getText())
+						.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
+		});
 	});
 });
