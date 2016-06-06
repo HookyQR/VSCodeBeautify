@@ -61,7 +61,7 @@ describe('saving a file with onSave true', function() {
 	before(done => {
 		fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": true}');
 		fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
-		setTimeout(done, 200);
+		setTimeout(done, 400);
 	});
 	['.js', '.html', '.json', '.css'].forEach(extension => {
 		it('beautify of "' + extension + "'", () => vscode.workspace.openTextDocument(path.join(root, 'in_out' +
@@ -83,7 +83,7 @@ describe('saving a file with onSave false', function() {
 		fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": false}');
 		fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
 		//wait for vscodde toread the workspace settings
-		setTimeout(done, 200);
+		setTimeout(done, 400);
 	});
 	['.js', '.html', '.json', '.css'].forEach(extension => {
 		it('no beautify of "' + extension + "'", () =>
@@ -107,7 +107,7 @@ describe('saving a file with onSave specific', function() {
 		fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": ["js","html"]}');
 		fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
 		//wait for vscodde toread the workspace settings
-		setTimeout(done, 200);
+		setTimeout(done, 400);
 	});
 	['.js', '.html'].forEach(extension => {
 		it('no beautify of "' + extension + "'", () =>
