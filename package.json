@@ -2,18 +2,13 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
 	},
-	"categories": [
-		"Other",
-		"Languages"
-	],
-	"activationEvents": [
-		"*"
-	],
+	"categories": ["Other", "Languages"],
+	"activationEvents": ["*"],
 	"icon": "icon.svg",
 	"galleryBanner": {
 		"color": "#e8e030",

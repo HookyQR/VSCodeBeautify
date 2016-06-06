@@ -58,6 +58,10 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.3.
 
 ## Changes:
+### 0.1.7: 06 Jun 2016
+* Fix beautify on save for JSON
+* Improve tests
+
 ### 0.1.6: 05 Jun 2016
 * Bump js-beautify version to v1.6.3. Adds: `operator_position`(js), and `space_around_selector_separator`(css)
 

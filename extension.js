@@ -153,7 +153,6 @@ function rangeEditByType(type) {
 }
 
 function beautifyOnSave(doc) {
-
 	if (doc.beautified) {
 		delete doc.beautified;
 		return;
@@ -174,11 +173,12 @@ function beautifyOnSave(doc) {
 	let refType = doc.languageId;
 
 	if (refType === 'javascript') refType = 'js';
-	if (['json', 'js', 'html', 'css'].indexOf(refType) === -1) {
+	if (['js', 'json', 'html', 'css'].indexOf(refType) === -1) {
 		refType = getBeautifyType(doc, true);
 		if (!refType) return;
 	}
 	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
+		if (refType === 'json') refType = 'js';
 		let range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
 		range = doc.validateRange(range);
 		//determine a default options
@@ -189,7 +189,7 @@ function beautifyOnSave(doc) {
 				return (defaultOptions = optionsFromFormat(editor.options));
 			}
 		});
-		beautifyDoc(doc, range, defaultOptions, refType)
+		return beautifyDoc(doc, range, defaultOptions, refType)
 			.then(newText => {
 				let we = new vscode.WorkspaceEdit();
 				we.replace(doc.uri, range, newText);
