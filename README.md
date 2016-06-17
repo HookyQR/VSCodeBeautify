@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify)
 
-Beautify `javascript`, `JSON`, `CSS`, and `HTML` in Visual Studio Code.
+Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
 VS Code uses js-beautify internally, bit it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify`.
 
@@ -32,7 +32,7 @@ Extra (permanent) file extension may be added under user or workspace settings a
 
 ```javascript
 {
-  "beautify.CSSfiles":  ["css"],
+  "beautify.CSSfiles":  ["css", "scss"],
   "beautify.JSfiles":   ["js", "json", "jsbeautifyrc", "jshintrc"],
   "beautify.HTMLfiles": ["htm", "html"]
 }
@@ -58,6 +58,9 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.3.
 
 ## Changes:
+### 0.1.8: 17 Jun 2016
+* Add sass support explicitly
+
 ### 0.1.7: 06 Jun 2016
 * Fix beautify on save for JSON
 * Improve tests
@@ -103,7 +106,6 @@ Embedded version of js-beautify is v1.6.3.
 ### 0.0.6: 27 Dec 2015
 * Added allowing sub elements in config. Fixes [Issue #3: Allow separation of settings for html, css and js options like sublime.](https://github.com/HookyQR/VSCodeBeautify/issues/3)
 * Changed embeded schema to allow the type sub elements.
-
 
 ### 0.0.5: 24 Dec 2015
 * Schema published at http://json.schemastore.org/jsbeautifyrc.

@@ -24,11 +24,12 @@
 		<use xlink:href="#bracket"/>
 		<g transform="matrix(-1 0 0 1 124 0)"><use xlink:href="#bracket"/></g>
 	</g>
-	<g text-anchor="middle" font-size="20" font-weight="bold" font-family="monospace">
-	<text x="62" y="44" >js</text>
-	<text x="62" y="64" >json</text>
-	<text x="62" y="84" >html</text>
-	<text x="62" y="104" >css</text>
+	<g text-anchor="middle" font-size="16" font-weight="bold" font-family="monospace">
+	<text x="62" y="40" >js</text>
+	<text x="62" y="56" >json</text>
+	<text x="62" y="72" >html</text>
+	<text x="62" y="88" >css</text>
+	<text x="62" y="104" >scss</text>
 	</g>
 	<g transform="matrix(0.75 0 0 0.75 104 30)">
 		<g transform="rotate(0)"><use xlink:href="#pet"/></g>

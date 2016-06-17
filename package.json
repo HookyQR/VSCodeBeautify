@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.1.7",
+	"version": "0.1.8",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -37,7 +37,7 @@
 				"beautify.onSave": {
 					"type": ["array", "boolean"],
 					"default": false,
-					"description": "Automatically beautify files on save. Set to true to run for JSON, javascript, html and css. Use array to set indiviaul types to beautify: [\"js\", \"json\", \"html\", \"css\"]",
+					"description": "Automatically beautify files on save. Set to true to run for JSON, javascript, html, css and sass. Use array to set indiviaul types to beautify: [\"js\", \"json\", \"html\", \"css\", \"sass\"]",
 					"items": {
 						"type": "string",
 						"enum": ["js", "json", "html", "css"],
@@ -61,7 +61,7 @@
 				},
 				"beautify.CSSfiles": {
 					"type": "array",
-					"default": ["css"],
+					"default": ["css", "scss"],
 					"description": "File extensions that can be beautified as CSS."
 				}
 			}

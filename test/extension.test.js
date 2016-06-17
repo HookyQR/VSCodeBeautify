@@ -20,12 +20,12 @@ describe('with empty .jsbeautify', function() {
 	this.timeout(4000);
 	this.slow(400);
 	before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
-	['.js', '.html', '.json', '.css'].forEach(extension =>
+	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
 			.then(txt => expect(txt)
 				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
 
-	['.html', '.css'].forEach(extension =>
+	['.html', '.css', '.scss'].forEach(extension =>
 		it('format of "' + extension + "'", () => getFormattedText(path.join(root, 'in' + extension))
 			.then(txt => expect(txt)
 				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
@@ -50,13 +50,14 @@ describe('with nested options in .jsbeautify', function() {
 			}
 		}`
 	));
-	['.js', '.html', '.json', '.css'].forEach(extension =>
+	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
 			.then(txt => expect(txt)
 				.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))));
 
 });
-/* On save tests don't work on CI
+/* 
+// On save tests don't work on CI
 describe('on save', function () {
 	this.timeout(16000);
 	before(()=>fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
@@ -129,7 +130,7 @@ describe('on save', function () {
 					.then(() => expect(doc.getText())
 						.to.eql(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
 		});
-		['.json', '.css'].forEach(extension => {
+		['.json', '.css', '.scss'].forEach(extension => {
 			it('no beautify of "' + extension + "'", () =>
 				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
 					extension))
@@ -145,4 +146,4 @@ describe('on save', function () {
 		});
 	});
 });
-*/
+// */

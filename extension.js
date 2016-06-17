@@ -48,6 +48,7 @@ const getBeautifyType = function(doc, dontAsk) {
 	if (doc.languageId === 'json') return 'js';
 	if (doc.languageId === 'html') return 'html';
 	if (doc.languageId === 'css') return 'css';
+	if (doc.languageId === 'scss') return 'css';
 
 	const type = doc.isUntitled ? "" : path.extname(doc.fileName)
 		.toLowerCase();
@@ -173,12 +174,13 @@ function beautifyOnSave(doc) {
 	let refType = doc.languageId;
 
 	if (refType === 'javascript') refType = 'js';
-	if (['js', 'json', 'html', 'css'].indexOf(refType) === -1) {
+	if (['js', 'json', 'html', 'css', 'sass'].indexOf(refType) === -1) {
 		refType = getBeautifyType(doc, true);
 		if (!refType) return;
 	}
 	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
 		if (refType === 'json') refType = 'js';
+		if (refType === 'sass') refType = 'css';
 		let range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
 		range = doc.validateRange(range);
 		//determine a default options
@@ -215,14 +217,16 @@ function activate(context) {
 			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
 
-	context.subscriptions.push(
-		vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
-			provideDocumentRangeFormattingEdits: rangeEditByType('html')
-		}));
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
+		provideDocumentRangeFormattingEdits: rangeEditByType('html')
+	}));
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('css', {
 		provideDocumentRangeFormattingEdits: rangeEditByType('css')
 	}));
-	//VS Code won't allow the formatters to run for json, or js. The inbuild
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('sass', {
+		provideDocumentRangeFormattingEdits: rangeEditByType('css')
+	}));
+	//VS Code won't allow the formatters to run for json, or js. The inbuilt
 	//js-beautify runs instead
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('javascript', {
 		provideDocumentRangeFormattingEdits: rangeEditByType('js')
