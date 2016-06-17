@@ -1,6 +1,7 @@
 # js-beautify for VS Code 
 
 [![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify)
+[![VS Code Marketplace](http://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](http://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Installs](http://vsmarketplacebadge.apphb.com/installs/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
 
 Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
