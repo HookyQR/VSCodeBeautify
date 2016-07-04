@@ -138,11 +138,12 @@ function extendRange(doc, rng) {
 }
 
 function optionsFromFormat(formattingOptions) {
-	return {
+	const JSBeautifyOptions = vscode.workspace.getConfiguration('beautify').JSBeautifyOptions;
+	return Object.assign({
 		indent_with_tabs: !formattingOptions.insertSpaces,
 		indent_size: formattingOptions.tabSize,
 		indent_char: ' '
-	};
+	}, JSBeautifyOptions);
 }
 
 function rangeEditByType(type) {
