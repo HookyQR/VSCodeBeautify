@@ -45,6 +45,7 @@ const extMatch = n => ({
 
 const getBeautifyType = function(doc, dontAsk) {
 	if (doc.languageId === 'javascript') return 'js';
+	if (doc.languageId === 'typescript') return 'js';
 	if (doc.languageId === 'json') return 'js';
 	if (doc.languageId === 'html') return 'html';
 	if (doc.languageId === 'css') return 'css';
@@ -232,6 +233,9 @@ function activate(context) {
 		provideDocumentRangeFormattingEdits: rangeEditByType('js')
 	}));
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('json', {
+		provideDocumentRangeFormattingEdits: rangeEditByType('js')
+	}));
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('typescript', {
 		provideDocumentRangeFormattingEdits: rangeEditByType('js')
 	}));
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
