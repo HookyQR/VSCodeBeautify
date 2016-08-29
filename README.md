@@ -6,7 +6,7 @@
 
 Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
-VS Code uses js-beautify internally, bit it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify`.
+VS Code uses js-beautify internally, but it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify`.
 
 This package includes hints when editing your `.jsbeautifyrc`. Only the first file found will be used. If the format is bad, the default js-beautify settings will be used, but a warning will be issued to let you know. Comments in your settings file are acceptable (they're removed before the file is parsed).
 
@@ -30,7 +30,7 @@ Will result in the `indent_size` being set to 4 for Javascript and HTML, but set
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
-Extra (permanent) file extension may be added under user or workspace settings as shown below. (Defaults shown)
+Extra (permanent) file extensions may be added under user or workspace settings as shown below. (Defaults shown)
 
 ```javascript
 {
@@ -40,7 +40,7 @@ Extra (permanent) file extension may be added under user or workspace settings a
 }
 ```
 
-Beautify on save can be enables for all, or just specific file types. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
+Beautify on save can be enabled for all, or just specific file types. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
 
 ```javascript
 "beautify.onSave": true, // beautify HTML, CSS, JavaScript, and JSON on save
@@ -55,7 +55,7 @@ Beautify on save can be enables for all, or just specific file types. Files that
   ]
 ``` 
 
-If you wish to exclude the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
+If you wish to exclude the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore setting does not stop a manual execution of beautify working.
  
 Embedded version of js-beautify is v1.6.3.
 
@@ -107,7 +107,7 @@ Embedded version of js-beautify is v1.6.3.
 
 ### 0.0.6: 27 Dec 2015
 * Added allowing sub elements in config. Fixes [Issue #3: Allow separation of settings for html, css and js options like sublime.](https://github.com/HookyQR/VSCodeBeautify/issues/3)
-* Changed embeded schema to allow the type sub elements.
+* Changed embedded schema to allow the type sub elements.
 
 ### 0.0.5: 24 Dec 2015
 * Schema published at http://json.schemastore.org/jsbeautifyrc.
