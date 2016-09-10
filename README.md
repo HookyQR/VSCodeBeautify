@@ -60,7 +60,10 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
-### 0.1.8: 10 Sep 2016
+### 0.1.9: 10 Sep 2016
+* Fix module structure (again)
+
+### 0.1.9: 10 Sep 2016
 * Bump js-beautify version
 
 ### 0.1.8: 17 Jun 2016
