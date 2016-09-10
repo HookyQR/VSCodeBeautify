@@ -1,4 +1,4 @@
-# js-beautify for VS Code 
+# js-beautify for VS Code
 
 [![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify)
 [![Licence](https://img.shields.io/github/license/HookyQR/VSCodeBeautify.svg)](https://github.com/HookyQR/VSCodeBeautify)
@@ -49,17 +49,20 @@ Beautify on save can be enables for all, or just specific file types. Files that
 
 "beautify.onSaveIgnore": [
     //don't beautify any file in any 'minified' directory, at any depth:
-    "**/minified/**", 
+    "**/minified/**",
     //don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting):
-    "**/*+(.|_|-)min.*", 
+    "**/*+(.|_|-)min.*",
   ]
-``` 
+```
 
 If you wish to exclude the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
- 
-Embedded version of js-beautify is v1.6.3.
+
+Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
+### 0.1.8: 10 Sep 2016
+* Bump js-beautify version
+
 ### 0.1.8: 17 Jun 2016
 * Add sass support explicitly
 

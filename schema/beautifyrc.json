@@ -66,8 +66,7 @@
 					"description": "[collapse-preserve-inline|collapse|expand|end-expand|none] [JS,HTML]",
 					"type": "string",
 					"default": "collapse",
-					"enum": ["collapse-preserve-inline", "collapse", "expand", "end-expand", "none"
-			]
+					"enum": ["collapse-preserve-inline", "collapse", "expand", "end-expand", "none"]
 				},
 				"break_chained_methods": {
 					"description": "Break chained method calls across subsequent lines. [JS]",
@@ -174,9 +173,24 @@
 					"default": false
 				},
 				"space_around_selector_separator": {
+					"description": "Ensure space around selector separators (>+~). (Deprecated: use space_around_combinator) [CSS]",
+					"type": "boolean",
+					"default": false
+				},
+				"space_around_combinator": {
 					"description": "Ensure space around selector separators (>+~). [CSS]",
 					"type": "boolean",
 					"default": false
+				},
+				"indent_body_inner_html": {
+					"description": "Indent elements within html <body> element. [HTML]",
+					"type": "boolean",
+					"default": true
+				},
+				"indent_head_inner_html": {
+					"description": "Indent elements within html <head> element. [HTML]",
+					"type": "boolean",
+					"default": true
 				},
 				"indent_handlebars": {
 					"description": "format and indent {{#foo}} and {{/foo}}. [HTML]",

@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -68,13 +68,13 @@
 		}
 	},
 	"dependencies": {
-		"js-beautify": "^1.6.3",
+		"js-beautify": "^1.6.4",
 		"minimatch": "^3.0.0"
 	},
 	"devDependencies": {
-		"vscode": "^0.11.x",
-		"mocha": "^2.4.5",
-		"expect.js": "~0.3.1"
+		"mocha": "^3.0.0",
+		"expect.js": "~0.3.1",
+		"vscode": "^0.11.18"
 	},
 	"scripts": {
 		"test": "node ./node_modules/vscode/bin/test"
