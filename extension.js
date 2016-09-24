@@ -162,12 +162,12 @@ function optionsFromVSCode(doc, formattingOptions, type) {
 	if (type === 'html') {
 		const html = vscode.workspace.getConfiguration('html.format');
 		options.end_with_newline = html.endWithNewline;
-		options.extra_liners = html.extraLiners.split(',').map(s=>s.trim());
+		options.extra_liners = (html.extraLiners || "head, body, /html").split(',').map(s=>s.trim());
 		options.indent_handlebars = html.indentHandlebars;
 		options.indent_inner_html = html.indentInnerHtml;
 		options.max_preserve_newlines = html.maxPreserveNewLines;
 		options.preserve_newlines = html.preserveNewLines;
-		options.unformatted = html.unformatted.split(',').map(s=>s.trim());
+		options.unformatted = (html.unformatted||"a, abbr, acronym, b, bdo, big, br, button, cite, code, dfn, em, i, img, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var").split(',').map(s=>s.trim());
 		options.wrap_line_length = html.wrapLineLength;
 	}
 	const js = vscode.workspace.getConfiguration('javascript.format');
