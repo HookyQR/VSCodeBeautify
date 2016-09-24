@@ -83,7 +83,8 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
-### 0.2.0: 24 Sep 2016
+### 0.2.1: 24 Sep 2016
+* Add non-null defaults for VS Code settings
 * Use VS Code format settings as a fallback
 * Enable `.jsbeautifyrc` in home drive as a global default
 * Default format command **(Alt+Shift+F)** will now work for javascript files (for whole document formatting)
