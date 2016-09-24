@@ -2,6 +2,7 @@
 const vscode = require('vscode'),
 	beautify = require('js-beautify'),
 	path = require('path'),
+	os = require('os'),
 	fs = require('fs'),
 	minimatch = require('minimatch');
 
@@ -90,14 +91,16 @@ const getBeautifyType = function(doc, dontAsk) {
 	});
 };
 
-function getConfigFor(doc, defaultOptions, type) {
-
+function getConfigFor(doc, type, formattingOptions) {
 	let base = vscode.workspace.rootPath;
-
+	const defaultOptions = optionsFromVSCode(doc, formattingOptions, type);
+  let configFile;
 	if (!doc.isUntitled) base = path.dirname(doc.fileName);
-	if (!base) return Promise.resolve(defaultOptions);
-	let configFile = findRecursive(base, '.jsbeautifyrc');
-	if (!configFile) return Promise.resolve(defaultOptions);
+	if (base) configFile = findRecursive(base, '.jsbeautifyrc');
+	if (!configFile) {
+		configFile = path.join(os.homedir(), '.jsbeautifyrc');
+		if (!fs.existsSync(configFile)) return Promise.resolve(defaultOptions);
+	}
 	return new Promise(resolve => {
 		fs.readFile(configFile, 'utf8', (e, d) => {
 			let opts = defaultOptions;
@@ -114,14 +117,14 @@ function getConfigFor(doc, defaultOptions, type) {
 	});
 }
 
-function beautifyDoc(doc, range, defaultOptions, type) {
+function beautifyDoc(doc, range, type, formattingOptions) {
 	if (!doc) {
 		vscode.window.showInformationMessage(
 			"Beautify can't get the file information because the editor won't supply it. (File probably too large)");
 		throw "";
 	}
 	return Promise.resolve(type ? type : getBeautifyType(doc))
-		.then(type => getConfigFor(doc, defaultOptions, type)
+		.then(type => getConfigFor(doc, type, formattingOptions)
 			.then(config => {
 				const original = doc.getText(doc.validateRange(range));
 				return beautify[type](original, config);
@@ -133,22 +136,58 @@ function documentEdit(range, newText) {
 }
 
 function extendRange(doc, rng) {
-	const r = new vscode.Range(new vscode.Position(rng.start.line, 0), rng.end.translate(0, Number.MAX_VALUE));
+	const r = new vscode.Range(new vscode.Position(rng.start.line, 0), rng.end.translate(0, Infinity));
 	return doc.validateRange(r);
 }
 
-function optionsFromFormat(formattingOptions) {
-	return {
+function fullRange(doc) {
+	return doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
+}
+
+function optionsFromVSCode(doc, formattingOptions, type) {
+	if (!formattingOptions) {
+		formattingOptions = vscode.workspace.getConfiguration('editor');
+		//if this document is open, use the settings from that window
+		vscode.window.visibleTextEditors.some(editor => {
+			if (editor.document && editor.document.fileName === doc.fileName) {
+				return (formattingOptions = editor.options);
+			}
+		});
+	}
+	const options = {
 		indent_with_tabs: !formattingOptions.insertSpaces,
 		indent_size: formattingOptions.tabSize,
 		indent_char: ' '
+	};
+	if (type === 'html') {
+		const html = vscode.workspace.getConfiguration('html.format');
+		options.end_with_newline = html.endWithNewline;
+		options.extra_liners = html.extraLiners.split(',').map(s=>s.trim());
+		options.indent_handlebars = html.indentHandlebars;
+		options.indent_inner_html = html.indentInnerHtml;
+		options.max_preserve_newlines = html.maxPreserveNewLines;
+		options.preserve_newlines = html.preserveNewLines;
+		options.unformatted = html.unformatted.split(',').map(s=>s.trim());
+		options.wrap_line_length = html.wrapLineLength;
+	}
+	const js = vscode.workspace.getConfiguration('javascript.format');
+	options.space_after_anon_function = js.insertSpaceAfterFunctionKeywordForAnonymousFunctions;
+	options.space_in_paren = js.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis;
+	return options;
+}
+
+function fullEditByType(type) {
+	return (doc, formattingOptions) => {
+		const rng = fullRange(doc);
+		return beautifyDoc(doc, rng, type, formattingOptions)
+			.then(newText => documentEdit(rng, newText), dumpError);
 	};
 }
 
 function rangeEditByType(type) {
 	return (doc, rng, formattingOptions) => {
 		rng = extendRange(doc, rng);
-		return beautifyDoc(doc, rng, optionsFromFormat(formattingOptions), type)
+		return beautifyDoc(doc, rng, type, formattingOptions)
 			.then(newText => documentEdit(rng, newText), dumpError);
 	};
 }
@@ -181,17 +220,10 @@ function beautifyOnSave(doc) {
 	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
 		if (refType === 'json') refType = 'js';
 		if (refType === 'sass') refType = 'css';
-		let range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
-		range = doc.validateRange(range);
+		let range = fullRange(doc);
 		//determine a default options
-		let defaultOptions = optionsFromFormat(vscode.workspace.getConfiguration('editor'));
-		//if this document is open, use the settings from that window
-		vscode.window.visibleTextEditors.some(editor => {
-			if (editor.document && editor.document.fileName === doc.fileName) {
-				return (defaultOptions = optionsFromFormat(editor.options));
-			}
-		});
-		return beautifyDoc(doc, range, defaultOptions, refType)
+
+		return beautifyDoc(doc, range, refType)
 			.then(newText => {
 				let we = new vscode.WorkspaceEdit();
 				we.replace(doc.uri, range, newText);
@@ -209,29 +241,28 @@ function activate(context) {
 		const active = vscode.window.activeTextEditor;
 		if (!active) return;
 		if (!active.document) return;
-		let range = new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
+		let range = fullRange(active.document);
 
-		range = active.document.validateRange(range);
-
-		return beautifyDoc(active.document, range, optionsFromFormat(active.options))
+		return beautifyDoc(active.document, range)
 			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
 
+	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('html', {
+		provideDocumentFormattingEdits: fullEditByType('html')
+	}));
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
 		provideDocumentRangeFormattingEdits: rangeEditByType('html')
 	}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('css', {
+	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(['css', 'sass'], {
+		provideDocumentFormattingEdits: fullEditByType('css')
+	}));
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(['css', 'sass'], {
 		provideDocumentRangeFormattingEdits: rangeEditByType('css')
 	}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('sass', {
-		provideDocumentRangeFormattingEdits: rangeEditByType('css')
+	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(['javascript', 'json'], {
+		provideDocumentFormattingEdits: fullEditByType('js')
 	}));
-	//VS Code won't allow the formatters to run for json, or js. The inbuilt
-	//js-beautify runs instead
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('javascript', {
-		provideDocumentRangeFormattingEdits: rangeEditByType('js')
-	}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('json', {
+	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(['javascript', 'json'], {
 		provideDocumentRangeFormattingEdits: rangeEditByType('js')
 	}));
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);

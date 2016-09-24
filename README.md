@@ -8,7 +8,30 @@ Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
 VS Code uses js-beautify internally, but it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify`.
 
-This package includes hints when editing your `.jsbeautifyrc`. Only the first file found will be used. If the format is bad, the default js-beautify settings will be used, but a warning will be issued to let you know. Comments in your settings file are acceptable (they're removed before the file is parsed).
+Only the first file found will be used. If the format is bad, the default js-beautify settings will be used, but a warning will be issued to let you know. Comments in your settings file are acceptable (they're removed before the file is parsed).
+
+There are two fallbacks:
+1. A `.jsbeautifyrc` in your home directory. If there isn't one, then
+2. A translation of the format settings for `html`, `js` in your user/workspace setttings, as well as the editor settings related to tab size and type.
+
+The mappings are follows:
+
+.jsbeautifyrc setting         | VS Code setting
+---                           | ---
+tab_size                      | editor.tabSize
+indent_with_tabs&nbsp;_(inverted)_ | editor.insertSpaces
+wrap_line_length              | html.format.wrapLineLength
+unformatted                   | html.format.unformatted
+indent_inner_html             | html.format.indentInnerHtml
+preserve_newlines             | html.format.preserveNewLines
+max_preserve_newlines         | html.format.maxPreserveNewLines
+indent_handlebars             | html.format.indentHandlebars
+end_with_newline              | html.format.endWithNewline
+extra_liners                  | html.format.extraLiners
+space_after_anon_function | javascript.format<br> .insertSpaceAfterFunctionKeywordForAnonymousFunctions
+space_in_paren | javascript.format<br> .insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis
+
+Note that the `html.format` settings will ONLY be used when the document is html.
 
 Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
 
@@ -60,6 +83,11 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
+### 0.2.0: 24 Sep 2016
+* Use VS Code format settings as a fallback
+* Enable `.jsbeautifyrc` in home drive as a global default
+* Default format command **(Alt+Shift+F)** will now work for javascript files (for whole document formatting)
+
 ### 0.1.10: 10 Sep 2016
 * Fix module structure (again)
 
