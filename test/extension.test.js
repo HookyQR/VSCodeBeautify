@@ -4,6 +4,8 @@ const vscode = require('vscode'),
 	path = require('path'),
 	fs = require('fs');
 
+const dropR = txt => txt.replace(/\r/g,'');
+
 const getBeautifiedText = name => vscode.workspace.openTextDocument(name)
 	.then(doc => vscode.window.showTextDocument(doc)
 		.then(() => vscode.commands.executeCommand('HookyQR.beautify'))
@@ -15,19 +17,23 @@ const getFormattedText = name => vscode.workspace.openTextDocument(name)
 		.then(() => doc.getText()));
 
 const root = path.join(path.dirname(__filename), 'data', '');
-
+describe('failure', function() {
+	it('fails', function() {
+		expect(1).to.eql(2);
+	})
+})
 describe('with empty .jsbeautify', function() {
 	this.timeout(4000);
 	this.slow(400);
 	before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
 	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
+			.then(txt => expect(dropR(txt))
 				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
 
 	['.html', '.css', '.scss'].forEach(extension =>
 		it('format of "' + extension + "'", () => getFormattedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
+			.then(txt => expect(dropR(txt))
 				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
 });
 
@@ -52,7 +58,7 @@ describe('with nested options in .jsbeautify', function() {
 	));
 	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
+			.then(txt => expect(dropR(txt))
 				.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))));
 
 });

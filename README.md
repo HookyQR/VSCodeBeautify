@@ -1,6 +1,7 @@
 # js-beautify for VS Code
 
 [![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify)
+[![Build status](https://ci.appveyor.com/api/projects/status/mu73cgat3r1t0weu?svg=true)](https://ci.appveyor.com/project/HookyQR/vscodebeautify)
 [![Licence](https://img.shields.io/github/license/HookyQR/VSCodeBeautify.svg)](https://github.com/HookyQR/VSCodeBeautify)
 [![VS Code Marketplace](http://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](http://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Installs](http://vsmarketplacebadge.apphb.com/installs/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
 
