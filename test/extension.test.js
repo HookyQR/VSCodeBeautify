@@ -17,11 +17,7 @@ const getFormattedText = name => vscode.workspace.openTextDocument(name)
 		.then(() => doc.getText()));
 
 const root = path.join(path.dirname(__filename), 'data', '');
-describe('failure', function() {
-	it('fails', function() {
-		expect(1).to.eql(2);
-	})
-})
+
 describe('with empty .jsbeautify', function() {
 	this.timeout(4000);
 	this.slow(400);
