@@ -1,1 +1,1 @@
-{"beautify.onSave": ["js","html"]}
+{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "\n", "editor.insertSpaces": false}
