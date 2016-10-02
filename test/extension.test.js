@@ -15,16 +15,16 @@ const setupConfigs = (beautify, editor, code, done) => {
 	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify);
 	fs.writeFileSync(path.join(root, '.editorconfig'), editor);
 	fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), code);
-	setTimeout(done, 20);
+	setTimeout(done, 50);
 };
 
 const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => vscode.window.showTextDocument(doc)
+		.then(() => new Promise(resolve => setTimeout(resolve, 150)))
 		// the existance of this setting sucks
 		.then(() => vscode.window.activeTextEditor.edit(te => te.setEndOfLine(eol)))
-		.then(() => new Promise(resolve => setTimeout(resolve, 5)))
 		.then(() => vscode.commands.executeCommand(cmd))
-		.then(() => new Promise(resolve => setTimeout(resolve, 5)))
+		.then(() => new Promise(resolve => setTimeout(resolve, 150)))
 		.then(() => doc.getText())
 		.then(txt => vscode.commands.executeCommand('workbench.action.closeAllEditors')
 			.then(() => txt)));
@@ -53,7 +53,10 @@ function formatEach(fmt) {
 }
 
 describe("VS code beautify", function() {
-	before("Clean files", () => testData.clean(root));
+	before(() => {
+		testData.clean(root);
+		vscode.commands.executeCommand("workbench.action.toggleSidebarVisibility");
+	});
 	let eolstr = {
 		"\\n": ["lf", vscode.EndOfLine.LF],
 		"\\r\\n": ["crlf", vscode.EndOfLine.CRLF]
