@@ -126,6 +126,8 @@ module.exports = (doc, type, formattingOptions) => {
 		configFile = path.join(os.homedir(), '.jsbeautifyrc');
 		if (!fs.existsSync(configFile)) return Promise.resolve(opts);
 	}
+	console.log("Post EC:");
+	console.log("",opts);
 	return new Promise(resolve => {
 		fs.readFile(configFile, 'utf8', (e, d) => {
 			if (!d) return resolve(opts);
