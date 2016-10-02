@@ -5,26 +5,40 @@ const vscode = require('vscode'),
 	fs = require('fs'),
 	testData = require('./testData');
 
-const slow = 800;
+const slow = 1200;
 const root = path.join(path.dirname(__filename), 'data', '');
 
-const setupConfigs = (beautify, editor, code, done) => {
-	beautify = beautify || "";
+const lag = () => new Promise(resolve => setTimeout(resolve, 200));
+
+const setupConfigs = (beautify, editor, code) => {
 	editor = editor || "";
 	code = code || "{}";
-	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify);
+	const codeSettings = {
+		"editor.detectIndentation": false,
+		"telemetry.enableCrashReporter": false,
+		"telemetry.enableTelemetry": false,
+		"css.validate": false,
+		"scss.validate": false,
+		"javascript.validate.enable": false,
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4
+	};
+	for (let a in code) {
+		codeSettings[a] = code[a];
+	}
+	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify ? JSON.stringify(beautify) : '');
 	fs.writeFileSync(path.join(root, '.editorconfig'), editor);
-	fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), code);
-	setTimeout(done, 100);
+	fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), JSON.stringify(codeSettings));
+	return lag();
 };
 
 const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => vscode.window.showTextDocument(doc)
-		.then(() => new Promise(resolve => setTimeout(resolve, 200)))
+		.then(lag)
 		// the existance of this setting sucks
 		.then(() => vscode.window.activeTextEditor.edit(te => te.setEndOfLine(eol)))
 		.then(() => vscode.commands.executeCommand(cmd))
-		.then(() => new Promise(resolve => setTimeout(resolve, 200)))
+		.then(lag)
 		.then(() => doc.getText())
 		.then(txt => vscode.commands.executeCommand('workbench.action.closeAllEditors')
 			.then(() => txt)));
@@ -64,41 +78,50 @@ describe("VS code beautify", function() {
 	Object.keys(eolstr)
 		.forEach(eol => {
 			let config = {
-				jsbeautify: [`{"eol":"${eol}"}`, "",
-					'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
-				editorconfig: ["", `root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`,
-					'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'
-					],
-				'vs code': ["", "",
-					`{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "${eol}", "editor.tabSize": 4}`
-					]
+				jsbeautify: [{
+					eol: eol
+					}, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`, {}],
+				editorconfig: [null,
+					`root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`,
+					{
+						"beautify.editorconfig": true
+					}],
+				'vs code': [null, "", {}]
 			};
 			Object.keys(config)
 				.forEach(cfg => {
 					context(`with ${cfg} cr set to '${eol}'`, function() {
-						this.timeout(slow * testData.types.length + 1000);
+						this.timeout(slow * testData.types.length);
 						this.slow(slow);
-						before(done => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2], done));
+						before(() => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2]));
 						beautifyEach(eolstr[eol]);
 						formatEach(eolstr[eol]);
 					});
 				});
 		});
 	let config = {
-		jsbeautify: [`{"eol":"\\n", "indent_with_tabs": true}`, "",
-			'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
-		editorconfig: ["", `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\n`,
-			'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'],
-		'vs code': ["", "",
-			`{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "\\n", "editor.insertSpaces": false}`
-			]
+		jsbeautify: [{
+			eol: "\n",
+			indent_with_tabs: true
+		}, "", {}],
+		editorconfig: [null, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`,
+			{
+				"beautify.editorconfig": true
+			}],
+		// we can't test vs code for this one, because the files have
+		// already been opened, so the editor formatting takes over
+		// 'vs code': [null, "",
+		// 	{
+		// 		"files.eol": "\n",
+		// 		"editor.insertSpaces": false
+		// 	}]
 	};
 	Object.keys(config)
 		.forEach(cfg => {
 			context(`with ${cfg} indent set to 'tab'`, function() {
 				this.timeout(slow * testData.types.length + 1000);
 				this.slow(slow);
-				before(done => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2], done));
+				before(() => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2]));
 				beautifyEach(['tab', vscode.EndOfLine.LF]);
 				formatEach(['tab', vscode.EndOfLine.LF]);
 			});
