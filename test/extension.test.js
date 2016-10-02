@@ -66,7 +66,7 @@ describe("VS code beautify", function() {
 			let config = {
 				jsbeautify: [`{"eol":"${eol}"}`, "",
 					'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
-				editorconfig: ["", `[*]\nend_of_line = ${eolstr[eol][0]}\nindent_style = space\nindent_size = 4`,
+				editorconfig: ["", `root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`,
 					'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'
 					],
 				'vs code': ["", "",
@@ -87,7 +87,7 @@ describe("VS code beautify", function() {
 	let config = {
 		jsbeautify: [`{"eol":"\\n", "indent_with_tabs": true}`, "",
 			'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
-		editorconfig: ["", `[*]\nend_of_line = lf\nindent_style = tab\n`,
+		editorconfig: ["", `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\n`,
 			'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'],
 		'vs code': ["", "",
 			`{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "\\n", "editor.insertSpaces": false}`
