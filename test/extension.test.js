@@ -2,43 +2,128 @@
 const vscode = require('vscode'),
 	expect = require('expect.js'),
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	testData = require('./testData');
 
-const dropR = txt => txt.replace(/\r/g,'');
-
-const getBeautifiedText = name => vscode.workspace.openTextDocument(name)
-	.then(doc => vscode.window.showTextDocument(doc)
-		.then(() => vscode.commands.executeCommand('HookyQR.beautify'))
-		.then(() => doc.getText()));
-
-const getFormattedText = name => vscode.workspace.openTextDocument(name)
-	.then(doc => vscode.window.showTextDocument(doc)
-		.then(() => vscode.commands.executeCommand('editor.action.format'))
-		.then(() => doc.getText()));
-
+const slow = 700;
 const root = path.join(path.dirname(__filename), 'data', '');
 
+const setupConfigs = (beautify, editor, code, done) => {
+	beautify = beautify || "";
+	editor = editor || "";
+	code = code || "{}";
+	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify);
+	fs.writeFileSync(path.join(root, '.editorconfig'), editor);
+	fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), code);
+	setTimeout(done, 20);
+};
+
+const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument(name)
+	.then(doc => vscode.window.showTextDocument(doc)
+		// the existance of this setting sucks
+		.then(() => vscode.window.activeTextEditor.edit(te => te.setEndOfLine(eol)))
+		.then(() => new Promise(resolve => setTimeout(resolve, 5)))
+		.then(() => vscode.commands.executeCommand(cmd))
+		.then(() => new Promise(resolve => setTimeout(resolve, 5)))
+		.then(() => doc.getText())
+		.then(txt => vscode.commands.executeCommand('workbench.action.closeAllEditors')
+			.then(() => txt)));
+
+const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautify', name, eol);
+const getFormattedText = (name, eol) => executeWithCommand('editor.action.format', name, eol);
+
+function beautifyEach(fmt) {
+	testData.types.forEach(function(ext) {
+		it(`For '${ext}' "beautify" changes for ${fmt[0]}`, function() {
+			return getBeautifiedText(path.join(root, 'test.' + ext), fmt[1])
+				.then(txt => expect(txt)
+					.to.be(testData.expected(fmt[0], ext)));
+		});
+	});
+}
+
+function formatEach(fmt) {
+	testData.types.forEach(function(ext) {
+		it(`For '${ext}' "format" changes for ${fmt[0]}`, function() {
+			return getFormattedText(path.join(root, 'test.' + ext), fmt[1])
+				.then(txt => expect(txt)
+					.to.be(testData.expected(fmt[0], ext)));
+		});
+	});
+}
+
+describe("VS code beautify", function() {
+	before("Clean files", () => testData.clean(root));
+	let eolstr = {
+		"\\n": ["lf", vscode.EndOfLine.LF],
+		"\\r\\n": ["crlf", vscode.EndOfLine.CRLF]
+	};
+	Object.keys(eolstr)
+		.forEach(eol => {
+			let config = {
+				jsbeautify: [`{"eol":"${eol}"}`, "",
+					'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
+				editorconfig: ["", `[*]\nend_of_line = ${eolstr[eol][0]}\nindent_style = space\nindent_size = 4`,
+					'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'
+					],
+				'vs code': ["", "",
+					`{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "${eol}", "editor.tabSize": 4}`
+					]
+			};
+			Object.keys(config)
+				.forEach(cfg => {
+					context(`with ${cfg} cr set to '${eol}'`, function() {
+						this.timeout(slow * testData.types.length + 1000);
+						this.slow(slow);
+						before(done => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2], done));
+						beautifyEach(eolstr[eol]);
+						formatEach(eolstr[eol]);
+					});
+				});
+		});
+	let config = {
+		jsbeautify: [`{"eol":"\\n", "indent_with_tabs": true}`, "",
+			'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
+		editorconfig: ["", `[*]\nend_of_line = lf\nindent_style = tab\n`,
+			'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'],
+		'vs code': ["", "",
+			`{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "\\n", "editor.insertSpaces": false}`
+			]
+	};
+	Object.keys(config)
+		.forEach(cfg => {
+			context(`with ${cfg} indent set to 'tab'`, function() {
+				this.timeout(slow * testData.types.length + 1000);
+				this.slow(slow);
+				before(done => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2], done));
+				beautifyEach(['tab', vscode.EndOfLine.LF]);
+				formatEach(['tab', vscode.EndOfLine.LF]);
+			});
+		});
+});
+/*
 describe('with empty .jsbeautify', function() {
 	this.timeout(4000);
 	this.slow(400);
-	before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
+	before(() => setupConfigs("{}", ""));
 	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(dropR(txt))
+			.then(txt => expect(txt)
 				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
 
-	['.html', '.css', '.scss'].forEach(extension =>
+	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('format of "' + extension + "'", () => getFormattedText(path.join(root, 'in' + extension))
-			.then(txt => expect(dropR(txt))
+			.then(txt => expect(txt)
 				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
 });
 
 describe('with nested options in .jsbeautify', function() {
 	this.timeout(4000);
 	this.slow(200);
-	before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'),
+	before(() => setupConfigs(
 		`{
 			"indent_with_tabs": true,
+			"eol": "\\r\\n",
 			"css": {
 				"selector_separator_newline": true
 			},
@@ -50,19 +135,48 @@ describe('with nested options in .jsbeautify', function() {
 				"brace_style": "none",
 				"preserve_newlines": false
 			}
-		}`
+		}`,
+		""));
+	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
+		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
+			.then(txt => expect(txt)
+				.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))));
+});
+
+describe('with editorconfig', function() {
+	this.timeout(4000);
+	this.slow(200);
+	before(() => setupConfigs(
+		`{
+			"css": {
+				"selector_separator_newline": true
+			},
+			"js": {
+				"break_chained_methods": true,
+				"max_preserve_newlines": 2
+			},
+			"html": {
+				"brace_style": "none",
+				"preserve_newlines": false
+			}
+		}`,
+		`
+[*]
+end_of_line = crlf
+insert_final_newline = true
+indent_style = tab
+	`
 	));
 	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
 		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(dropR(txt))
-				.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))));
+			.then(txt => expect(txt)
+				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
+})
 
-});
-/* 
 // On save tests don't work on CI
-describe('on save', function () {
+describe('on save', function() {
 	this.timeout(16000);
-	before(()=>fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
+	before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
 	describe('saving a file with onSave true', function() {
 		this.timeout(4000);
 		this.slow(350);
@@ -88,7 +202,7 @@ describe('on save', function () {
 	});
 	describe('saving a file with onSave false', function() {
 		this.timeout(4000);
-		this.slow(350);
+		this.slow(500);
 		before(done => {
 			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": false}');
 			//wait for vscodde toread the workspace settings
@@ -112,10 +226,10 @@ describe('on save', function () {
 
 	describe('saving a file with onSave specific', function() {
 		this.timeout(4000);
-		this.slow(350);
+		this.slow(500);
 		before(done => {
 			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": ["js","html"]}');
-			//wait for vscodde toread the workspace settings
+			//wait for vscodde to read the workspace settings
 			setTimeout(done, 400);
 		});
 		['.js', '.html'].forEach(extension => {
@@ -148,4 +262,4 @@ describe('on save', function () {
 		});
 	});
 });
-// */
+*/

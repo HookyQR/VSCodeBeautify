@@ -8,9 +8,11 @@ const dumpError = e => {
 	if (e) console.log('beautify err:', e);
 	return [];
 };
+
 const extMatch = n => ({
 	pattern: n.startsWith("**/") ? n : ("**/" + n)
 });
+
 const getBeautifyType = function(doc, dontAsk) {
 	if (doc.languageId === 'javascript') return 'js';
 	if (doc.languageId === 'json') return 'js';
@@ -84,23 +86,19 @@ function fullRange(doc) {
 	return doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
 }
 
-function fullEditByType(type) {
-	return (doc, formattingOptions) => {
-		const refType = getBeautifyType(doc, true);
-		const rng = fullRange(doc);
-		return beautifyDoc(doc, rng, type, formattingOptions)
-			.then(newText => documentEdit(rng, newText), dumpError);
-	};
-}
+const fullEdit = (doc, formattingOptions) => {
+	const type = getBeautifyType(doc, true);
+	const rng = fullRange(doc);
+	return beautifyDoc(doc, rng, type, formattingOptions)
+		.then(newText => documentEdit(rng, newText), dumpError);
+};
 
-function rangeEditByType(type) {
-	return (doc, rng, formattingOptions) => {
-		const refType = getBeautifyType(doc, true);
-		rng = extendRange(doc, rng);
-		return beautifyDoc(doc, rng, refType, formattingOptions)
-			.then(newText => documentEdit(rng, newText), dumpError);
-	};
-}
+const rangeEdit = (doc, rng, formattingOptions) => {
+	const type = getBeautifyType(doc, true);
+	rng = extendRange(doc, rng);
+	return beautifyDoc(doc, rng, type, formattingOptions)
+		.then(newText => documentEdit(rng, newText), dumpError);
+};
 
 function beautifyOnSave(doc) {
 	if (doc.beautified) {
@@ -155,22 +153,25 @@ function activate(context) {
 	// 	setupFormatters(context.subscriptions);
 	// }));
 	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('html', {
-		provideDocumentFormattingEdits: fullEditByType('html')
+		provideDocumentFormattingEdits: fullEdit
 	}));
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
-		provideDocumentRangeFormattingEdits: rangeEditByType('html')
+		provideDocumentRangeFormattingEdits: rangeEdit
 	}));
 	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(['css', 'sass'], {
-		provideDocumentFormattingEdits: fullEditByType('css')
+		provideDocumentFormattingEdits: fullEdit
+	}));
+	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('scss', {
+		provideDocumentFormattingEdits: fullEdit
 	}));
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(['css', 'sass'], {
-		provideDocumentRangeFormattingEdits: rangeEditByType('css')
+		provideDocumentRangeFormattingEdits: rangeEdit
 	}));
 	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(['javascript', 'json'], {
-		provideDocumentFormattingEdits: fullEditByType('js')
+		provideDocumentFormattingEdits: fullEdit
 	}));
 	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(['javascript', 'json'], {
-		provideDocumentRangeFormattingEdits: rangeEditByType('js')
+		provideDocumentRangeFormattingEdits: rangeEdit
 	}));
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
 }

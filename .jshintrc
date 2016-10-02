@@ -1,0 +1,21 @@
+{
+	"devel": true,
+	"eqeqeq": true,
+	"expr": true,
+	"freeze": true,
+	"funcscope": true,
+	"futurehostile": true,
+	"lastsemic": true,
+	"latedef": true,
+	"maxdepth": 5,
+	"maxerr": 100,
+	"noarg": true,
+	"node": true,
+	"nonbsp": true,
+	"nonew": true,
+	"strict": true,
+	"undef": true,
+	"unused": true,
+	"esversion": 6,
+	"varstmt": true
+}
