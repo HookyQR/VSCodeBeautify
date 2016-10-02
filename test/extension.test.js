@@ -5,7 +5,7 @@ const vscode = require('vscode'),
 	fs = require('fs'),
 	testData = require('./testData');
 
-const slow = 700;
+const slow = 800;
 const root = path.join(path.dirname(__filename), 'data', '');
 
 const setupConfigs = (beautify, editor, code, done) => {
@@ -15,16 +15,16 @@ const setupConfigs = (beautify, editor, code, done) => {
 	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify);
 	fs.writeFileSync(path.join(root, '.editorconfig'), editor);
 	fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), code);
-	setTimeout(done, 50);
+	setTimeout(done, 100);
 };
 
 const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => vscode.window.showTextDocument(doc)
-		.then(() => new Promise(resolve => setTimeout(resolve, 150)))
+		.then(() => new Promise(resolve => setTimeout(resolve, 200)))
 		// the existance of this setting sucks
 		.then(() => vscode.window.activeTextEditor.edit(te => te.setEndOfLine(eol)))
 		.then(() => vscode.commands.executeCommand(cmd))
-		.then(() => new Promise(resolve => setTimeout(resolve, 150)))
+		.then(() => new Promise(resolve => setTimeout(resolve, 200)))
 		.then(() => doc.getText())
 		.then(txt => vscode.commands.executeCommand('workbench.action.closeAllEditors')
 			.then(() => txt)));
@@ -65,12 +65,12 @@ describe("VS code beautify", function() {
 		.forEach(eol => {
 			let config = {
 				jsbeautify: [`{"eol":"${eol}"}`, "",
-					'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
+					'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
 				editorconfig: ["", `[*]\nend_of_line = ${eolstr[eol][0]}\nindent_style = space\nindent_size = 4`,
-					'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'
+					'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'
 					],
 				'vs code': ["", "",
-					`{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "${eol}", "editor.tabSize": 4}`
+					`{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "${eol}", "editor.tabSize": 4}`
 					]
 			};
 			Object.keys(config)
@@ -86,11 +86,11 @@ describe("VS code beautify", function() {
 		});
 	let config = {
 		jsbeautify: [`{"eol":"\\n", "indent_with_tabs": true}`, "",
-			'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
+			'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false }'],
 		editorconfig: ["", `[*]\nend_of_line = lf\nindent_style = tab\n`,
-			'{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'],
+			'{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "beautify.editorconfig": true}'],
 		'vs code': ["", "",
-			`{"telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "\\n", "editor.insertSpaces": false}`
+			`{"editor.detectIndentation": false, "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false, "files.eol": "\\n", "editor.insertSpaces": false}`
 			]
 	};
 	Object.keys(config)
