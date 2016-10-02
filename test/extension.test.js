@@ -5,10 +5,10 @@ const vscode = require('vscode'),
 	fs = require('fs'),
 	testData = require('./testData');
 
-const slow = 1200;
+const slow = 700;
 const root = path.join(path.dirname(__filename), 'data', '');
 
-const lag = () => new Promise(resolve => setTimeout(resolve, 200));
+const lag = () => new Promise(resolve => setTimeout(resolve, slow / 2));
 
 const setupConfigs = (beautify, editor) => {
 	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify ? JSON.stringify(beautify) : '');
@@ -16,16 +16,35 @@ const setupConfigs = (beautify, editor) => {
 	return lag();
 };
 
+vscode.window.onDidChangeActiveTextEditor(editor => {
+	if (!editor.document.test || !editor.document.test.eol) return;
+	const eol = editor.document.test.eol;
+	const cmd = editor.document.test.cmd;
+	return editor.edit(te => te.setEndOfLine(eol))
+		.then(() => {
+			return vscode.commands.executeCommand(cmd)
+				.then(() => {
+					const doc = editor.document;
+					const resolve = doc.test.resolve;
+					// somehow, calling this stops the timeout errors. Go figure
+					const t = process.hrtime(doc.test.t);
+					const txt = doc.getText();
+					return vscode.commands.executeCommand('workbench.action.closeAllEditors')
+						.then(() => resolve(txt));
+				});
+		});
+});
+
 const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument(name)
-	.then(doc => vscode.window.showTextDocument(doc)
-		.then(lag)
-		// the existance of this setting sucks - we're using in the back though
-		.then(() => vscode.window.activeTextEditor.edit(te => te.setEndOfLine(eol)))
-		.then(() => vscode.commands.executeCommand(cmd))
-		.then(lag)
-		.then(() => doc.getText())
-		.then(txt => vscode.commands.executeCommand('workbench.action.closeAllEditors')
-			.then(() => txt)));
+	.then(doc => new Promise(resolve => {
+		vscode.window.showTextDocument(doc);
+		doc.test = {
+			cmd,
+			eol,
+			resolve,
+			t: process.hrtime()
+		};
+	}));
 
 const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautify', name, eol);
 const getFormattedText = (name, eol) => executeWithCommand('editor.action.format', name, eol);
@@ -51,6 +70,8 @@ function formatEach(fmt) {
 }
 
 describe("VS code beautify", function() {
+	this.timeout(slow * 2);
+	this.slow(slow);
 	before(() => {
 		testData.clean(root);
 		vscode.commands.executeCommand("workbench.action.toggleSidebarVisibility");
@@ -72,8 +93,6 @@ describe("VS code beautify", function() {
 			Object.keys(config)
 				.forEach(cfg => {
 					context(`with ${cfg} cr set to '${eol}'`, function() {
-						this.timeout(slow * testData.types.length);
-						this.slow(slow);
 						before(() => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2]));
 						beautifyEach(eolstr[eol]);
 						formatEach(eolstr[eol]);

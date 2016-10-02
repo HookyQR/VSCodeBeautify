@@ -69,7 +69,6 @@ function beautifyDoc(doc, range, type, formattingOptions) {
 		.then(type => options(doc, type, formattingOptions)
 			.then(config => {
 				const original = doc.getText(doc.validateRange(range));
-				console.log(require('util').inspect(original));
 				return beautify[type](original, config);
 			}));
 }
