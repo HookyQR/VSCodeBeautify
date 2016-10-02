@@ -45,11 +45,12 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		});
 	}
 	const options = {
-		indent_with_tabs: !formattingOptions.insertSpaces,
+		indent_with_tabs: formattingOptions.insertSpaces === undefined ? true : !formattingOptions.insertSpaces,
 		indent_size: formattingOptions.tabSize,
 		indent_char: ' '
 	};
 	if (fileFormat.eol) options.eol = fileFormat.eol;
+		console.log("Setting vs code config", options);
 	if (type === 'html') {
 		const html = vscode.workspace.getConfiguration('html.format');
 		options.end_with_newline = html.endWithNewline;
@@ -78,6 +79,7 @@ function set_file_editorconfig_opts(file, config) {
 	try {
 		const eConfigs = editorconfig.parseSync(file);
 
+		console.log("Setting editor config", eConfigs);
 		if (eConfigs.indent_style === "tab") {
 			config.indent_with_tabs = true;
 		} else if (eConfigs.indent_style === "space") {
@@ -126,8 +128,6 @@ module.exports = (doc, type, formattingOptions) => {
 		configFile = path.join(os.homedir(), '.jsbeautifyrc');
 		if (!fs.existsSync(configFile)) return Promise.resolve(opts);
 	}
-	console.log("Post EC:");
-	console.log("",opts);
 	return new Promise(resolve => {
 		fs.readFile(configFile, 'utf8', (e, d) => {
 			if (!d) return resolve(opts);
