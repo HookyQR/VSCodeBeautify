@@ -6,7 +6,7 @@ const vscode = require('vscode'),
 	testData = require('./testData');
 
 const slow = 700 + (process.platform === 'win32' ? 200 : 0);
-const root = path.join(path.dirname(__filename), 'data', '');
+const root = path.join(__dirname, 'data', '');
 
 const lag = () => new Promise(resolve => setTimeout(resolve, slow / 2));
 
@@ -48,6 +48,17 @@ const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument
 
 const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautify', name, eol);
 const getFormattedText = (name, eol) => executeWithCommand('editor.action.format', name, eol);
+const getOnSaveText = (name, eol) => vscode.workspace.openTextDocument(name)
+	.then(doc => vscode.window.showTextDocument(doc)
+	.then(editor => editor.edit(te => {
+		te.setEndOfLine(eol);
+		te.insert(doc.positionAt(Infinity), ' ');
+	})))
+	.then(() => vscode.commands.executeCommand('workbench.action.files.save'))
+	.then(lag)
+	.then(() => vscode.commands.executeCommand('workbench.action.closeAllEditors'))
+	.then(lag)
+	.then(() => fs.readFileSync(name, "utf8"));
 
 function beautifyEach(fmt) {
 	testData.types.forEach(function(ext) {
@@ -61,6 +72,8 @@ function beautifyEach(fmt) {
 
 function formatEach(fmt) {
 	testData.types.forEach(function(ext) {
+			// inbuild format command doesn't allow beautify to run. Maybe in 1.6?
+		if (ext === 'json') return;
 		it(`For '${ext}' "format" changes for ${fmt[0]}`, function() {
 			return getFormattedText(path.join(root, 'test.' + ext), fmt[1])
 				.then(txt => expect(txt)
@@ -69,6 +82,16 @@ function formatEach(fmt) {
 	});
 }
 
+function doSaveEach(fmt) {
+	testData.types.forEach(function(ext) {
+		//if (ext === 'js') return;
+		it(`For '${ext}' "beautify on save" changes`, function() {
+			return getOnSaveText(path.join(root, 'test.' + ext), fmt[1])
+				.then(txt => expect(txt)
+					.to.be(testData.expected(fmt[0], ext)));
+		});
+	});
+}
 describe("VS code beautify", function() {
 	this.timeout(slow * 2);
 	this.slow(slow);
@@ -93,10 +116,10 @@ describe("VS code beautify", function() {
 			Object.keys(config)
 				.forEach(cfg => {
 					context(`with ${cfg} cr set to '${eol}'`, function() {
-						before(() => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2]));
+						before(() => setupConfigs(config[cfg][0], config[cfg][1]));
 						beautifyEach(eolstr[eol]);
 						//this combo doesn't work on AV. Seems there's another formatter being called
-						if ( process.platform === 'win32' && cfg === 'vs code' && eol === "\\n") return;
+						if (process.platform === 'win32' && cfg === 'vs code' && eol === "\\n") return;
 						formatEach(eolstr[eol]);
 					});
 				});
@@ -111,173 +134,146 @@ describe("VS code beautify", function() {
 	Object.keys(config)
 		.forEach(cfg => {
 			context(`with ${cfg} indent set to 'tab'`, function() {
-				this.timeout(slow * testData.types.length + 1000);
-				this.slow(slow);
-				before(() => setupConfigs(config[cfg][0], config[cfg][1], config[cfg][2]));
+				before(() => setupConfigs(config[cfg][0], config[cfg][1]));
 				beautifyEach(['tab', vscode.EndOfLine.LF]);
 				formatEach(['tab', vscode.EndOfLine.LF]);
 			});
 		});
+	// nested config
+	context('with nested config', function() {
+		before(() => setupConfigs({
+			js: {
+				indent_size: 5
+			},
+			css: {
+				indent_size: 4
+			},
+			html: {
+				indent_size: 3
+			},
+			eol: "\r\n",
+			indent_with_tabs: false,
+			indent_size: 2
+		}, ""));
+		beautifyEach(['nested', vscode.EndOfLine.CRLF]);
+		formatEach(['nested', vscode.EndOfLine.CRLF]);
+	});
+	context('on save', function() {
+		let preconfig;
+		before(() => {
+			preconfig = fs.readFileSync(path.join(__dirname, '.vscode', 'settings.json'), 'utf8');
+			const asObj = JSON.parse(preconfig);
+			asObj["beautify.onSave"] = true;
+			fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(asObj));
+			return setupConfigs({
+				js: {
+					indent_size: 5
+				},
+				css: {
+					indent_size: 4
+				},
+				html: {
+					indent_size: 3
+				},
+				eol: "\r\n",
+				indent_with_tabs: false,
+				indent_size: 2
+			}, "");
+		});
+		after(() => {
+			fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), preconfig);
+			testData.clean(root);
+		});
+		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
+	});
 });
 /*
-describe('with empty .jsbeautify', function() {
-	this.timeout(4000);
-	this.slow(400);
-	before(() => setupConfigs("{}", ""));
-	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
-		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
-				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
-
-	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
-		it('format of "' + extension + "'", () => getFormattedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
-				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
-});
-
-describe('with nested options in .jsbeautify', function() {
-	this.timeout(4000);
-	this.slow(200);
-	before(() => setupConfigs(
-		`{
-			"indent_with_tabs": true,
-			"eol": "\\r\\n",
-			"css": {
-				"selector_separator_newline": true
-			},
-			"js": {
-				"break_chained_methods": true,
-				"max_preserve_newlines": 2
-			},
-			"html": {
-				"brace_style": "none",
-				"preserve_newlines": false
-			}
-		}`,
-		""));
-	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
-		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
-				.to.be(fs.readFileSync(path.join(root, 'out.2' + extension), 'utf8')))));
-});
-
-describe('with editorconfig', function() {
-	this.timeout(4000);
-	this.slow(200);
-	before(() => setupConfigs(
-		`{
-			"css": {
-				"selector_separator_newline": true
-			},
-			"js": {
-				"break_chained_methods": true,
-				"max_preserve_newlines": 2
-			},
-			"html": {
-				"brace_style": "none",
-				"preserve_newlines": false
-			}
-		}`,
-		`
-[*]
-end_of_line = crlf
-insert_final_newline = true
-indent_style = tab
-	`
-	));
-	['.js', '.html', '.json', '.css', '.scss'].forEach(extension =>
-		it('beautify of "' + extension + "'", () => getBeautifiedText(path.join(root, 'in' + extension))
-			.then(txt => expect(txt)
-				.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
-})
-
-// On save tests don't work on CI
-describe('on save', function() {
-	this.timeout(16000);
-	before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
-	describe('saving a file with onSave true', function() {
-		this.timeout(4000);
-		this.slow(350);
-		before(done => {
-			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": true}');
-			fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
-			setTimeout(done, 400);
-		});
+		// On save tests don't work on CI
+		describe('on save', function() {
+			this.timeout(16000);
+			before(() => fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}"));
+			describe('saving a file with onSave true', function() {
+				this.timeout(4000);
+				this.slow(350);
+				before(done => {
+					fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": true}');
+					fs.writeFileSync(path.join(root, '.jsbeautifyrc'), "{}");
+					setTimeout(done, 400);
+				});
 		['.js', '.html', '.json', '.css'].forEach(extension => {
-			vscode.workspace.getConfiguration('beautify');
-			it('beautify of "' + extension + "'", () => vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-					extension))
-				.then(doc => vscode.window.showTextDocument(doc)
-					.then(editor =>
-						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-							path.join(root, 'in' + extension), 'utf8') + ' ')))
-					.then(() => doc.save())
-					//have to wait for the second save
-					.then(() => new Promise(r => setTimeout(r, 50)))
-					.then(() => expect(doc.getText())
-						.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
-		});
-	});
-	describe('saving a file with onSave false', function() {
-		this.timeout(4000);
-		this.slow(500);
-		before(done => {
-			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": false}');
-			//wait for vscodde toread the workspace settings
-			setTimeout(done, 400);
-		});
+					vscode.workspace.getConfiguration('beautify');
+					it('beautify of "' + extension + "'", () => vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+							extension))
+						.then(doc => vscode.window.showTextDocument(doc)
+							.then(editor =>
+								editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+									path.join(root, 'in' + extension), 'utf8') + ' ')))
+							.then(() => doc.save())
+							//have to wait for the second save
+							.then(() => new Promise(r => setTimeout(r, 50)))
+							.then(() => expect(doc.getText())
+								.to.be(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
+				});
+			});
+			describe('saving a file with onSave false', function() {
+				this.timeout(4000);
+				this.slow(500);
+				before(done => {
+					fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": false}');
+					//wait for vscodde toread the workspace settings
+					setTimeout(done, 400);
+				});
 		['.js', '.html', '.json', '.css'].forEach(extension => {
-			it('no beautify of "' + extension + "'", () =>
-				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-					extension))
-				.then(doc => vscode.window.showTextDocument(doc)
-					.then(editor =>
-						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-							path.join(root, 'in' + extension), 'utf8') + ' ')))
-					.then(() => doc.save())
-					//have to wait for the second save (to not happen here)
-					.then(() => new Promise(r => setTimeout(r, 50)))
-					.then(() => expect(doc.getText())
-						.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
-		});
-	});
+					it('no beautify of "' + extension + "'", () =>
+						vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+							extension))
+						.then(doc => vscode.window.showTextDocument(doc)
+							.then(editor =>
+								editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+									path.join(root, 'in' + extension), 'utf8') + ' ')))
+							.then(() => doc.save())
+							//have to wait for the second save (to not happen here)
+							.then(() => new Promise(r => setTimeout(r, 50)))
+							.then(() => expect(doc.getText())
+								.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
+				});
+			});
 
-	describe('saving a file with onSave specific', function() {
-		this.timeout(4000);
-		this.slow(500);
-		before(done => {
-			fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": ["js","html"]}');
-			//wait for vscodde to read the workspace settings
-			setTimeout(done, 400);
-		});
+			describe('saving a file with onSave specific', function() {
+				this.timeout(4000);
+				this.slow(500);
+				before(done => {
+					fs.writeFileSync(path.join(root, '.vscode', 'settings.json'), '{"beautify.onSave": ["js","html"]}');
+					//wait for vscodde to read the workspace settings
+					setTimeout(done, 400);
+				});
 		['.js', '.html'].forEach(extension => {
-			it('no beautify of "' + extension + "'", () =>
-				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-					extension))
-				.then(doc => vscode.window.showTextDocument(doc)
-					.then(editor =>
-						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-							path.join(root, 'in' + extension), 'utf8') + ' ')))
-					.then(() => doc.save())
-					//have to wait for the second save
-					.then(() => new Promise(r => setTimeout(r, 50)))
-					.then(() => expect(doc.getText())
-						.to.eql(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
-		});
+					it('no beautify of "' + extension + "'", () =>
+						vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+							extension))
+						.then(doc => vscode.window.showTextDocument(doc)
+							.then(editor =>
+								editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+									path.join(root, 'in' + extension), 'utf8') + ' ')))
+							.then(() => doc.save())
+							//have to wait for the second save
+							.then(() => new Promise(r => setTimeout(r, 50)))
+							.then(() => expect(doc.getText())
+								.to.eql(fs.readFileSync(path.join(root, 'out' + extension), 'utf8')))));
+				});
 		['.json', '.css', '.scss'].forEach(extension => {
-			it('no beautify of "' + extension + "'", () =>
-				vscode.workspace.openTextDocument(path.join(root, 'in_out' +
-					extension))
-				.then(doc => vscode.window.showTextDocument(doc)
-					.then(editor =>
-						editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
-							path.join(root, 'in' + extension), 'utf8') + ' ')))
-					.then(() => doc.save())
-					//have to wait for the second save (to not happen here)
-					.then(() => new Promise(r => setTimeout(r, 50)))
-					.then(() => expect(doc.getText())
-						.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
-		});
-	});
-});
-*/
+					it('no beautify of "' + extension + "'", () =>
+						vscode.workspace.openTextDocument(path.join(root, 'in_out' +
+							extension))
+						.then(doc => vscode.window.showTextDocument(doc)
+							.then(editor =>
+								editor.edit(edit => edit.replace(new vscode.Range(doc.positionAt(0), doc.positionAt(10000)), fs.readFileSync(
+									path.join(root, 'in' + extension), 'utf8') + ' ')))
+							.then(() => doc.save())
+							//have to wait for the second save (to not happen here)
+							.then(() => new Promise(r => setTimeout(r, 50)))
+							.then(() => expect(doc.getText())
+								.to.eql(fs.readFileSync(path.join(root, 'in' + extension), 'utf8') + ' '))));
+				});
+			});
+		}); */
