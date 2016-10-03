@@ -15,6 +15,7 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 2. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
 
 otherwise...
+
 3. Settings are translated from your VS Code workspace/user setttings.
 4. Any current editor settings (indent spaces/tabs, line ending) are merged in.
 5. If **`"beautify.editorconfig"` is set to `true`**: editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
