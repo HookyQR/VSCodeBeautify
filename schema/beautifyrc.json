@@ -23,7 +23,7 @@
 					"default": "\\n"
 				},
 				"indent_level": {
-					"description": "Initial indentation level. [JS]",
+					"description": "Initial indentation level. [JS,CSS,HTML]",
 					"type": "integer",
 					"default": 0
 				},
@@ -102,9 +102,7 @@
 					"description": "Wrap attributes to new lines. [HTML]",
 					"type": "string",
 					"default": "auto",
-					"enum": [
-			"auto", "force"
-		]
+					"enum": ["auto", "force"]
 				},
 				"wrap_attributes_indent_size": {
 					"description": "Indent wrapped attributes to after N characters. Defaults to 'indent_size'. [HTML]",

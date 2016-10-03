@@ -3,5 +3,4 @@ node_modules
 .vscodeignore
 .vscode-test
 !**/data/.vscode
-.jshintrc
 typings
