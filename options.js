@@ -50,7 +50,6 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		indent_char: ' '
 	};
 	if (fileFormat.eol) options.eol = fileFormat.eol;
-		console.log("Setting vs code config", options);
 	if (type === 'html') {
 		const html = vscode.workspace.getConfiguration('html.format');
 		options.end_with_newline = html.endWithNewline;
@@ -78,12 +77,11 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 function set_file_editorconfig_opts(file, config) {
 	try {
 		const eConfigs = editorconfig.parseSync(file);
-
-		console.log("Setting editor config", eConfigs);
 		if (eConfigs.indent_style === "tab") {
 			config.indent_with_tabs = true;
 		} else if (eConfigs.indent_style === "space") {
 			config.indent_with_tabs = false;
+			config.indent_char = ' ';
 		}
 
 		if (eConfigs.indent_size) {
@@ -130,7 +128,7 @@ module.exports = (doc, type, formattingOptions) => {
 	}
 	return new Promise(resolve => {
 		fs.readFile(configFile, 'utf8', (e, d) => {
-			if (!d) return resolve(opts);
+			if (!d || !d.length) return resolve(opts);
 			try {
 				const unCommented = dropComments(d.toString());
 				opts = JSON.parse(unCommented);
