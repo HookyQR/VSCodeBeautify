@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -48,6 +48,11 @@
 					"type": ["array"],
 					"description": "Set path/file matchers to ignore when attempting to beautify on save. Uses glob path matching.",
 					"default": ["**/*+(.|_|-)min.*"]
+				},
+				"beautify.editorconfig": {
+					"type": "boolean",
+					"default": false,
+					"description": "Use `.editorconfig` settings"
 				},
 				"beautify.JSfiles": {
 					"type": "array",
