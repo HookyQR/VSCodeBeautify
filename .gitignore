@@ -2,6 +2,5 @@ node_modules
 *.vsix
 .vscodeignore
 .vscode-test
-!**/data/.vscode
-.jshintrc
+!**/test/.vscode
 typings
