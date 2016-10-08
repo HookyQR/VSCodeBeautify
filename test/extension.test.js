@@ -5,7 +5,7 @@ const vscode = require('vscode'),
 	fs = require('fs'),
 	testData = require('./testData');
 
-const slow = 700 + (process.platform === 'win32' ? 200 : 0);
+const slow = 800 + (process.platform === 'win32' ? 100 : 0);
 const root = path.join(__dirname, 'data', '');
 
 const lag = () => new Promise(resolve => setTimeout(resolve, slow / 2));
@@ -18,16 +18,20 @@ const setupConfigs = (beautify, editor) => {
 
 vscode.window.onDidChangeActiveTextEditor(editor => {
 	if (!editor.document.test || !editor.document.test.eol) return;
-	const eol = editor.document.test.eol;
-	const cmd = editor.document.test.cmd;
-	return editor.edit(te => te.setEndOfLine(eol))
+	const doc = editor.document;
+	const eol = doc.test.eol;
+	const cmd = doc.test.cmd;
+	const resolve = doc.test.resolve;
+	const tea = doc.test.texteditorAction;
+	return editor.edit(te => {
+			te.setEndOfLine(eol);
+			if (tea) return tea(te);
+		})
 		.then(() => {
 			return vscode.commands.executeCommand(cmd)
 				.then(() => {
-					const doc = editor.document;
-					const resolve = doc.test.resolve;
 					// somehow, calling this stops the timeout errors. Go figure
-					const t = process.hrtime(doc.test.t);
+					const t = process.hrtime(doc.test.t); //jshint -W098
 					const txt = doc.getText();
 					return vscode.commands.executeCommand('workbench.action.closeAllEditors')
 						.then(() => resolve(txt));
@@ -35,25 +39,39 @@ vscode.window.onDidChangeActiveTextEditor(editor => {
 		});
 });
 
-const executeWithCommand = (cmd, name, eol) => vscode.workspace.openTextDocument(name)
+const executeWithCommand = (cmd, texteditorAction, name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => new Promise(resolve => {
 		vscode.window.showTextDocument(doc);
 		doc.test = {
 			cmd,
 			eol,
 			resolve,
+			texteditorAction,
 			t: process.hrtime()
 		};
 	}));
 
-const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautify', name, eol);
-const getFormattedText = (name, eol) => executeWithCommand('editor.action.format', name, eol);
+const getPartialBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautify', () => {
+	return vscode.commands.executeCommand('cursorMove', {
+			to: 'right',
+			by: 'character',
+			amount: 1,
+			select: true
+		})
+		.then(() => {
+			return new Promise(res => setTimeout(res, 1000));
+		});
+}, name, eol);
+
+const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautifyFile', null, name, eol);
+const getFormattedText = (name, eol) => executeWithCommand('editor.action.format', null, name, eol);
+
 const getOnSaveText = (name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => vscode.window.showTextDocument(doc)
-	.then(editor => editor.edit(te => {
-		te.setEndOfLine(eol);
-		te.insert(doc.positionAt(Infinity), ' ');
-	})))
+		.then(editor => editor.edit(te => {
+			te.setEndOfLine(eol);
+			te.insert(doc.positionAt(Infinity), ' ');
+		})))
 	.then(() => vscode.commands.executeCommand('workbench.action.files.save'))
 	.then(lag)
 	.then(() => vscode.commands.executeCommand('workbench.action.closeAllEditors'))
@@ -62,7 +80,7 @@ const getOnSaveText = (name, eol) => vscode.workspace.openTextDocument(name)
 
 function beautifyEach(fmt) {
 	testData.types.forEach(function(ext) {
-		it(`For '${ext}' "beautify" changes for ${fmt[0]}`, function() {
+		it(`For '${ext}' "beautifyFile" changes for ${fmt[0]}`, function() {
 			return getBeautifiedText(path.join(root, 'test.' + ext), fmt[1])
 				.then(txt => expect(txt)
 					.to.be(testData.expected(fmt[0], ext)));
@@ -72,10 +90,20 @@ function beautifyEach(fmt) {
 
 function formatEach(fmt) {
 	testData.types.forEach(function(ext) {
-			// inbuild format command doesn't allow beautify to run. Maybe in 1.6?
+		// inbuild format command doesn't allow beautify to run. Maybe in 1.6?
 		if (ext === 'json') return;
 		it(`For '${ext}' "format" changes for ${fmt[0]}`, function() {
 			return getFormattedText(path.join(root, 'test.' + ext), fmt[1])
+				.then(txt => expect(txt)
+					.to.be(testData.expected(fmt[0], ext)));
+		});
+	});
+}
+
+function beautifyPartialEach(fmt) {
+	testData.types.forEach(function(ext) {
+		it(`For '${ext}' "beautify" changes for ${fmt[0]}`, function() {
+			return getPartialBeautifiedText(path.join(root, 'test.' + ext), fmt[1])
 				.then(txt => expect(txt)
 					.to.be(testData.expected(fmt[0], ext)));
 		});
@@ -99,6 +127,7 @@ describe("VS code beautify", function() {
 		testData.clean(root);
 		vscode.commands.executeCommand("workbench.action.toggleSidebarVisibility");
 	});
+
 	let eolstr = {
 		"\\n": ["lf", vscode.EndOfLine.LF],
 		"\\r\\n": ["crlf", vscode.EndOfLine.CRLF]
@@ -159,7 +188,17 @@ describe("VS code beautify", function() {
 		formatEach(['nested', vscode.EndOfLine.CRLF]);
 	});
 
+	context('partial', function() {
+		before(() => setupConfigs({
+			eol: "\r\n",
+			indent_with_tabs: false,
+			indent_size: 2
+		}, ""));
+		beautifyPartialEach(['partial', vscode.EndOfLine.LF]);
+	});
 	context('on save', function() {
+		this.timeout(slow * 4);
+		this.slow(slow * 2);
 		let preconfig;
 		before(() => {
 			preconfig = fs.readFileSync(path.join(__dirname, '.vscode', 'settings.json'), 'utf8');

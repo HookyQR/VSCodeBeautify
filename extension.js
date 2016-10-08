@@ -1,7 +1,6 @@
 "use strict";
 const vscode = require('vscode'),
 	beautify = require('js-beautify'),
-	path = require('path'),
 	minimatch = require('minimatch'),
 	options = require('./options');
 const dumpError = e => {
@@ -9,35 +8,7 @@ const dumpError = e => {
 	return [];
 };
 
-const extMatch = n => ({
-	pattern: n.startsWith("**/") ? n : ("**/" + n)
-});
-
-const getBeautifyType = function(doc, dontAsk) {
-	if (doc.languageId === 'javascript') return 'js';
-	if (doc.languageId === 'json') return 'js';
-	if (doc.languageId === 'html') return 'html';
-	if (doc.languageId === 'css') return 'css';
-	if (doc.languageId === 'scss') return 'css';
-	const type = doc.isUntitled ? "" : path.extname(doc.fileName)
-		.toLowerCase();
-	const cfg = vscode.workspace.getConfiguration('beautify');
-	//if a type is set on the window, use that
-	//check if the file is in the users json schema set
-	const jsSchema = vscode.workspace.getConfiguration('json')
-		.schemas;
-	if (jsSchema.length) {
-		let matcher = [];
-		jsSchema.forEach(schema => {
-			if (typeof schema.fileMatch === 'string') matcher.push(extMatch(schema.fileMatch));
-			else matcher = matcher.concat(schema.fileMatch.map(extMatch));
-		});
-		if (vscode.languages.match(matcher, doc)) return "js";
-	}
-	if (cfg.HTMLfiles.indexOf(type) >= 0 || (type[0] === '.' && cfg.HTMLfiles.indexOf(type.slice(1)) >= 0)) return 'html';
-	else if (cfg.CSSfiles.indexOf(type) >= 0 || (type[0] === '.' && cfg.CSSfiles.indexOf(type.slice(1)) >= 0)) return 'css';
-	else if (cfg.JSfiles.indexOf(type) >= 0 || (type[0] === '.' && cfg.JSfiles.indexOf(type.slice(1)) >= 0)) return 'js';
-	if (dontAsk) return;
+const getBeautifyType = () => {
 	return new Promise((resolve, reject) => {
 		//Ask what they want to do:
 		return vscode.window.showQuickPick([{
@@ -65,10 +36,10 @@ function beautifyDoc(doc, range, type, formattingOptions) {
 			"Beautify can't get the file information because the editor won't supply it. (File probably too large)");
 		throw "";
 	}
-	return Promise.resolve(type ? type : getBeautifyType(doc))
+	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
 			.then(config => {
-				const original = doc.getText(doc.validateRange(range));
+				const original = doc.getText(range);
 				return beautify[type](original, config);
 			}));
 }
@@ -78,7 +49,10 @@ function documentEdit(range, newText) {
 }
 
 function extendRange(doc, rng) {
-	const r = new vscode.Range(new vscode.Position(rng.start.line, 0), rng.end.translate(0, Infinity));
+	let end = rng.end;
+	if (end.character === 0) end = end.translate(-1, Number.MAX_VALUE);
+	else end = end.translate(0, Number.MAX_VALUE);
+	const r = new vscode.Range(new vscode.Position(rng.start.line, 0), end);
 	return doc.validateRange(r);
 }
 
@@ -86,19 +60,122 @@ function fullRange(doc) {
 	return doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
 }
 
-const fullEdit = (doc, formattingOptions) => {
-	const type = getBeautifyType(doc, true);
+function fullEdit(type, doc, formattingOptions) {
 	const rng = fullRange(doc);
 	return beautifyDoc(doc, rng, type, formattingOptions)
 		.then(newText => documentEdit(rng, newText), dumpError);
-};
+}
 
-const rangeEdit = (doc, rng, formattingOptions) => {
-	const type = getBeautifyType(doc, true);
+function rangeEdit(type, doc, rng, formattingOptions) {
 	rng = extendRange(doc, rng);
 	return beautifyDoc(doc, rng, type, formattingOptions)
 		.then(newText => documentEdit(rng, newText), dumpError);
+}
+
+const register = (type, selector, partial) => {
+	if (partial) return vscode.languages.registerDocumentRangeFormattingEditProvider(selector, {
+		provideDocumentRangeFormattingEdits: rangeEdit.bind(0, type)
+	});
+	else return vscode.languages.registerDocumentFormattingEditProvider(selector, {
+		provideDocumentFormattingEdits: fullEdit.bind(0, type)
+	});
 };
+class Formatters {
+	constructor() {
+		this.available = {
+			js: beautify.js,
+			css: beautify.css,
+			html: beautify.html
+		};
+		this.configTypes = {
+			type: 1,
+			ext: 1,
+			filename: 1
+		};
+		this.handlers = {};
+	}
+	configure() {
+		let cfg = vscode.workspace.getConfiguration('beautify.language');
+		let beautifyCfg = vscode.workspace.getConfiguration('beautify');
+		let js = beautifyCfg.JSFiles;
+		let css = beautifyCfg.CSSFiles;
+		let html = beautifyCfg.HTMLFiles;
+		if (js || css || html) {
+			cfg = {};
+			if (js) cfg.js = {
+				ext: js
+			};
+			if (css) cfg.css = {
+				ext: css
+			};
+			if (html) cfg.html = {
+				ext: html
+			};
+			vscode.window.showInformationMessage(
+					"`beautify.*Files` setting is deprecated. please use `beautify.language` instead. Open settings ->",
+					"Global", "Workspace")
+				.then(open => {
+					if (open) {
+						vscode.commands.executeCommand(`workbench.action.open${open}Settings`);
+					}
+				});
+		}
+		cfg = cfg || {};
+		this.dispose();
+		for (let a in cfg) {
+			if (!(a in this.available)) continue;
+			// dispose of the current
+			let selector = [];
+			if (Array.isArray(cfg[a])) {
+				selector = [].concat(cfg[a]);
+			} else {
+				for (let b in cfg[a]) {
+					let adder;
+					switch (b) {
+						case 'type':
+							adder = cfg[a][b];
+							break;
+						case 'ext':
+							adder = [{
+								pattern: `**/*.{${cfg[a][b].join(',')}}`
+							}];
+							break;
+						case 'filename':
+							adder = [{
+								pattern: `**/{${cfg[a][b].join(',')}}`
+							}];
+							break;
+						default:
+							continue;
+					}
+					selector = selector.concat(adder);
+				}
+			}
+			this.handlers[a] = {
+				selector,
+				full: register(a, selector),
+				partial: register(a, selector, true)
+			};
+		}
+	}
+	getFormat(doc) {
+		for (let a in this.handlers) {
+			if (vscode.languages.match(this.handlers[a].selector, doc)) {
+				return a;
+			}
+		}
+	}
+	dispose() {
+		for (let a in this.handlers) {
+			this.handlers[a].full.dispose();
+			this.handlers[a].partial.dispose();
+		}
+		this.handlers = {};
+	}
+}
+
+const formatters = new Formatters();
+formatters.configure();
 
 function beautifyOnSave(doc) {
 	if (doc.beautified) {
@@ -106,6 +183,8 @@ function beautifyOnSave(doc) {
 		return;
 	}
 	const cfg = vscode.workspace.getConfiguration('beautify');
+	if (!cfg.onSave) return;
+
 	let matcher = cfg.onSaveIgnore || ["**/*+(.|_|-)min.*"];
 	if (typeof matcher === 'string') matcher = [matcher];
 	if (Array.isArray(matcher)) {
@@ -116,15 +195,9 @@ function beautifyOnSave(doc) {
 		}
 		if (matcher.some(m => minimatch(fName, m))) return;
 	}
-	let refType = doc.languageId;
-	if (refType === 'javascript') refType = 'js';
-	if (['js', 'json', 'html', 'css', 'sass'].indexOf(refType) === -1) {
-		refType = getBeautifyType(doc, true);
-		if (!refType) return;
-	}
+
+	const refType = formatters.getFormat(doc);
 	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
-		if (refType === 'json') refType = 'js';
-		if (refType === 'sass') refType = 'css';
 		let range = fullRange(doc);
 		//determine a default options
 		return beautifyDoc(doc, range, refType)
@@ -138,41 +211,31 @@ function beautifyOnSave(doc) {
 			.then(() => 1, () => 1);
 	}
 }
+
 //register on activation
 function activate(context) {
 	context.subscriptions.push(vscode.commands.registerCommand('HookyQR.beautify', () => {
 		const active = vscode.window.activeTextEditor;
 		if (!active) return;
 		if (!active.document) return;
-		let range = fullRange(active.document);
-		return beautifyDoc(active.document, range)
+		let range = active.selection;
+		if (range.isEmpty) range = fullRange(active.document);
+		else range = extendRange(active.document, range);
+		const type = formatters.getFormat(active.document);
+		return beautifyDoc(active.document, range, type)
 			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
-	// setupFormatters(context.subscriptions);
-	// context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(()=>{
-	// 	setupFormatters(context.subscriptions);
-	// }));
-	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('html', {
-		provideDocumentFormattingEdits: fullEdit
+	context.subscriptions.push(vscode.commands.registerCommand('HookyQR.beautifyFile', () => {
+		const active = vscode.window.activeTextEditor;
+		if (!active) return;
+		if (!active.document) return;
+		let range = fullRange(active.document);
+		const type = formatters.getFormat(active.document);
+		return beautifyDoc(active.document, range, type)
+			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider('html', {
-		provideDocumentRangeFormattingEdits: rangeEdit
-	}));
-	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(['css', 'sass'], {
-		provideDocumentFormattingEdits: fullEdit
-	}));
-	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('scss', {
-		provideDocumentFormattingEdits: fullEdit
-	}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(['css', 'sass'], {
-		provideDocumentRangeFormattingEdits: rangeEdit
-	}));
-	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(['javascript', 'json'], {
-		provideDocumentFormattingEdits: fullEdit
-	}));
-	context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(['javascript', 'json'], {
-		provideDocumentRangeFormattingEdits: rangeEdit
-	}));
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(formatters.configure.bind(formatters)));
+
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
 }
 exports.activate = activate;

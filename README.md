@@ -1,13 +1,11 @@
 # js-beautify for VS Code
 
-[![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify)
-[![Build status](https://ci.appveyor.com/api/projects/status/mu73cgat3r1t0weu/branch/master?svg=true)](https://ci.appveyor.com/project/HookyQR/vscodebeautify)
-[![Licence](https://img.shields.io/github/license/HookyQR/VSCodeBeautify.svg)](https://github.com/HookyQR/VSCodeBeautify)
+[![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify) [![Build status](https://ci.appveyor.com/api/projects/status/mu73cgat3r1t0weu/branch/master?svg=true)](https://ci.appveyor.com/project/HookyQR/vscodebeautify) [![Licence](https://img.shields.io/github/license/HookyQR/VSCodeBeautify.svg)](https://github.com/HookyQR/VSCodeBeautify)
 [![VS Code Marketplace](http://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](http://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Installs](http://vsmarketplacebadge.apphb.com/installs/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
 
 Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
-VS Code uses js-beautify internally, but it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify`.
+VS Code uses js-beautify internally, but it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify` (to beautify a selection) or **F1** `Beautify file`.
 
 ### How we determine what settings to use:
 
@@ -21,7 +19,7 @@ otherwise...
 5. If **`"beautify.editorconfig"` is set to `true`**: editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
 
 
-### VS Code | .jsbeautifyrc settings map: 
+### VS Code | .jsbeautifyrc settings map:
 
 .jsbeautifyrc setting         | VS Code setting
 ---                           | ---
@@ -61,27 +59,36 @@ Will result in the `indent_size` being set to 4 for Javascript and HTML, but set
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
-Extra (permanent) file extensions may be added under user or workspace settings as shown below. (Defaults shown)
+You can contol which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
+
+_Note:_ This used to be controlled by the `beautify.*Files` settings. If you still have those settings in your configuration, you'll be told that they're deprecated. Note that you may have to fix your global and project settings before the notification stops.
 
 ```javascript
 {
-  "beautify.CSSfiles":  ["css", "scss"],
-  "beautify.JSfiles":   ["js", "json", "jsbeautifyrc", "jshintrc"],
-  "beautify.HTMLfiles": ["htm", "html"]
+  "beautify.language": {
+    "js": {
+      "type": ["javascript", "json"],
+      "filename": [".jshintrc", ".jsbeautify"]
+      // "ext": ["js", "json"]
+      // ^^ to set extensions to be beautified using the javascript beautifier
+    },
+    "css": ["css", "scss"],
+    "html": ["htm", "html"]
+    // ^^ providing just an array sets the VS Code file type
+  }
 }
 ```
 
 Beautify on save can be enabled for all, or just specific file types. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
 
 ```javascript
-"beautify.onSave": true, // beautify HTML, CSS, JavaScript, and JSON on save
-  //or
-"beautify.onSave": ["js","json"], //only beautify JavaScript and JSON files on save
+"beautify.onSave": true, // beautify all matching types using the selected beautifier
+"beautify.onSave": ["js","css"], // only beautify those that match the js and css types
 
 "beautify.onSaveIgnore": [
-    //don't beautify any file in any 'minified' directory, at any depth:
+    // don't beautify any file in any 'minified' directory, at any depth:
     "**/minified/**",
-    //don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting):
+    // don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting):
     "**/*+(.|_|-)min.*",
   ]
 ```
@@ -91,6 +98,11 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
+### 0.4.0: 08 Oct 2016
+* Change settings structure
+* Reload file association settings when user config is changed
+* Allow beautify of (primary) selected lines only
+
 ### 0.3.0: 03 Oct 2016
 * Add editorconfig as a settings source
 

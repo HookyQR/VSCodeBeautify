@@ -1,3 +1,4 @@
+a{border:1}
 @mixin first(){
 &:before,&:after{content:
 "|"} border: 1px    solid green} .a {@include first();

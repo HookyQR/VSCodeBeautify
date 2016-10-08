@@ -5,6 +5,7 @@
 	"freeze": true,
 	"funcscope": true,
 	"futurehostile": true,
+	"indent": 1,
 	"lastsemic": true,
 	"latedef": true,
 	"maxdepth": 5,
