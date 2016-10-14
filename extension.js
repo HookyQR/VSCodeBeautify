@@ -94,6 +94,18 @@ class Formatters {
 		};
 		this.handlers = {};
 	}
+	onFileOpen(doc) {
+		for (let a in this.handlers) {
+			if (vscode.languages.match(this.handlers[a].selector, doc)) {
+				// drop and re-register this one
+				this.handlers[a].full.dispose();
+				this.handlers[a].partial.dispose();
+				this.handlers[a].full = register(a, this.handlers[a].selector);
+				this.handlers[a].partial = register(a, this.handlers[a].selector, true);
+				return a;
+			}
+		}
+	}
 	configure() {
 		let cfg = vscode.workspace.getConfiguration('beautify.language');
 		let beautifyCfg = vscode.workspace.getConfiguration('beautify');
@@ -236,6 +248,7 @@ function activate(context) {
 			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 	}));
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(formatters.configure.bind(formatters)));
+	context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(formatters.onFileOpen.bind(formatters)));
 
 	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
 }

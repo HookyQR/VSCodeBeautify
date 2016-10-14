@@ -2,6 +2,8 @@
 	"editor.detectIndentation": false,
 	"telemetry.enableCrashReporter": false,
 	"telemetry.enableTelemetry": false,
+	"typescript.check.tscVersion": false,
+	"typescript.check.workspaceVersion": false,
 	"css.validate": false,
 	"scss.validate": false,
 	"javascript.validate.enable": false,
