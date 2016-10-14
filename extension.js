@@ -197,6 +197,7 @@ function beautifyOnSave(doc) {
 	}
 
 	const refType = formatters.getFormat(doc);
+	if (!refType) return;
 	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
 		let range = fullRange(doc);
 		//determine a default options

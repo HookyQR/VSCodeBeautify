@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"

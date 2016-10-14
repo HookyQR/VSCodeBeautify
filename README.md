@@ -98,6 +98,9 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
+### 0.4.1: 15 Oct 2016
+* Stop beautify on save from trying to format unknown types
+
 ### 0.4.0: 08 Oct 2016
 * Change settings structure
 * Reload file association settings when user config is changed
