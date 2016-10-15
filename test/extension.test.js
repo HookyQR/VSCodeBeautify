@@ -14,7 +14,7 @@ const platformSlow = {
 const slow = platformSlow[process.platform];
 const root = path.join(__dirname, 'data', '');
 
-const lag = () => new Promise(resolve => setTimeout(resolve, slow / 2));
+const lag = () => new Promise(resolve => setTimeout(resolve, slow / 3 | 0));
 
 const setupConfigs = (beautify, editor) => {
 	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify ? JSON.stringify(beautify) : '');
