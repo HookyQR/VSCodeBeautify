@@ -5,7 +5,13 @@ const vscode = require('vscode'),
 	fs = require('fs'),
 	testData = require('./testData');
 
-const slow = 800 + (process.platform === 'win32' ? 100 : 0);
+const platformSlow = {
+	linux: 800,
+	win32: 1000,
+	darwin: 1000
+};
+
+const slow = platformSlow[process.platform];
 const root = path.join(__dirname, 'data', '');
 
 const lag = () => new Promise(resolve => setTimeout(resolve, slow / 2));
@@ -122,58 +128,92 @@ function doSaveEach(fmt) {
 }
 
 // delay test start to give vscode a chance to load (For Travis OSX)
-setTimeout(function() {
-	describe("VS code beautify", function() {
-		this.timeout(slow * 2);
-		this.slow(slow);
-		before(() => {
-			testData.clean(root);
-			vscode.commands.executeCommand("workbench.action.toggleSidebarVisibility");
-		});
+describe("VS code beautify", function() {
+	this.timeout(slow * 2);
+	this.slow(slow);
+	before(() => {
+		testData.clean(root);
+		vscode.commands.executeCommand("workbench.action.toggleSidebarVisibility");
+	});
 
-		let eolstr = {
-			"\\n": ["lf", vscode.EndOfLine.LF],
-			"\\r\\n": ["crlf", vscode.EndOfLine.CRLF]
-		};
-		Object.keys(eolstr)
-			.forEach(eol => {
-				let config = {
-					jsbeautify: [{
-						eol: eol
+	let eolstr = {
+		"\\n": ["lf", vscode.EndOfLine.LF],
+		"\\r\\n": ["crlf", vscode.EndOfLine.CRLF]
+	};
+	Object.keys(eolstr)
+		.forEach(eol => {
+			let config = {
+				jsbeautify: [{
+					eol: eol
 					}, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`],
-					editorconfig: [null,
+				editorconfig: [null,
 					`root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`],
-					'vs code': [null, ""]
-				};
-				Object.keys(config)
-					.forEach(cfg => {
-						context(`with ${cfg} cr set to '${eol}'`, function() {
-							before(() => setupConfigs(config[cfg][0], config[cfg][1]));
-							beautifyEach(eolstr[eol]);
-							//this combo doesn't work on AV. Seems there's another formatter being called
-							if (process.platform === 'win32' && cfg === 'vs code' && eol === "\\n") return;
-							formatEach(eolstr[eol]);
-						});
+				'vs code': [null, ""]
+			};
+			Object.keys(config)
+				.forEach(cfg => {
+					context(`with ${cfg} cr set to '${eol}'`, function() {
+						before(() => setupConfigs(config[cfg][0], config[cfg][1]));
+						beautifyEach(eolstr[eol]);
+						//this combo doesn't work on AV. Seems there's another formatter being called
+						if (process.platform === 'win32' && cfg === 'vs code' && eol === "\\n") return;
+						formatEach(eolstr[eol]);
 					});
-			});
-		let config = {
-			jsbeautify: [{
-				eol: "\n",
-				indent_with_tabs: true
-		}, ""],
-			editorconfig: [null, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`]
-		};
-		Object.keys(config)
-			.forEach(cfg => {
-				context(`with ${cfg} indent set to 'tab'`, function() {
-					before(() => setupConfigs(config[cfg][0], config[cfg][1]));
-					beautifyEach(['tab', vscode.EndOfLine.LF]);
-					formatEach(['tab', vscode.EndOfLine.LF]);
 				});
+		});
+	let config = {
+		jsbeautify: [{
+			eol: "\n",
+			indent_with_tabs: true
+		}, ""],
+		editorconfig: [null, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`]
+	};
+	Object.keys(config)
+		.forEach(cfg => {
+			context(`with ${cfg} indent set to 'tab'`, function() {
+				before(() => setupConfigs(config[cfg][0], config[cfg][1]));
+				beautifyEach(['tab', vscode.EndOfLine.LF]);
+				formatEach(['tab', vscode.EndOfLine.LF]);
 			});
-		// nested config
-		context('with nested config', function() {
-			before(() => setupConfigs({
+		});
+	// nested config
+	context('with nested config', function() {
+		before(() => setupConfigs({
+			js: {
+				indent_size: 5
+			},
+			css: {
+				indent_size: 4
+			},
+			html: {
+				indent_size: 3
+			},
+			eol: "\r\n",
+			indent_with_tabs: false,
+			indent_size: 2
+		}, ""));
+		beautifyEach(['nested', vscode.EndOfLine.CRLF]);
+		formatEach(['nested', vscode.EndOfLine.CRLF]);
+	});
+
+	context('partial', function() {
+		before(() => setupConfigs({
+			eol: "\r\n",
+			indent_with_tabs: false,
+			indent_size: 2
+		}, ""));
+		beautifyPartialEach(['partial', vscode.EndOfLine.LF]);
+	});
+	context('on save', function() {
+		this.timeout(slow * 4);
+		this.slow(slow * 2);
+		let preconfig;
+		before(() => {
+			preconfig = fs.readFileSync(path.join(__dirname, '.vscode', 'settings.json'), 'utf8');
+			const asObj = JSON.parse(preconfig);
+			asObj["beautify.onSave"] = true;
+			fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(asObj));
+			return setupConfigs({
 				js: {
 					indent_size: 5
 				},
@@ -186,49 +226,12 @@ setTimeout(function() {
 				eol: "\r\n",
 				indent_with_tabs: false,
 				indent_size: 2
-			}, ""));
-			beautifyEach(['nested', vscode.EndOfLine.CRLF]);
-			formatEach(['nested', vscode.EndOfLine.CRLF]);
+			}, "");
 		});
-
-		context('partial', function() {
-			before(() => setupConfigs({
-				eol: "\r\n",
-				indent_with_tabs: false,
-				indent_size: 2
-			}, ""));
-			beautifyPartialEach(['partial', vscode.EndOfLine.LF]);
+		after(() => {
+			fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), preconfig);
+			testData.clean(root);
 		});
-		context('on save', function() {
-			this.timeout(slow * 4);
-			this.slow(slow * 2);
-			let preconfig;
-			before(() => {
-				preconfig = fs.readFileSync(path.join(__dirname, '.vscode', 'settings.json'), 'utf8');
-				const asObj = JSON.parse(preconfig);
-				asObj["beautify.onSave"] = true;
-				fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(asObj));
-				return setupConfigs({
-					js: {
-						indent_size: 5
-					},
-					css: {
-						indent_size: 4
-					},
-					html: {
-						indent_size: 3
-					},
-					eol: "\r\n",
-					indent_with_tabs: false,
-					indent_size: 2
-				}, "");
-			});
-			after(() => {
-				fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), preconfig);
-				testData.clean(root);
-			});
-			doSaveEach(['nested', vscode.EndOfLine.CRLF]);
-		});
+		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
 	});
-	run();
-}, 3000);
+});
