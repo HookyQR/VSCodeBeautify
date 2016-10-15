@@ -6,6 +6,10 @@ install:
   - npm install -g npm
   - npm install
 
+platform:
+  - x86
+  - x64
+
 build: off
 
 test_script:
