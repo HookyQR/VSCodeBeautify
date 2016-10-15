@@ -7,7 +7,7 @@ const vscode = require('vscode'),
 
 const platformSlow = {
 	linux: 800,
-	win32: 1000,
+	win32: 1200,
 	darwin: 1000
 };
 
