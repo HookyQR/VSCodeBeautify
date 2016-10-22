@@ -213,16 +213,10 @@ function beautifyOnSave(doc) {
 }
 
 function formatActiveDocument(ranged) {
-	console.log("Is", ranged ? "ranged" : "not ranged");
 	const active = vscode.window.activeTextEditor;
 	if (!active || !active.document) return;
 	let range = fullRange(active.document);
-	try {
-		if (ranged && active.selection && !active.selection.isEmpty) range = extendRange(active.document, active.selection);
-		if (ranged) console.log(active.selection, range, active.selection.isEmpty ? "empty" : "has some");
-	} catch (e) {
-		console.log(e);
-	}
+	if (ranged && active.selection && !active.selection.isEmpty) range = extendRange(active.document, active.selection);
 	const type = formatters.getFormat(active.document);
 	return beautifyDoc(active.document, range, type)
 		.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);

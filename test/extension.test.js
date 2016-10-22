@@ -237,15 +237,17 @@ describe("VS code beautify", function() {
 	context('issue #60 vscode settings not honoured', function() {
 		let issueDir = path.join(__dirname, 'issues', '60');
 		before(() => vscode.commands.executeCommand('vscode.openFolder', vscode.Uri(issueDir), false)
-			.then(() => fs.renameSync(path.join('..', '.jsbeautifyrc'), path.join('..', '.jsbeautifyrc_hold'))));
+			.then(() => fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc'), path.join(__dirname, '..',
+				'.jsbeautifyrc_hold'))));
+		after(() => fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc_hold'), path.join(__dirname, '..',
+			'.jsbeautifyrc')));
 		it('honours line settings', function() {
 			return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
 				.then(doc => vscode.window.showTextDocument(doc)
-					.then(() =>
-						vscode.commands.executeCommand('HookyQR.beautify')
-						.then(() =>
-							expect(doc.getText())
-							.to.eql("<html>\n\n</html>\n"))));
+					.then(editor => editor.edit(te => te.setEndOfLine(vscode.EndOfLine.LF)))
+					.then(() => vscode.commands.executeCommand('HookyQR.beautify')
+						.then(() => expect(doc.getText())
+							.to.equal("<html>\n\n</html>\n"))));
 		});
 	});
 });
