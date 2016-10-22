@@ -250,40 +250,42 @@ describe("VS code beautify", function() {
 		});
 		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
 	});
-	context('issue #60 vscode settings not honoured', function() {
-		let issueDir = path.join(__dirname, 'issues', '60');
-		const settings = vscode.workspace.getConfiguration();
-		let preSettings = "";
-		const issueSettings = {
-			"files.eol": "\n",
-			"files.autoSave": "onFocusChange",
-			"editor.tabSize": 4,
-			"editor.formatOnSave": false,
-			"editor.trimAutoWhitespace": false,
-			"files.trimTrailingWhitespace": false,
-			"html.format.endWithNewline": true,
-			"html.format.preserveNewLines": true,
-			"html.format.maxPreserveNewLines": null
-		};
-		before(() => {
-			fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc'), path.join(__dirname, '..',
-				'.jsbeautifyrc_hold'));
-			return setupVSConfig(issueSettings)
-				.then(r => (preSettings = r));
-		});
-		after(() => {
-			fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc_hold'), path.join(__dirname, '..',
-				'.jsbeautifyrc'));
-			return resetVSConfig(preSettings);
-		});
+	if (!process.env.APPVEYOR || process.env.Platform !== 'x86') {
+		context('issue #60 vscode settings not honoured', function() {
+			let issueDir = path.join(__dirname, 'issues', '60');
+			const settings = vscode.workspace.getConfiguration();
+			let preSettings = "";
+			const issueSettings = {
+				"files.eol": "\n",
+				"files.autoSave": "onFocusChange",
+				"editor.tabSize": 4,
+				"editor.formatOnSave": false,
+				"editor.trimAutoWhitespace": false,
+				"files.trimTrailingWhitespace": false,
+				"html.format.endWithNewline": true,
+				"html.format.preserveNewLines": true,
+				"html.format.maxPreserveNewLines": null
+			};
+			before(() => {
+				fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc'), path.join(__dirname, '..',
+					'.jsbeautifyrc_hold'));
+				return setupVSConfig(issueSettings)
+					.then(r => (preSettings = r));
+			});
+			after(() => {
+				fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc_hold'), path.join(__dirname, '..',
+					'.jsbeautifyrc'));
+				return resetVSConfig(preSettings);
+			});
 
-		it('honours line settings', function() {
-			return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
-				.then(doc => vscode.window.showTextDocument(doc)
-					.then(editor => editor.edit(te => te.setEndOfLine(vscode.EndOfLine.LF)))
-					.then(() => vscode.commands.executeCommand('HookyQR.beautify')
-						.then(() => expect(doc.getText())
-							.to.equal("<html>\n\n</html>\n"))));
+			it('honours line settings', function() {
+				return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
+					.then(doc => vscode.window.showTextDocument(doc)
+						.then(editor => editor.edit(te => te.setEndOfLine(vscode.EndOfLine.LF)))
+						.then(() => vscode.commands.executeCommand('HookyQR.beautify')
+							.then(() => expect(doc.getText())
+								.to.equal("<html>\n\n</html>\n"))));
+			});
 		});
-	});
+	}
 });
