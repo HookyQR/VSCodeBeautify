@@ -17,5 +17,6 @@
 		},
 		"css": ["css", "scss"],
 		"html": ["htm", "html"]
-	}
+	},
+	"editor.formatOnSave": true
 }

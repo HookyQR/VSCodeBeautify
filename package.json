@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.4.1",
+	"version": "0.5.0",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -38,9 +38,9 @@
 			"title": "Beautify config",
 			"properties": {
 				"beautify.onSave": {
-					"type": ["array", "boolean"],
+					"type": ["array"],
 					"default": false,
-					"description": "Automatically beautify files on save. Set to true to run for all three provided beautifiers. Use array to set indiviaul types to beautify: [\"js\", \"html\", \"css\"]",
+					"description": "Use array to set indiviaul types to beautify: [\"js\", \"html\", \"css\"]. Requires \"editor.formatOnSave\" to be true.",
 					"items": {
 						"type": "string",
 						"enum": ["js", "html", "css"],
@@ -166,9 +166,9 @@
 		}
 	},
 	"dependencies": {
-		"js-beautify": "^1.6.4",
-		"editorconfig": "^0.13.2",
-		"minimatch": "^3.0.0"
+		"js-beautify": "*",
+		"editorconfig": "*",
+		"minimatch": "*"
 	},
 	"devDependencies": {
 		"mocha": "^3.0.0",

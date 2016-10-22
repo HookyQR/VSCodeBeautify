@@ -59,8 +59,9 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		}
 		options.indent_handlebars = html.indentHandlebars;
 		options.indent_inner_html = html.indentInnerHtml;
-		options.max_preserve_newlines = html.maxPreserveNewLines;
+		options.max_preserve_newlines = html.maxPreserveNewLines || 0;
 		options.preserve_newlines = html.preserveNewLines;
+
 		if (typeof html.unformatted === 'string') {
 			options.unformatted = html.unformatted.split(',')
 				.map(s => s.trim());

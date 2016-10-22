@@ -190,12 +190,8 @@ const formatters = new Formatters();
 formatters.configure();
 
 function beautifyOnSave(doc) {
-	if (doc.beautified) {
-		delete doc.beautified;
-		return;
-	}
 	const cfg = vscode.workspace.getConfiguration('beautify');
-	if (!cfg.onSave) return;
+	if (!cfg.onSave) return Promise.reject();
 
 	let matcher = cfg.onSaveIgnore || ["**/*+(.|_|-)min.*"];
 	if (typeof matcher === 'string') matcher = [matcher];
@@ -205,51 +201,43 @@ function beautifyOnSave(doc) {
 			fName.slice(vscode.workspace.rootPath.length);
 			if (fName[0] === '/' || fName[0] === '\\') fName.slice(1);
 		}
-		if (matcher.some(m => minimatch(fName, m))) return;
+		if (matcher.some(m => minimatch(fName, m))) return Promise.reject();
 	}
 
 	const refType = formatters.getFormat(doc);
-	if (!refType) return;
-	if (cfg.onSave === true || (Array.isArray(cfg.onSave) && cfg.onSave.indexOf(refType) >= 0)) {
-		let range = fullRange(doc);
-		//determine a default options
-		return beautifyDoc(doc, range, refType)
-			.then(newText => {
-				let we = new vscode.WorkspaceEdit();
-				we.replace(doc.uri, range, newText);
-				doc.beautified = true;
-				return vscode.workspace.applyEdit(we);
-			})
-			.then(() => doc.save())
-			.then(() => 1, () => 1);
-	}
+	if (!refType) return Promise.reject();
+	if ((Array.isArray(cfg.onSave) && !cfg.onSave.includes(refType))) return Promise.reject();
+	let range = fullRange(doc);
+	//determine a default options
+	return beautifyDoc(doc, range, refType);
 }
 
+function formatActiveDocument(ranged) {
+	console.log("Is", ranged ? "ranged" : "not ranged");
+	const active = vscode.window.activeTextEditor;
+	if (!active || !active.document) return;
+	let range = fullRange(active.document);
+	try {
+		if (ranged && active.selection && !active.selection.isEmpty) range = extendRange(active.document, active.selection);
+		if (ranged) console.log(active.selection, range, active.selection.isEmpty ? "empty" : "has some");
+	} catch (e) {
+		console.log(e);
+	}
+	const type = formatters.getFormat(active.document);
+	return beautifyDoc(active.document, range, type)
+		.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
+}
 //register on activation
 function activate(context) {
-	context.subscriptions.push(vscode.commands.registerCommand('HookyQR.beautify', () => {
-		const active = vscode.window.activeTextEditor;
-		if (!active) return;
-		if (!active.document) return;
-		let range = active.selection;
-		if (range.isEmpty) range = fullRange(active.document);
-		else range = extendRange(active.document, range);
-		const type = formatters.getFormat(active.document);
-		return beautifyDoc(active.document, range, type)
-			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
+	let sub = context.subscriptions;
+	sub.push(vscode.commands.registerCommand('HookyQR.beautify', formatActiveDocument.bind(0, true)));
+	sub.push(vscode.commands.registerCommand('HookyQR.beautifyFile', formatActiveDocument));
+	sub.push(vscode.workspace.onDidChangeConfiguration(formatters.configure.bind(formatters)));
+	sub.push(vscode.workspace.onDidOpenTextDocument(formatters.onFileOpen.bind(formatters)));
+	sub.push(vscode.workspace.onWillSaveTextDocument(e => {
+		let range = fullRange(e.document);
+		e.waitUntil(beautifyOnSave(e.document)
+			.then(newText => [vscode.TextEdit.replace(range, newText)], () => []));
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('HookyQR.beautifyFile', () => {
-		const active = vscode.window.activeTextEditor;
-		if (!active) return;
-		if (!active.document) return;
-		let range = fullRange(active.document);
-		const type = formatters.getFormat(active.document);
-		return beautifyDoc(active.document, range, type)
-			.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
-	}));
-	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(formatters.configure.bind(formatters)));
-	context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(formatters.onFileOpen.bind(formatters)));
-
-	vscode.workspace.onDidSaveTextDocument(beautifyOnSave);
 }
 exports.activate = activate;

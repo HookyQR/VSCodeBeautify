@@ -79,11 +79,10 @@ _Note:_ This used to be controlled by the `beautify.*Files` settings. If you sti
 }
 ```
 
-Beautify on save can be enabled for all, or just specific file types. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
+Beautify on save will be enabled when `"editor.formatOnSave"` is true. You can limit the beautifiers which will be called by setting `"beautify.onSave"` to an array. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
 
 ```javascript
-"beautify.onSave": true, // beautify all matching types using the selected beautifier
-"beautify.onSave": ["js","css"], // only beautify those that match the js and css types
+"beautify.onSave": ["js","css"], // only beautify those that match the js and css beautifiers
 
 "beautify.onSaveIgnore": [
     // don't beautify any file in any 'minified' directory, at any depth:
@@ -98,10 +97,11 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
-### 0.4.1: 15 Oct 2016
-* Stop beautify on save from trying to format unknown types
+### 0.5.0: 22 Oct 2015
+* Remove boolean option for `beautify.onSave` in favour of `"editor.formatOnSave"`
 
-### 0.4.0: 08 Oct 2016
+### 0.4.0 - 0.4.1: 15 Oct 2016
+* Stop beautify on save from trying to format unknown types
 * Change settings structure
 * Reload file association settings when user config is changed
 * Allow beautify of (primary) selected lines only

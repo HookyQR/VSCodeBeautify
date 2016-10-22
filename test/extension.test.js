@@ -207,31 +207,44 @@ describe("VS code beautify", function() {
 	context('on save', function() {
 		this.timeout(slow * 4);
 		this.slow(slow * 2);
-		let preconfig;
+		const config = vscode.workspace.getConfiguration();
+		let revert;
 		before(() => {
-			preconfig = fs.readFileSync(path.join(__dirname, '.vscode', 'settings.json'), 'utf8');
-			const asObj = JSON.parse(preconfig);
-			asObj["beautify.onSave"] = true;
-			fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(asObj));
-			return setupConfigs({
-				js: {
-					indent_size: 5
-				},
-				css: {
-					indent_size: 4
-				},
-				html: {
-					indent_size: 3
-				},
-				eol: "\r\n",
-				indent_with_tabs: false,
-				indent_size: 2
-			}, "");
+			revert = config.get("editor.formatOnSave");
+
+			return config.update("editor.formatOnSave", true)
+				.then(() => setupConfigs({
+					js: {
+						indent_size: 5
+					},
+					css: {
+						indent_size: 4
+					},
+					html: {
+						indent_size: 3
+					},
+					eol: "\r\n",
+					indent_with_tabs: false,
+					indent_size: 2
+				}, ""));
 		});
 		after(() => {
-			fs.writeFileSync(path.join(__dirname, '.vscode', 'settings.json'), preconfig);
+			config.update("editor.formatOnSave", revert);
 			testData.clean(root);
 		});
 		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
+	});
+	context('issue #60 vscode settings not honoured', function() {
+		let issueDir = path.join(__dirname, 'issues', '60');
+		before(() => vscode.commands.executeCommand('vscode.openFolder', vscode.Uri(issueDir), false));
+		it('honours line settings', function() {
+			return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
+				.then(doc => vscode.window.showTextDocument(doc)
+					.then(() =>
+						vscode.commands.executeCommand('HookyQR.beautify')
+						.then(() =>
+							expect(doc.getText())
+							.to.eql("<html>\n\n</html>\n"))));
+		});
 	});
 });
