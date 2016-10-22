@@ -29,6 +29,7 @@ const setupVSConfig = toSet => {
 			opts[a] = toSet[a];
 		}
 		fs.writeFile(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(opts), () => lag()
+			.then(() => lag())
 			.then(() => resolve(d.toString())));
 	}));
 };
