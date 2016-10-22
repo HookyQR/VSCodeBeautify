@@ -169,8 +169,10 @@ describe("VS code beautify", function() {
 					context(`with ${cfg} cr set to '${JSON.stringify(eol)}'`, function() {
 						before(() => setupConfigs(config[cfg][0], config[cfg][1]));
 						beautifyEach(eolstr[eol]);
-						//this combo doesn't work on AV. Seems there's another formatter being called
-						//if (process.platform === 'win32' && cfg === 'vs code' && eol === "\n") return;
+						// this combo doesn't work on AV.
+						// There are some conversion errors that seem to happen in
+						// the editor.
+						if (process.platform === 'win32' && cfg === 'vs code' && eol === "\n") return;
 						formatEach(eolstr[eol]);
 					});
 				});
