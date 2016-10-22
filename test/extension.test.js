@@ -236,7 +236,8 @@ describe("VS code beautify", function() {
 	});
 	context('issue #60 vscode settings not honoured', function() {
 		let issueDir = path.join(__dirname, 'issues', '60');
-		before(() => vscode.commands.executeCommand('vscode.openFolder', vscode.Uri(issueDir), false));
+		before(() => vscode.commands.executeCommand('vscode.openFolder', vscode.Uri(issueDir), false)
+			.then(() => fs.renameSync(path.join('..', '.jsbeautifyrc'), path.join('..', '.jsbeautifyrc_hold'))));
 		it('honours line settings', function() {
 			return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
 				.then(doc => vscode.window.showTextDocument(doc)
