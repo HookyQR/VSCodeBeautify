@@ -22,6 +22,20 @@ const setupConfigs = (beautify, editor) => {
 	return lag();
 };
 
+const setupVSConfig = toSet => {
+	return new Promise(resolve => fs.readFile(path.join(__dirname, '.vscode', 'settings.json'), (e, d) => {
+		let opts = JSON.parse(d.toString());
+		for (let a in toSet) {
+			opts[a] = toSet[a];
+		}
+		fs.writeFile(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(opts), () => lag()
+			.then(() => resolve(d.toString())));
+	}));
+};
+
+const resetVSConfig = cfgString => {
+	return new Promise(resolve => fs.writeFile(path.join(__dirname, '.vscode', 'settings.json'), cfgString, resolve));
+};
 vscode.window.onDidChangeActiveTextEditor(editor => {
 	if (!editor.document.test || !editor.document.test.eol) return;
 	const doc = editor.document;
@@ -137,14 +151,14 @@ describe("VS code beautify", function() {
 	});
 
 	let eolstr = {
-		"\\n": ["lf", vscode.EndOfLine.LF],
-		"\\r\\n": ["crlf", vscode.EndOfLine.CRLF]
+		"\n": ["lf", vscode.EndOfLine.LF],
+		"\r\n": ["crlf", vscode.EndOfLine.CRLF]
 	};
 	Object.keys(eolstr)
 		.forEach(eol => {
 			let config = {
 				jsbeautify: [{
-					eol: eol
+					eol
 					}, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`],
 				editorconfig: [null,
 					`root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`],
@@ -152,11 +166,11 @@ describe("VS code beautify", function() {
 			};
 			Object.keys(config)
 				.forEach(cfg => {
-					context(`with ${cfg} cr set to '${eol}'`, function() {
+					context(`with ${cfg} cr set to '${JSON.stringify(eol)}'`, function() {
 						before(() => setupConfigs(config[cfg][0], config[cfg][1]));
 						beautifyEach(eolstr[eol]);
 						//this combo doesn't work on AV. Seems there's another formatter being called
-						if (process.platform === 'win32' && cfg === 'vs code' && eol === "\\n") return;
+						//if (process.platform === 'win32' && cfg === 'vs code' && eol === "\n") return;
 						formatEach(eolstr[eol]);
 					});
 				});
@@ -211,7 +225,6 @@ describe("VS code beautify", function() {
 		let revert;
 		before(() => {
 			revert = config.get("editor.formatOnSave");
-
 			return config.update("editor.formatOnSave", true)
 				.then(() => setupConfigs({
 					js: {
@@ -236,11 +249,31 @@ describe("VS code beautify", function() {
 	});
 	context('issue #60 vscode settings not honoured', function() {
 		let issueDir = path.join(__dirname, 'issues', '60');
-		before(() => vscode.commands.executeCommand('vscode.openFolder', vscode.Uri(issueDir), false)
-			.then(() => fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc'), path.join(__dirname, '..',
-				'.jsbeautifyrc_hold'))));
-		after(() => fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc_hold'), path.join(__dirname, '..',
-			'.jsbeautifyrc')));
+		const settings = vscode.workspace.getConfiguration();
+		let preSettings = "";
+		const issueSettings = {
+			"files.eol": "\n",
+			"files.autoSave": "onFocusChange",
+			"editor.tabSize": 4,
+			"editor.formatOnSave": false,
+			"editor.trimAutoWhitespace": false,
+			"files.trimTrailingWhitespace": false,
+			"html.format.endWithNewline": true,
+			"html.format.preserveNewLines": true,
+			"html.format.maxPreserveNewLines": null
+		};
+		before(() => {
+			fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc'), path.join(__dirname, '..',
+				'.jsbeautifyrc_hold'));
+			return setupVSConfig(issueSettings)
+				.then(r => (preSettings = r));
+		});
+		after(() => {
+			fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc_hold'), path.join(__dirname, '..',
+				'.jsbeautifyrc'));
+			return resetVSConfig(preSettings);
+		});
+
 		it('honours line settings', function() {
 			return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
 				.then(doc => vscode.window.showTextDocument(doc)

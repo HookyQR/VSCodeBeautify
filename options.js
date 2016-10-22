@@ -34,7 +34,7 @@ const findRecursive = (dir, fileName) => {
 };
 
 const optionsFromVSCode = (doc, formattingOptions, type) => {
-	const fileFormat = vscode.workspace.getConfiguration('files');
+	const config = vscode.workspace.getConfiguration();
 	if (!formattingOptions) {
 		formattingOptions = vscode.workspace.getConfiguration('editor');
 		//if this document is open, use the settings from that window
@@ -49,28 +49,28 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		indent_size: formattingOptions.tabSize,
 		indent_char: ' '
 	};
-	if (fileFormat.eol) options.eol = fileFormat.eol;
+	options.eol = config.files.eol;
 	if (type === 'html') {
-		const html = vscode.workspace.getConfiguration('html.format');
-		options.end_with_newline = html.endWithNewline;
-		if (typeof html.extra_liners === 'string') {
-			options.extra_liners = html.extraLiners.split(',')
+		options.end_with_newline = config.html.format.endWithNewline;
+		if (typeof config.html.format.extra_liners === 'string') {
+			options.extra_liners = config.html.format.extraLiners
+				.split(',')
 				.map(s => s.trim());
 		}
-		options.indent_handlebars = html.indentHandlebars;
-		options.indent_inner_html = html.indentInnerHtml;
-		options.max_preserve_newlines = html.maxPreserveNewLines || 0;
-		options.preserve_newlines = html.preserveNewLines;
+		options.indent_handlebars = config.html.format.indentHandlebars;
+		options.indent_inner_html = config.html.format.indentInnerHtml;
+		options.max_preserve_newlines = config.html.format.maxPreserveNewLines || 0;
+		options.preserve_newlines = config.html.format.preserveNewLines;
 
-		if (typeof html.unformatted === 'string') {
-			options.unformatted = html.unformatted.split(',')
+		if (typeof config.html.format.unformatted === 'string') {
+			options.unformatted = config.html.format.unformatted
+				.split(',')
 				.map(s => s.trim());
 		}
-		options.wrap_line_length = html.wrapLineLength;
+		options.wrap_line_length = config.html.format.wrapLineLength;
 	}
-	const js = vscode.workspace.getConfiguration('javascript.format');
-	options.space_after_anon_function = js.insertSpaceAfterFunctionKeywordForAnonymousFunctions;
-	options.space_in_paren = js.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis;
+	options.space_after_anon_function = config.javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions;
+	options.space_in_paren = config.javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis;
 	return options;
 };
 
