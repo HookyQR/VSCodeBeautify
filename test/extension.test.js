@@ -7,6 +7,7 @@ const vscode = require('vscode'),
 	os = require('os');
 
 const slow = 10 * (1000000 / os.cpus()
+	.slice(0, 4)
 	.reduce((t, cpu) => t + cpu.speed, 0)) | 0;
 
 const root = path.join(__dirname, 'data', '');
