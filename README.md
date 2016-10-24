@@ -96,10 +96,13 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
-### 0.5.1: 24 Oct 2015
+### 0.5.2: 24 Oct 2016
+* Fix readme typo
+
+### 0.5.1: 24 Oct 2016
 * Remove requirement for `beautify.editorconfig` flag
 
-### 0.5.0: 22 Oct 2015
+### 0.5.0: 22 Oct 2016
 * Remove boolean option for `beautify.onSave` in favour of `"editor.formatOnSave"`
 
 ### 0.4.0 - 0.4.1: 15 Oct 2016
