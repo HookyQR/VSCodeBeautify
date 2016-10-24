@@ -52,11 +52,6 @@
 					"description": "Set path/file matchers to ignore when attempting to beautify on save. Uses glob path matching.",
 					"default": ["**/*+(.|_|-)min.*"]
 				},
-				"beautify.editorconfig": {
-					"type": "boolean",
-					"default": false,
-					"description": "Use `.editorconfig` settings"
-				},
 				"beautify.language": {
 					"type": "object",
 					"description": "Link file types to the beautifier type",

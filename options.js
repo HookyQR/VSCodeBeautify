@@ -119,8 +119,7 @@ module.exports = (doc, type, formattingOptions) => {
 	let base = vscode.workspace.rootPath;
 	let opts = optionsFromVSCode(doc, formattingOptions, type);
 	let configFile;
-	if (vscode.workspace.getConfiguration('beautify')
-		.editorconfig) set_file_editorconfig_opts(doc.fileName, opts);
+	set_file_editorconfig_opts(doc.fileName, opts); // this does nothing if no ec file was found
 	if (!doc.isUntitled) base = path.dirname(doc.fileName);
 	if (base) configFile = findRecursive(base, '.jsbeautifyrc');
 	if (!configFile) {

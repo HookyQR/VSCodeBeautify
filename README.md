@@ -15,9 +15,8 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 otherwise...
 
 3. Settings are translated from your VS Code workspace/user setttings.
-4. Any current editor settings (indent spaces/tabs, line ending) are merged in.
-5. If **`"beautify.editorconfig"` is set to `true`**: editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
-
+4. Any open editor settings (indent spaces/tabs, line ending) for the specific file are merged in.
+5. Editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
 
 ### VS Code | .jsbeautifyrc settings map:
 
@@ -37,7 +36,7 @@ extra_liners                  | html.format.extraLiners
 space_after_anon_function | javascript.format<br> .insertSpaceAfterFunctionKeywordForAnonymousFunctions
 space_in_paren | javascript.format<br> .insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis
 
-Note that the `html.format` settings will ONLY be used when the document is html.
+Note that the `html.format` settings will ONLY be used when the document is html. `javascript.format` settings are included always.
 
 Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
 
@@ -97,6 +96,9 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 Embedded version of js-beautify is v1.6.4.
 
 ## Changes:
+### 0.5.1: 24 Oct 2015
+* Remove requirement for `beautify.editorconfig` flag
+
 ### 0.5.0: 22 Oct 2015
 * Remove boolean option for `beautify.onSave` in favour of `"editor.formatOnSave"`
 
