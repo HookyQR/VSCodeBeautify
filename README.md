@@ -95,6 +95,17 @@ If you wish to exclude the files that are included by default, set `"beautify.on
 
 Embedded version of js-beautify is v1.6.4.
 
+### Keyboard Shortcut  
+Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.
+
+```
+{
+  "key": "cmd+b",
+  "command": "HookyQR.beautify",
+  "when": "editorFocus"
+}
+```
+
 ## Changes:
 ### 0.5.2: 24 Oct 2016
 * Fix readme typo
