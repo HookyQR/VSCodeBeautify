@@ -248,7 +248,10 @@ describe("VS code beautify", function() {
 		});
 		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
 	});
-	if (!process.env.APPVEYOR || process.env.Platform !== 'x86') {
+	if (!process.env.APPVEYOR) {
+		// annoyingly, this issue is logged against Windows, but Appveyour just doesn't seem to update the settings
+		// quick enough to set the line endings and the end with new line settings needed for the test.
+		// I've run it on my local machines (x64 & x86) with no problems. Go figure
 		context('issue #60 vscode settings not honoured', function() {
 			let issueDir = path.join(__dirname, 'issues', '60');
 			let preSettings = "";
