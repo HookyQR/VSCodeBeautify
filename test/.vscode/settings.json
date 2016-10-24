@@ -18,6 +18,6 @@
 		"css": ["css", "scss"],
 		"html": ["htm", "html"]
 	},
-    "html.format.unformatted": "a, var",
+	"html.format.unformatted": "a, var",
 	"editor.formatOnSave": true
 }

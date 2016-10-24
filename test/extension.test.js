@@ -3,18 +3,15 @@ const vscode = require('vscode'),
 	expect = require('expect.js'),
 	path = require('path'),
 	fs = require('fs'),
-	testData = require('./testData');
+	testData = require('./testData'),
+	os = require('os');
 
-const platformSlow = {
-	linux: 800,
-	win32: 1200,
-	darwin: 1000
-};
+const slow = 10 * (1000000 / os.cpus()
+	.reduce((t, cpu) => t + cpu.speed, 0)) | 0;
 
-const slow = platformSlow[process.platform];
 const root = path.join(__dirname, 'data', '');
 
-const lag = () => new Promise(resolve => setTimeout(resolve, slow / 3 | 0));
+const lag = () => new Promise(resolve => setTimeout(resolve, slow / 4 | 0));
 
 const setupConfigs = (beautify, editor) => {
 	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify ? JSON.stringify(beautify) : '');
@@ -37,6 +34,7 @@ const setupVSConfig = toSet => {
 const resetVSConfig = cfgString => {
 	return new Promise(resolve => fs.writeFile(path.join(__dirname, '.vscode', 'settings.json'), cfgString, resolve));
 };
+
 vscode.window.onDidChangeActiveTextEditor(editor => {
 	if (!editor.document.test || !editor.document.test.eol) return;
 	const doc = editor.document;
@@ -51,8 +49,6 @@ vscode.window.onDidChangeActiveTextEditor(editor => {
 		.then(() => {
 			return vscode.commands.executeCommand(cmd)
 				.then(() => {
-					// somehow, calling this stops the timeout errors. Go figure
-					const t = process.hrtime(doc.test.t); //jshint -W098
 					const txt = doc.getText();
 					return vscode.commands.executeCommand('workbench.action.closeAllEditors')
 						.then(() => resolve(txt));
@@ -159,15 +155,16 @@ describe("VS code beautify", function() {
 		.forEach(eol => {
 			let config = {
 				jsbeautify: [{
+					indent_size: 4,
 					eol
-					}, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`],
+					}, null],
 				editorconfig: [null,
 					`root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`],
 				'vs code': [null, ""]
 			};
 			Object.keys(config)
 				.forEach(cfg => {
-					context(`with ${cfg} cr set to '${JSON.stringify(eol)}'`, function() {
+					context(`with ${cfg} cr set to ${JSON.stringify(eol)}`, function() {
 						before(() => setupConfigs(config[cfg][0], config[cfg][1]));
 						beautifyEach(eolstr[eol]);
 						// this combo doesn't work on AV.
@@ -253,7 +250,6 @@ describe("VS code beautify", function() {
 	if (!process.env.APPVEYOR || process.env.Platform !== 'x86') {
 		context('issue #60 vscode settings not honoured', function() {
 			let issueDir = path.join(__dirname, 'issues', '60');
-			const settings = vscode.workspace.getConfiguration();
 			let preSettings = "";
 			const issueSettings = {
 				"files.eol": "\n",
