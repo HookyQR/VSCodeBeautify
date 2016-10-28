@@ -98,7 +98,7 @@ Embedded version of js-beautify is v1.6.4.
 ### Keyboard Shortcut  
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.
 
-```
+```javascript
 {
   "key": "cmd+b",
   "command": "HookyQR.beautify",
