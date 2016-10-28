@@ -7,7 +7,7 @@
 	"engines": {
 		"vscode": "^0.10.1"
 	},
-	"categories": ["Other", "Languages"],
+	"categories": ["Other", "Languages", "Formatters"],
 	"activationEvents": ["*"],
 	"icon": "icon.svg",
 	"galleryBanner": {
