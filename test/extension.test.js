@@ -82,7 +82,7 @@ const getPartialBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beau
 }, name, eol);
 
 const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautifyFile', null, name, eol);
-const getFormattedText = (name, eol) => executeWithCommand('editor.action.format', null, name, eol);
+const getFormattedText = (name, eol) => executeWithCommand('editor.action.formatDocument', null, name, eol);
 
 const getOnSaveText = (name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => vscode.window.showTextDocument(doc)
