@@ -11,19 +11,20 @@ c//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 			<path fill="#D500DF" d="M0,0 C-2,0 -2,-20 0,-20 C2,-20, 2,0 0,0" />
 		</g>
 		<g id="main">
-			<use xlink:href="#bracket" />
-			<use transform="matrix(-1 0 0 1 124 0)" xlink:href="#bracket" />
+			<use xlink:href="#bracket" transform="translate(-6)" />
+			<use transform="matrix(-1 0 0 1 118 0)" xlink:href="#bracket" />
 			<g text-anchor="middle" font-size="16" font-weight="bold" font-family="monospace">
-				<text x="62" y="39">js</text>
-				<text x="62" y="56">json</text>
-				<text x="62" y="73">html</text>
-				<text x="62" y="89">css</text>
-				<text x="62" y="105">scss</text>
+				<text x="56" y="39">js</text>
+				<text x="56" y="56">json</text>
+				<text x="56" y="73">html</text>
+				<text x="56" y="89">css</text>
+				<text x="56" y="105">scss</text>
 			</g>
 		</g>
 	</def>
+	<rect x="0" y="0" width="128" height="128" rx="16" ry="16" fill="#e8e030" />
 	<use xlink:href="#main" />
-	<g transform="matrix(0.75 0 0 0.75 104 30)">
+	<g transform="matrix(0.75 0 0 0.75 100 30)">
 		<use transform="rotate(0)" xlink:href="#pet" />
 		<use transform="rotate(72)" xlink:href="#pet" />
 		<use transform="rotate(144)" xlink:href="#pet" />
