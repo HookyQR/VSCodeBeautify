@@ -2,13 +2,19 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.5.4",
+	"version": "0.5.5",
 	"publisher": "HookyQR",
 	"engines": {
 		"vscode": "^1.6.0"
 	},
-	"categories": ["Other", "Languages", "Formatters"],
-	"activationEvents": ["*"],
+	"categories": [
+		"Other",
+		"Languages",
+		"Formatters"
+	],
+	"activationEvents": [
+		"*"
+	],
 	"icon": "icon.svg",
 	"galleryBanner": {
 		"color": "#e8e030",
@@ -17,55 +23,92 @@
 	"license": "MIT",
 	"main": "./extension",
 	"contributes": {
-		"languages": [{
-			"id": "json",
-			"aliases": ["JSON"],
-			"filenames": [".jsbeautifyrc", ".jshintrc"]
-		}],
-		"jsonValidation": [{
-			"fileMatch": ".jsbeautifyrc",
-			"url": "./schema/beautifyrc.json"
-		}],
-		"commands": [{
-			"command": "HookyQR.beautify",
-			"title": "Beautify selection"
-		}, {
-			"command": "HookyQR.beautifyFile",
-			"title": "Beautify file"
-		}],
+		"languages": [
+			{
+				"id": "json",
+				"aliases": [
+					"JSON"
+				],
+				"filenames": [
+					".jsbeautifyrc",
+					".jshintrc"
+				]
+			}
+		],
+		"jsonValidation": [
+			{
+				"fileMatch": ".jsbeautifyrc",
+				"url": "./schema/beautifyrc.json"
+			}
+		],
+		"commands": [
+			{
+				"command": "HookyQR.beautify",
+				"title": "Beautify selection"
+			},
+			{
+				"command": "HookyQR.beautifyFile",
+				"title": "Beautify file"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "Beautify config",
 			"properties": {
 				"beautify.onSave": {
-					"type": ["array"],
+					"type": [
+						"array"
+					],
 					"default": false,
 					"description": "Use array to set indiviaul types to beautify: [\"js\", \"html\", \"css\"]. Requires \"editor.formatOnSave\" to be true.",
 					"items": {
 						"type": "string",
-						"enum": ["js", "html", "css"],
+						"enum": [
+							"js",
+							"html",
+							"css"
+						],
 						"description": "Set to beautify only provided types on save."
 					}
 				},
 				"beautify.onSaveIgnore": {
-					"type": ["array"],
+					"type": [
+						"array"
+					],
 					"description": "Set path/file matchers to ignore when attempting to beautify on save. Uses glob path matching.",
-					"default": ["**/*+(.|_|-)min.*"]
+					"default": [
+						"**/*+(.|_|-)min.*"
+					]
 				},
 				"beautify.language": {
 					"type": "object",
 					"description": "Link file types to the beautifier type",
 					"default": {
 						"js": {
-							"type": ["javascript", "json"],
-							"filename": [".jshintrc", ".jsbeautify"]
+							"type": [
+								"javascript",
+								"json"
+							],
+							"filename": [
+								".jshintrc",
+								".jsbeautify"
+							]
 						},
-						"css": ["css", "scss"],
-						"html": ["htm", "html"]
+						"css": [
+							"css",
+							"scss"
+						],
+						"html": [
+							"htm",
+							"html"
+						]
 					},
 					"properties": {
 						"js": {
-							"type": ["object", "array"],
+							"type": [
+								"object",
+								"array"
+							],
 							"items": {
 								"type": "string"
 							},
@@ -95,7 +138,10 @@
 							}
 						},
 						"css": {
-							"type": ["object", "array"],
+							"type": [
+								"object",
+								"array"
+							],
 							"items": {
 								"type": "string"
 							},
@@ -125,7 +171,10 @@
 							}
 						},
 						"html": {
-							"type": ["object", "array"],
+							"type": [
+								"object",
+								"array"
+							],
 							"items": {
 								"type": "string"
 							},
@@ -156,7 +205,6 @@
 						}
 					}
 				}
-
 			}
 		}
 	},

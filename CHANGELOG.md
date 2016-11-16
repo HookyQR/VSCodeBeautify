@@ -1,3 +1,6 @@
+### 0.5.5: 16 Nov 2016
+* Change setting retrieval mechanism. Fixes [#70 Compatibility with 1.8 Insiders](https://github.com/HookyQR/VSCodeBeautify/issues/70)
+
 ### 0.5.4: 05 Nov 2016
 * Move changelog per VS Code 1.7 workings
 * Change icon so it is visible on dark theme

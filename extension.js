@@ -107,8 +107,8 @@ class Formatters {
 		}
 	}
 	configure() {
-		let cfg = vscode.workspace.getConfiguration('beautify.language');
 		let beautifyCfg = vscode.workspace.getConfiguration('beautify');
+		let cfg = beautifyCfg.language;
 		let js = beautifyCfg.JSFiles;
 		let css = beautifyCfg.CSSFiles;
 		let html = beautifyCfg.HTMLFiles;
