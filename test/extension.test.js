@@ -20,23 +20,6 @@ const setupConfigs = (beautify, editor) => {
 	return lag();
 };
 
-const setupVSConfig = toSet => {
-	return new Promise(resolve => fs.readFile(path.join(__dirname, '.vscode', 'settings.json'), (e, d) => {
-		let opts = JSON.parse(d.toString());
-		for (let a in toSet) {
-			opts[a] = toSet[a];
-		}
-		fs.writeFile(path.join(__dirname, '.vscode', 'settings.json'), JSON.stringify(opts), () => lag()
-			.then(() => lag())
-			.then(() => lag())
-			.then(() => resolve(d.toString())));
-	}));
-};
-
-const resetVSConfig = cfgString => {
-	return new Promise(resolve => fs.writeFile(path.join(__dirname, '.vscode', 'settings.json'), cfgString, resolve));
-};
-
 vscode.window.onDidChangeActiveTextEditor(editor => {
 	if (!editor.document.test || !editor.document.test.eol) return;
 	const doc = editor.document;
@@ -249,44 +232,4 @@ describe("VS code beautify", function() {
 		});
 		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
 	});
-	if (!process.env.APPVEYOR) {
-		// annoyingly, this issue is logged against Windows, but Appveyour just doesn't seem to update the settings
-		// quick enough to set the line endings and the end with new line settings needed for the test.
-		// I've run it on my local machines (x64 & x86) with no problems. Go figure
-		context('issue #60 vscode settings not honoured', function() {
-			let issueDir = path.join(__dirname, 'issues', '60');
-			let preSettings = "";
-			const issueSettings = {
-				"files.eol": "\n",
-				"files.autoSave": "onFocusChange",
-				"editor.tabSize": 4,
-				"editor.formatOnSave": false,
-				"editor.trimAutoWhitespace": false,
-				"files.trimTrailingWhitespace": false,
-				"html.format.endWithNewline": true,
-				"html.format.preserveNewLines": true,
-				"html.format.maxPreserveNewLines": null
-			};
-			before(() => {
-				fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc'), path.join(__dirname, '..',
-					'.jsbeautifyrc_hold'));
-				return setupVSConfig(issueSettings)
-					.then(r => (preSettings = r));
-			});
-			after(() => {
-				fs.renameSync(path.join(__dirname, '..', '.jsbeautifyrc_hold'), path.join(__dirname, '..',
-					'.jsbeautifyrc'));
-				return resetVSConfig(preSettings);
-			});
-
-			it('honours line settings', function() {
-				return vscode.workspace.openTextDocument(path.join(issueDir, '60.html'))
-					.then(doc => vscode.window.showTextDocument(doc)
-						.then(editor => editor.edit(te => te.setEndOfLine(vscode.EndOfLine.LF)))
-						.then(() => vscode.commands.executeCommand('HookyQR.beautify')
-							.then(() => expect(doc.getText())
-								.to.equal("<html>\n\n</html>\n"))));
-			});
-		});
-	}
 });
