@@ -1,22 +1,17 @@
-### 0.5.5: 16 Nov 2016
-* Change setting retrieval mechanism. Fixes [#70 Compatibility with 1.8 Insiders](https://github.com/HookyQR/VSCodeBeautify/issues/70)
+### 0.6.0: 26 Nov 2016
+* Remove ***onSaveIgnore*** setting as it won't work with the VS Code formatOnSave setting
+* Remove redundant format call on save
+* Add [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md) help file
 
-### 0.5.4: 05 Nov 2016
+### 0.5.0 - 0.5.5: 16 Nov 2016
+* Change setting retrieval mechanism. Fixes [#70 Compatibility with 1.8 Insiders](https://github.com/HookyQR/VSCodeBeautify/issues/70)
 * Move changelog per VS Code 1.7 workings
 * Change icon so it is visible on dark theme
-
-### 0.5.3: 29 Oct 2016
 * Add to formatters category
 * Add shortcut example (PR #63) Thanks @Tallyb
 * Fix VSCode minimum version requirement
-
-### 0.5.2: 24 Oct 2016
 * Fix readme typo
-
-### 0.5.1: 24 Oct 2016
 * Remove requirement for `beautify.editorconfig` flag
-
-### 0.5.0: 22 Oct 2016
 * Remove boolean option for `beautify.onSave` in favour of `"editor.formatOnSave"`
 
 ### 0.4.0 - 0.4.1: 15 Oct 2016

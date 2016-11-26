@@ -7,6 +7,8 @@ Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
 VS Code uses js-beautify internally, but it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify` (to beautify a selection) or **F1** `Beautify file`.
 
+For help on the settings in the `.jsbeautifyrc` see [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md)
+
 ### How we determine what settings to use:
 
 1. If there is a valid `.jsbeautifyrc` in the file's path tree, these will be the only settings used.
@@ -15,7 +17,7 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 otherwise...
 
 3. Settings are translated from your VS Code workspace/user setttings.
-4. Any open editor settings (indent spaces/tabs, line ending) for the specific file are merged in.
+4. Any open editor settings (indent spaces/tabs) for the specific file are merged in.
 5. Editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
 
 ### VS Code | .jsbeautifyrc settings map:
@@ -54,7 +56,7 @@ Settings are inherited from the base of the file. Thus:
 }
 ```
 
-Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for css. All will get the same `indent_char` setting.
+Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for CSS. All will get the same `indent_char` setting.
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
@@ -78,20 +80,7 @@ _Note:_ This used to be controlled by the `beautify.*Files` settings. If you sti
 }
 ```
 
-Beautify on save will be enabled when `"editor.formatOnSave"` is true. You can limit the beautifiers which will be called by setting `"beautify.onSave"` to an array. Files that you do not wish to be beautified can be excluded in the user or workspace settings files. Settings examples:
-
-```javascript
-"beautify.onSave": ["js","css"], // only beautify those that match the js and css beautifiers
-
-"beautify.onSaveIgnore": [
-    // don't beautify any file in any 'minified' directory, at any depth:
-    "**/minified/**",
-    // don't minify any file that contains '.min.', '_min.', '-min.' in the filename (This is the default ignore setting):
-    "**/*+(.|_|-)min.*",
-  ]
-```
-
-If you wish to exclude the files that are included by default, set `"beautify.onSaveIgnore" = []`. The onSaveIgnore settings does not stop a manual execution of beautify working.
+Beautify on save will be enabled when `"editor.formatOnSave"` is true.
 
 Embedded version of js-beautify is v1.6.4.
 

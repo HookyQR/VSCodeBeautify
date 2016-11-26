@@ -20,7 +20,7 @@
 				"eol": {
 					"description": "Character(s) to use as line terminators. [JS,CSS,HTML]",
 					"type": "string",
-					"default": "\\n"
+					"default": "\n"
 				},
 				"indent_level": {
 					"description": "Initial indentation level. [JS]",
@@ -153,9 +153,9 @@
 				},
 				"operator_position": {
 					"description": "Move operators to before or after a new line, or keep as is. [JS]",
-					"type": "array",
+					"type": "string",
 					"enum": ["before-newline", "after-newline", "preserve-newline"],
-					"default": false
+					"default": "before-newline"
 				},
 				"e4x": {
 					"description": "Pass E4X xml literals through untouched. [JS]",
