@@ -21,6 +21,18 @@ const getBeautifyType = () => {
 		}, () => 0));
 };
 
+// This is a fudge work around that shouldn't be required
+const fixEol = (doc, config) => {
+	// getText will always give us the
+	// line endings as set in the editor
+	const txt = doc.getText();
+	const lfPos = txt.indexOf('\n', 1);
+	// if there isn't one, the safest setting is LF
+	if (lfPos < 0 || txt[lfPos - 1] !== '\r') config.eol = '\n';
+	else config.eol = '\r\n';
+	return config;
+};
+
 const beautifyDoc = (doc, range, type, formattingOptions) => {
 	if (!doc) {
 		vscode.window.showInformationMessage(
@@ -29,8 +41,8 @@ const beautifyDoc = (doc, range, type, formattingOptions) => {
 	}
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
-			.then(config => beautify[type](doc.getText(range), config)))
-		.then(txt => txt);
+			.then(config => fixEol(doc, config))
+			.then(config => beautify[type](doc.getText(range), config)));
 };
 
 const documentEdit = (range, newText) => [vscode.TextEdit.replace(range, newText)];
@@ -169,6 +181,7 @@ const formatActiveDocument = ranged => {
 	return beautifyDoc(active.document, range, type)
 		.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
 };
+
 //register on activation
 exports.activate = (context) => {
 	let sub = context.subscriptions;
