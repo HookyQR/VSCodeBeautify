@@ -1,10 +1,11 @@
-### 0.6.2: 28 Nov 2016
+### 0.7.0: 04 Jan 2016
+* Bump js-beautify version to 1.6.8
+  * _*Note:* This changes the default settings for `"unformatted"` and adds the `"content_unformatted"` option._
+* Refactor schema to improve maintainability.
+
+### 0.60 - 0.6.2: 28 Nov 2016
 * Force eol to document setting in editor.
-
-### 0.6.1: 28 Nov 2016
 * Put back redundant call on save until the textEdit fix is in VS Code (hopefully 1.8.0)
-
-### 0.6.0: 26 Nov 2016
 * Remove ***onSaveIgnore*** setting as it won't work with the VS Code formatOnSave setting
 * Remove redundant format call on save
 * Add [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md) help file
