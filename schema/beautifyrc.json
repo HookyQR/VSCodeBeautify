@@ -48,10 +48,11 @@
 					"default": 10
 				},
 				"brace_style": {
-					"description": "[collapse-preserve-inline|collapse|expand|end-expand|none] [JS,HTML]",
+					"description": "[collapse|collapse|expand|end-expand|none][,preserve-inline]  [JS,HTML]",
 					"type": "string",
 					"default": "collapse",
-					"enum": ["collapse-preserve-inline", "collapse", "expand", "end-expand", "none"]
+					"enum": ["collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline",
+						"end-expand,preserve-inline", "none,preserve-inline"]
 				},
 				"wrap_line_length": {
 					"description": "Wrap lines at next opportunity after N characters. [JS,HTML]",

@@ -7,7 +7,7 @@ end_with_newline                | _All_     |  [Boolean] **Ensure newline at end
 indent_char                     | _All_     |  [String] **Indentation character.** <br> " "
 indent_size                     | _All_     |  [Integer] **Indent size.** <br> 4
 indent_with_tabs                | _All_     |  [Boolean] **Indent with tabs, overrides 'indent_size' and 'indent_char'** <br> false
-brace_style                     | JS, HTML  |  [String] **"collapse-preserve-inline", "collapse", "expand", "end-expand", or "none"** <br> "collapse"
+brace_style                     | JS, HTML  |  [String] **"collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline", "end-expand,preserve-inline", or "none,preserve-inline"** <br> "collapse"
 max_preserve_newlines           | JS, HTML  |  [Integer] **Number of line-breaks to be preserved in one chunk.** <br> 10
 preserve_newlines               | JS, HTML  |  [Boolean] **Preserve line-breaks.** <br> true
 wrap_line_length                | JS, HTML  |  [Integer] **Wrap lines at next opportunity after N characters. (Set zero to ignore wrapping)** <br> 0
