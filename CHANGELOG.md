@@ -1,4 +1,4 @@
-### 0.7.0: 04 Jan 2016
+### 0.7.0: 04 Jan 2017
 * Bump js-beautify version to 1.6.8
   * _*Note:* This changes the default settings for `"unformatted"` and adds the `"content_unformatted"` option._
 * Refactor schema to improve maintainability.
