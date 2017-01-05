@@ -1,4 +1,7 @@
-### 0.7.1: 05 Jan 2017
+### 0.7.3: 06 Jan 2017
+* Change `force-align` to `force-aligned` in schema
+
+### 0.7.2: 05 Jan 2017
 * Fix packaging failure
 
 ### 0.7.1: 04 Jan 2017

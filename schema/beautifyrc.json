@@ -93,7 +93,7 @@
 					"description": "Wrap attributes to new lines. [HTML]",
 					"type": "string",
 					"default": "auto",
-					"enum": ["auto", "force", "force-align", "force-expand-multiline"]
+					"enum": ["auto", "force", "force-aligned", "force-expand-multiline"]
 				},
 				"wrap_attributes_indent_size": {
 					"description": "Indent wrapped attributes to after N characters. Defaults to 'indent_size'. [HTML]",
