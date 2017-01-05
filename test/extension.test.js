@@ -19,8 +19,7 @@ const setupConfigs = (beautify, editor) => {
 	fs.writeFileSync(path.join(root, '.editorconfig'), editor ? editor : '');
 	return lag();
 };
-
-vscode.window.onDidChangeActiveTextEditor(editor => {
+const listener = vscode.window.onDidChangeActiveTextEditor(editor => {
 	if (!editor.document.test || !editor.document.test.eol) return;
 	const doc = editor.document;
 	const eol = doc.test.eol;
@@ -40,6 +39,8 @@ vscode.window.onDidChangeActiveTextEditor(editor => {
 				});
 		});
 });
+
+after(() => listener.dispose());
 
 const executeWithCommand = (cmd, texteditorAction, name, eol) => vscode.workspace.openTextDocument(name)
 	.then(doc => new Promise(resolve => {
