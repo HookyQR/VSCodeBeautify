@@ -1,3 +1,6 @@
+### 0.7.1: 05 Jan 2017
+* Fix packaging failure
+
 ### 0.7.1: 04 Jan 2017
 * Set exact dependency versions (Fix #85)
 
