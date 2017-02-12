@@ -40,7 +40,7 @@ space_in_paren | javascript.format<br> .insertSpaceAfterOpeningAndBeforeClosingN
 
 Note that the `html.format` settings will ONLY be used when the document is html. `javascript.format` settings are included always.
 
-Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
+Also runs html and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
 
 The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css` so that different settings can be used for each of the beautifiers (like sublime allows). Note that this will cause the config file to be incorrectly structured for running `js-beautify` from the command line.
 
