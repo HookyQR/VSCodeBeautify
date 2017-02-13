@@ -35,6 +35,14 @@
 			"type": "object",
 			"title": "Beautify config",
 			"properties": {
+				"beautify.config": {
+					"type": [
+						"string",
+						"null"
+					],
+					"default": null,
+					"description": "A path to file containing the configuration options for js-beautify. If the file exists it overrides any .jsbeautify file"
+				},
 				"beautify.language": {
 					"type": "object",
 					"description": "Link file types to the beautifier type",
