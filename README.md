@@ -40,7 +40,7 @@ space_in_paren | javascript.format<br> .insertSpaceAfterOpeningAndBeforeClosingN
 
 Note that the `html.format` settings will ONLY be used when the document is html. `javascript.format` settings are included always.
 
-Also runs http and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
+Also runs html and css beautify from the same package, as determined by the file extension. The schema indicates which beautifier each of the settings pertains to.
 
 The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css` so that different settings can be used for each of the beautifiers (like sublime allows). Note that this will cause the config file to be incorrectly structured for running `js-beautify` from the command line.
 
@@ -69,7 +69,7 @@ _Note:_ This used to be controlled by the `beautify.*Files` settings. If you sti
   "beautify.language": {
     "js": {
       "type": ["javascript", "json"],
-      "filename": [".jshintrc", ".jsbeautify"]
+      "filename": [".jshintrc", ".jsbeautifyrc"]
       // "ext": ["js", "json"]
       // ^^ to set extensions to be beautified using the javascript beautifier
     },
@@ -82,7 +82,7 @@ _Note:_ This used to be controlled by the `beautify.*Files` settings. If you sti
 
 Beautify on save will be enabled when `"editor.formatOnSave"` is true.
 
-Embedded version of js-beautify is v1.6.8.
+Embedded version of js-beautify is v1.6.9
 
 ### Keyboard Shortcut
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.

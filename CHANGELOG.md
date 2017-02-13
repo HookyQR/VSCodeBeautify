@@ -1,3 +1,11 @@
+### 0.7.5: 13 Feb 2017
+* Fix multiple typos in README (thanks @hubbergit)
+* Bump js-beautify included version after merge of PR#1131
+
+### 0.7.4: 11 Feb 2017
+* Fixed broken formatting when attributes are wrapped.
+  * *Note:* that this is an early addoption of js-beautify PR#1131
+
 ### 0.7.3: 06 Jan 2017
 * Change `force-align` to `force-aligned` in schema
 
