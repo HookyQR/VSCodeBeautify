@@ -23,11 +23,11 @@ const mergeOpts = (opts, kind) => {
 	return finOpts;
 };
 
-const findRecursive = (dir, fileName) => {
+const findRecursive = (dir, fileName, root) => {
 	const fullPath = path.join(dir, fileName);
 	const nextDir = path.dirname(dir);
 	let result = fs.existsSync(fullPath) ? fullPath : null;
-	if (!result && nextDir !== dir) {
+	if (!result && nextDir !== dir && dir !== root) {
 		result = findRecursive(nextDir, fileName);
 	}
 	return result;
@@ -116,15 +116,21 @@ function set_file_editorconfig_opts(file, config) {
 }
 
 module.exports = (doc, type, formattingOptions) => {
-	let base = vscode.workspace.rootPath;
+	let root = vscode.workspace.rootPath;
+	let dir = doc.isUntitled ? root : path.dirname(doc.fileName);
 	let opts = optionsFromVSCode(doc, formattingOptions, type);
-	let configFile = vscode.workspace.getConfiguration('beautify').config;
 	set_file_editorconfig_opts(doc.fileName, opts); // this does nothing if no ec file was found
-	if (!doc.isUntitled) base = path.dirname(doc.fileName);
-	if (configFile && base) {
-		configFile = path.resolve(base, configFile);
+	let configFile = findRecursive(dir, '.jsbeautifyrc', root);
+	if (!configFile) {
+		let beautify_config = vscode.workspace.getConfiguration('beautify').config;
+		if (typeof beautify_config === 'string') {
+			configFile = path.resolve(root, beautify_config);
+			configFile = fs.existsSync(configFile) ? configFile : null;
+		}
 	}
-	if (!configFile && base) configFile = findRecursive(base, '.jsbeautifyrc');
+	if (!configFile) {
+		configFile = findRecursive(path.dirname(root), '.jsbeautifyrc');
+	}
 	if (!configFile) {
 		configFile = path.join(os.homedir(), '.jsbeautifyrc');
 		if (!fs.existsSync(configFile)) return Promise.resolve(opts);
