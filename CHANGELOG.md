@@ -1,3 +1,7 @@
+### 0.8.0: 15 Feb 2017
+* Add config file location setting to VS Code `beautify` settings group. (thanks @IgorNovozhilov)
+  * *Note:* This is a breaking change, see the README for details on the new `.jsbeautifyrc` search order.
+
 ### 0.7.5: 13 Feb 2017
 * Fix multiple typos in README (thanks @hubbergit)
 * Bump js-beautify included version after merge of PR#1131
