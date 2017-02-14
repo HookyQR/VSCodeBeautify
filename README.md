@@ -11,8 +11,11 @@ For help on the settings in the `.jsbeautifyrc` see [Settings.md](https://github
 
 ### How we determine what settings to use:
 
-1. If there is a valid `.jsbeautifyrc` in the file's path tree, these will be the only settings used.
-2. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
+1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
+2. If an options file specified in the user or workspace settings like this: `"beautify.config" : "<file path>"`, these will be the only settings used.
+The file path is interpreted relative to the workspace's root folder.
+3. If there is a valid `.jsbeautifyrc` in the file's path tree, above project root, these will be the only settings used.
+4. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
 
 otherwise...
 
