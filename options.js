@@ -123,9 +123,16 @@ module.exports = (doc, type, formattingOptions) => {
 	let configFile = dir ? findRecursive(dir, '.jsbeautifyrc', root) : null;
 	if (!configFile) {
 		let beautify_config = vscode.workspace.getConfiguration('beautify').config;
-		if (typeof beautify_config === 'string') {
-			configFile = path.resolve(root, beautify_config);
-			configFile = fs.existsSync(configFile) ? configFile : null;
+		switch(typeof beautify_config) {
+			case 'string':
+				configFile = path.resolve(root, beautify_config);
+				configFile = fs.existsSync(configFile) ? configFile : null;
+			break;
+			case 'object':
+				if (beautify_config) {
+					return Promise.resolve(Object.assign(opts, beautify_config));
+				}
+			break;
 		}
 	}
 	if (!configFile && root) {
