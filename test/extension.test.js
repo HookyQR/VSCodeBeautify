@@ -191,9 +191,33 @@ describe("VS code beautify", function() {
 			eol: "\r\n",
 			indent_with_tabs: false,
 			indent_size: 2
-		}, ""));
+		}));
 		beautifyEach(['nested', vscode.EndOfLine.CRLF]);
 		formatEach(['nested', vscode.EndOfLine.CRLF]);
+	});
+
+	context('Using `config` setting', function() {
+		const config = vscode.workspace.getConfiguration();
+		let revert = config.get("beautify.config");
+		before(() => fs.renameSync(path.join(root, ".jsbeautifyrc"), path.join(root, "tmp.jsbeautifyrc")));
+
+		context('with file name', function() {
+			before(() => config.update("beautify.config", path.join(root, "jsbeautify_config.json"))
+				.then(lag));
+			beautifyEach(['tab', vscode.EndOfLine.LF]);
+			after(() => config.update("beautify.config", revert));
+		});
+
+		context('with inline settings', function() {
+			before(() => config.update("beautify.config", {
+					"eol": "\n",
+					"indent_with_tabs": true
+				})
+				.then(lag));
+			beautifyEach(['tab', vscode.EndOfLine.LF]);
+			after(() => config.update("beautify.config", revert));
+		});
+		after(() => fs.renameSync(path.join(root, "tmp.jsbeautifyrc"), path.join(root, ".jsbeautifyrc")));
 	});
 
 	context('partial', function() {
@@ -201,7 +225,7 @@ describe("VS code beautify", function() {
 			eol: "\r\n",
 			indent_with_tabs: false,
 			indent_size: 2
-		}, ""));
+		}));
 		beautifyPartialEach(['partial', vscode.EndOfLine.LF]);
 	});
 	context('on save', function() {
@@ -225,7 +249,7 @@ describe("VS code beautify", function() {
 					eol: "\r\n",
 					indent_with_tabs: false,
 					indent_size: 2
-				}, ""));
+				}));
 		});
 		after(() => {
 			config.update("editor.formatOnSave", revert);

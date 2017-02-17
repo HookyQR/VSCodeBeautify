@@ -4,11 +4,10 @@ const vscode = require('vscode'),
 	options = require('./options');
 const dumpError = e => {
 	if (e) console.log('beautify err:', e);
-	return [];
 };
 
 const getBeautifyType = () => {
-	return new Promise((resolve, reject) => vscode.window.showQuickPick([
+	return vscode.window.showQuickPick([
 			{ label: "JS", description: "Does JavaScript and JSON" },
 			{ label: "CSS", description: "Does CSS and SCSS" },
 			{ label: "HTML" }], {
@@ -16,9 +15,9 @@ const getBeautifyType = () => {
 			placeHolder: "Couldn't determine type to beautify, please choose."
 		})
 		.then(choice => {
-			if (!choice || !choice.label) return reject('no beautify type selected');
-			return resolve(choice.label.toLowerCase());
-		}, () => 0));
+			if (!choice || !choice.label) throw 'no beautify type selected';
+			return choice.label.toLowerCase();
+		}, () => 0);
 };
 
 // This is a fudge work around that shouldn't be required
@@ -42,7 +41,8 @@ const beautifyDoc = (doc, range, type, formattingOptions) => {
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
 			.then(config => fixEol(doc, config))
-			.then(config => beautify[type](doc.getText(range), config)));
+			.then(config => beautify[type](doc.getText(range), config)))
+		.catch(() => 0);
 };
 
 const documentEdit = (range, newText) => [vscode.TextEdit.replace(range, newText)];
@@ -119,7 +119,7 @@ class Formatters {
 					"Global", "Workspace")
 				.then(open => {
 					if (open) vscode.commands.executeCommand(`workbench.action.open${open}Settings`);
-				});
+				}, dumpError);
 		}
 		cfg = cfg || {};
 		this.dispose();

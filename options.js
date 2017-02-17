@@ -28,7 +28,7 @@ const findRecursive = (dir, fileName, root) => {
 	const nextDir = path.dirname(dir);
 	let result = fs.existsSync(fullPath) ? fullPath : null;
 	if (!result && nextDir !== dir && dir !== root) {
-		result = findRecursive(nextDir, fileName);
+		result = findRecursive(nextDir, fileName, root);
 	}
 	return result;
 };
@@ -47,9 +47,12 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 	const options = {
 		indent_with_tabs: formattingOptions.insertSpaces === undefined ? true : !formattingOptions.insertSpaces,
 		indent_size: formattingOptions.tabSize,
-		indent_char: ' '
+		indent_char: ' ',
+		end_with_newline: config.files.insertFinalNewLine,
+		eol: config.files.eol,
+		space_after_anon_function: config.javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions,
+		space_in_paren: config.javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis
 	};
-	options.eol = config.files.eol;
 	if (type === 'html') {
 		options.end_with_newline = config.html.format.endWithNewline;
 		if (typeof config.html.format.extra_liners === 'string') {
@@ -69,8 +72,6 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		}
 		options.wrap_line_length = config.html.format.wrapLineLength;
 	}
-	options.space_after_anon_function = config.javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions;
-	options.space_in_paren = config.javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis;
 	return options;
 };
 
@@ -121,18 +122,17 @@ module.exports = (doc, type, formattingOptions) => {
 	let opts = optionsFromVSCode(doc, formattingOptions, type);
 	set_file_editorconfig_opts(doc.fileName, opts); // this does nothing if no ec file was found
 	let configFile = dir ? findRecursive(dir, '.jsbeautifyrc', root) : null;
+
 	if (!configFile) {
-		let beautify_config = vscode.workspace.getConfiguration('beautify').config;
-		switch(typeof beautify_config) {
-			case 'string':
-				configFile = path.resolve(root, beautify_config);
-				configFile = fs.existsSync(configFile) ? configFile : null;
-			break;
-			case 'object':
-				if (beautify_config) {
-					return Promise.resolve(Object.assign(opts, beautify_config));
-				}
-			break;
+		let beautify_config = vscode.workspace.getConfiguration('beautify')
+			.config;
+		if (typeof beautify_config === 'object') {
+			return Promise.resolve(mergeOpts(beautify_config, type));
+		} else if (typeof beautify_config === 'string') {
+			if (path.isAbsolute(beautify_config)) configFile = beautify_config;
+			else configFile = path.resolve(root, beautify_config);
+
+			configFile = fs.existsSync(configFile) ? configFile : null;
 		}
 	}
 	if (!configFile && root) {
@@ -142,17 +142,18 @@ module.exports = (doc, type, formattingOptions) => {
 		configFile = path.join(os.homedir(), '.jsbeautifyrc');
 		if (!fs.existsSync(configFile)) return Promise.resolve(opts);
 	}
-	return new Promise(resolve => {
+	return new Promise((resolve, reject) => {
 		fs.readFile(configFile, 'utf8', (e, d) => {
 			if (!d || !d.length) return resolve(opts);
 			try {
 				const unCommented = dropComments(d.toString());
 				opts = JSON.parse(unCommented);
 				opts = mergeOpts(opts, type);
+				resolve(opts);
 			} catch (e) {
 				vscode.window.showWarningMessage(`Found a .jsbeautifyrc file [${configFile}], but it didn't parse correctly.`);
+				reject();
 			}
-			resolve(opts);
 		});
 	});
 };
