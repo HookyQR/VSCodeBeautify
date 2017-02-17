@@ -126,13 +126,15 @@ module.exports = (doc, type, formattingOptions) => {
 	if (!configFile) {
 		let beautify_config = vscode.workspace.getConfiguration('beautify')
 			.config;
-		if (typeof beautify_config === 'object') {
-			return Promise.resolve(mergeOpts(beautify_config, type));
-		} else if (typeof beautify_config === 'string') {
-			if (path.isAbsolute(beautify_config)) configFile = beautify_config;
-			else configFile = path.resolve(root, beautify_config);
+		if (beautify_config) {
+			if (typeof beautify_config === 'object') {
+				return Promise.resolve(mergeOpts(beautify_config, type));
+			} else if (typeof beautify_config === 'string') {
+				if (path.isAbsolute(beautify_config)) configFile = beautify_config;
+				else configFile = path.resolve(root, beautify_config);
 
-			configFile = fs.existsSync(configFile) ? configFile : null;
+				configFile = fs.existsSync(configFile) ? configFile : null;
+			}
 		}
 	}
 	if (!configFile && root) {

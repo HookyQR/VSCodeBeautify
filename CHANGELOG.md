@@ -1,3 +1,7 @@
+
+### 0.8.2: 18 Feb 2017
+* Fix bug where `beautify.config = null` would cause beautify to clear files when not working within a folder.
+
 ### 0.8.1: 17 Feb 2017
 * Allow `.jsbeautifyrc` settings object under `beautify.config` instead of file.
 * Use VS Code `file.insertFinalNewLine` as root option for `end_with_newline`.
