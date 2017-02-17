@@ -1,3 +1,5 @@
+### 0.8.3: 18 Feb 2017
+* Fix default copy of `max_preserve_newlines` from VS Code settings
 
 ### 0.8.2: 18 Feb 2017
 * Fix bug where `beautify.config = null` would cause beautify to clear files when not working within a folder.

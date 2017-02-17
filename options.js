@@ -62,7 +62,7 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		}
 		options.indent_handlebars = config.html.format.indentHandlebars;
 		options.indent_inner_html = config.html.format.indentInnerHtml;
-		options.max_preserve_newlines = config.html.format.maxPreserveNewLines || 0;
+		options.max_preserve_newlines = config.html.format.maxPreserveNewLines;
 		options.preserve_newlines = config.html.format.preserveNewLines;
 
 		if (typeof config.html.format.unformatted === 'string') {
