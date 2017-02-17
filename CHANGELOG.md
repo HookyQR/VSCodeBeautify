@@ -1,5 +1,7 @@
 ### 0.8.1: 17 Feb 2017
 * Allow `.jsbeautifyrc` settings object under `beautify.config` instead of file.
+* Use VS Code `file.insertFinalNewLine` as root option for `end_with_newline`.
+  * *Note:* In HTML this is over ridden by `html.format.endWithNewline`.
 
 ### 0.8.0: 15 Feb 2017
 * Add config file location setting to VS Code `beautify` settings group. (thanks @IgorNovozhilov)
