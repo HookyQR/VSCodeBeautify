@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"publisher": "HookyQR",
 	"engines": { "vscode": "^1.6.0" },
 	"categories": ["Other", "Languages", "Formatters"],
@@ -36,11 +36,7 @@
 			"title": "Beautify config",
 			"properties": {
 				"beautify.config": {
-					"type": [
-						"string",
-						"object",
-						"null"
-					],
+					"type": ["string", "object", "null"],
 					"default": null,
 					"description": "A path to file or object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
 				},

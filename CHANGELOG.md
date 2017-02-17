@@ -1,30 +1,21 @@
+### 0.8.1: 17 Feb 2017
+* Allow `.jsbeautifyrc` settings object under `beautify.config` instead of file.
+
 ### 0.8.0: 15 Feb 2017
 * Add config file location setting to VS Code `beautify` settings group. (thanks @IgorNovozhilov)
   * *Note:* This is a breaking change, see the README for details on the new `.jsbeautifyrc` search order.
 
-### 0.7.5: 13 Feb 2017
+### 0.7.0 - 0.7.5: 13 Feb 2017
 * Fix multiple typos in README (thanks @hubbergit)
 * Bump js-beautify included version after merge of PR#1131
-
-### 0.7.4: 11 Feb 2017
-* Fixed broken formatting when attributes are wrapped.
-  * *Note:* that this is an early addoption of js-beautify PR#1131
-
-### 0.7.3: 06 Jan 2017
 * Change `force-align` to `force-aligned` in schema
-
-### 0.7.2: 05 Jan 2017
 * Fix packaging failure
-
-### 0.7.1: 04 Jan 2017
 * Set exact dependency versions (Fix #85)
-
-### 0.7.0: 04 Jan 2017
 * Bump js-beautify version to 1.6.8
   * _*Note:* This changes the default settings for `"unformatted"` and adds the `"content_unformatted"` option._
 * Refactor schema to improve maintainability.
 
-### 0.60 - 0.6.2: 28 Nov 2016
+### 0.6.0 - 0.6.2: 28 Nov 2016
 * Force eol to document setting in editor.
 * Put back redundant call on save until the textEdit fix is in VS Code (hopefully 1.8.0)
 * Remove ***onSaveIgnore*** setting as it won't work with the VS Code formatOnSave setting
