@@ -1,3 +1,7 @@
+### 0.8.4: 19 Feb 2017
+* Add schema reference for VS Code settings of `beautify.config`.
+  * *Note:* For now, this will show some out of date settings, and all settings under the root, `js`, `css` and `html` parts. A PR has been submitted to [schemastore.org](http://schemastore.org) which will update and allow the correct seperation of settings once approved.
+
 ### 0.8.3: 18 Feb 2017
 * Fix default copy of `max_preserve_newlines` from VS Code settings
 
