@@ -1,5 +1,6 @@
 ### 0.8.6: 22 Feb 2017
 * Update docs for `preserve_newlines` and `file.insertFinalNewLine` -> `end_with_newline`
+* Direct VS Code settings for `config` to updated [schemastore.org](schemastore.org) nested version.
 
 ### 0.8.5: 22 Feb 2017
 * Update to version 1.6.10 of `js-beautify`.

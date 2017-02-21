@@ -38,23 +38,7 @@
 				"beautify.config": {
 					"type": ["string", "object", "null"],
 					"default": null,
-					"anyOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc#" },
-						{
-							"properties": {
-								"css": {
-									"type": "object",
-									"allOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc#" }]
-								},
-								"js": {
-									"type": "object",
-									"allOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc#" }]
-								},
-								"html": {
-									"type": "object",
-									"allOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc#" }]
-								}
-							}
-						}],
+					"anyOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc-nested#" }],
 					"description": "A path to file or object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
 				},
 				"beautify.language": {
