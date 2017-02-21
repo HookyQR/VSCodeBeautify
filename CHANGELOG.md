@@ -1,3 +1,6 @@
+### 0.8.6: 22 Feb 2017
+* Update docs for `preserve_newlines` and `file.insertFinalNewLine` -> `end_with_newline`
+
 ### 0.8.5: 22 Feb 2017
 * Update to version 1.6.10 of `js-beautify`.
 * Add `preserve_newlines` to schema for `css`.

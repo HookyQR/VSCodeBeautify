@@ -7,9 +7,9 @@ end_with_newline                | _All_     |  [Boolean] **Ensure newline at end
 indent_char                     | _All_     |  [String] **Indentation character.** <br> " "
 indent_size                     | _All_     |  [Integer] **Indent size.** <br> 4
 indent_with_tabs                | _All_     |  [Boolean] **Indent with tabs, overrides 'indent_size' and 'indent_char'** <br> false
+preserve_newlines               | _All_     |  [Boolean] **Preserve line-breaks.** <br> true
 brace_style                     | JS, HTML  |  [String] **"collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline", "end-expand,preserve-inline", or "none,preserve-inline"** <br> "collapse"
 max_preserve_newlines           | JS, HTML  |  [Integer] **Number of line-breaks to be preserved in one chunk.** <br> 10
-preserve_newlines               | JS, HTML  |  [Boolean] **Preserve line-breaks.** <br> true
 wrap_line_length                | JS, HTML  |  [Integer] **Wrap lines at next opportunity after N characters. (Set zero to ignore wrapping)** <br> 0
 extra_liners                    | HTML      |  [Array&lt;String>] **List of tags that should have an extra newline before them.** <br> ["head", "body", "/html"]
 indent_body_inner_html          | HTML      |  [Boolean] **Indent elements within html `<body>` element.** <br> true

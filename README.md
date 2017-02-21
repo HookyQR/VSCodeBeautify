@@ -37,7 +37,8 @@ indent_inner_html             | html.format.indentInnerHtml
 preserve_newlines             | html.format.preserveNewLines
 max_preserve_newlines         | html.format.maxPreserveNewLines
 indent_handlebars             | html.format.indentHandlebars
-end_with_newline              | html.format.endWithNewline
+end_with_newline              | html.format.endWithNewline (html)
+end_with_newline              | file.insertFinalNewLine (css, js)
 extra_liners                  | html.format.extraLiners
 space_after_anon_function | javascript.format<br> .insertSpaceAfterFunctionKeywordForAnonymousFunctions
 space_in_paren | javascript.format<br> .insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis
