@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "0.8.4",
+	"version": "0.8.5",
 	"publisher": "HookyQR",
 	"engines": { "vscode": "^1.6.0" },
 	"categories": ["Other", "Languages", "Formatters"],
@@ -38,7 +38,7 @@
 				"beautify.config": {
 					"type": ["string", "object", "null"],
 					"default": null,
-					"allOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc#" },
+					"anyOf": [{ "$ref": "http://json.schemastore.org/jsbeautifyrc#" },
 						{
 							"properties": {
 								"css": {
@@ -142,7 +142,7 @@
 		}
 	},
 	"dependencies": {
-		"js-beautify": "1.6.9",
+		"js-beautify": "1.6.10",
 		"editorconfig": "0.13.2"
 	},
 	"devDependencies": {

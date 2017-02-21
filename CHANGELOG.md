@@ -1,3 +1,8 @@
+### 0.8.5: 22 Feb 2017
+* Update to version 1.6.10 of `js-beautify`.
+* Add `preserve_newlines` to schema for `css`.
+* Fix `beautify.config` complaining about string (path) value.
+
 ### 0.8.4: 19 Feb 2017
 * Add schema reference for VS Code settings of `beautify.config`.
   * *Note:* For now, this will show some out of date settings, and all settings under the root, `js`, `css` and `html` parts. A PR has been submitted to [schemastore.org](http://schemastore.org) which will update and allow the correct seperation of settings once approved.
