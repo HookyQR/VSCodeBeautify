@@ -3,7 +3,7 @@ const vscode = require('vscode'),
 	beautify = require('js-beautify'),
 	options = require('./options');
 const dumpError = e => {
-	if (e) console.log('beautify err:', e);
+//	if (e) console.log('beautify err:', e);
 };
 
 const getBeautifyType = () => {
@@ -17,7 +17,7 @@ const getBeautifyType = () => {
 		.then(choice => {
 			if (!choice || !choice.label) throw 'no beautify type selected';
 			return choice.label.toLowerCase();
-		}, () => 0);
+		});
 };
 
 // This is a fudge work around that shouldn't be required
@@ -41,8 +41,7 @@ const beautifyDoc = (doc, range, type, formattingOptions) => {
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
 			.then(config => fixEol(doc, config))
-			.then(config => beautify[type](doc.getText(range), config)))
-		.catch(() => 0);
+			.then(config => beautify[type](doc.getText(range), config)));
 };
 
 const documentEdit = (range, newText) => [vscode.TextEdit.replace(range, newText)];

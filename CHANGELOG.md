@@ -1,3 +1,7 @@
+### 0.8.7: 22 Feb 2017
+* Fix `preserve_newlines` bad interaction with `newline_between_rules`.
+* Stop deleting text when no beautify type selected when prompted.
+
 ### 0.8.6: 22 Feb 2017
 * Update docs for `preserve_newlines` and `file.insertFinalNewLine` -> `end_with_newline`
 * Direct VS Code settings for `config` to updated [schemastore.org](schemastore.org) nested version.
