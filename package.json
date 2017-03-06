@@ -1,6 +1,6 @@
 {
 	"name": "beautify",
-	"displayName": "beautify",
+	"displayName": "Beautify",
 	"description": "Beautify code in place for VS Code",
 	"version": "0.8.9",
 	"publisher": "HookyQR",
