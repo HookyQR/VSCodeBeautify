@@ -1,3 +1,10 @@
+### 0.8.9: 06 Mar 2017
+* Add multi select format capability.
+* Fix bug #106 Copy and paste issue when `formatOnPaste = true`
+
+### 0.8.8: 23 Feb 2017
+* Update js-beautify version to 1.6.11. This reverts the css `preserve_newlines` option. Work is in progress to fix the bugs. The settings references to `preserve_newlines` have not been changed.
+
 ### 0.8.7: 22 Feb 2017
 * Fix `preserve_newlines` bad interaction with `newline_between_rules`.
 * Stop deleting text when no beautify type selected when prompted.

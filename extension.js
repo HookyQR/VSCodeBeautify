@@ -20,19 +20,7 @@ const getBeautifyType = () => {
 		});
 };
 
-// This is a fudge work around that shouldn't be required
-const fixEol = (doc, config) => {
-	// getText will always give us the
-	// line endings as set in the editor
-	const txt = doc.getText();
-	const lfPos = txt.indexOf('\n', 1);
-	// if there isn't one, the safest setting is LF
-	if (lfPos < 0 || txt[lfPos - 1] !== '\r') config.eol = '\n';
-	else config.eol = '\r\n';
-	return config;
-};
-
-const beautifyDoc = (doc, range, type, formattingOptions) => {
+const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
 	if (!doc) {
 		vscode.window.showInformationMessage(
 			"Beautify can't get the file information because the editor won't supply it. (File probably too large)");
@@ -40,8 +28,8 @@ const beautifyDoc = (doc, range, type, formattingOptions) => {
 	}
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
-			.then(config => fixEol(doc, config))
-			.then(config => beautify[type](doc.getText(range), config)));
+			.then(config => Promise.all(ranges.map(range =>
+				beautify[type](doc.getText(range), config)))));
 };
 
 const documentEdit = (range, newText) => [vscode.TextEdit.replace(range, newText)];
@@ -51,7 +39,7 @@ const extendRange = (doc, rng) => {
 	if (end.character === 0) end = end.translate(-1, Number.MAX_VALUE);
 	else end = end.translate(0, Number.MAX_VALUE);
 	const r = new vscode.Range(new vscode.Position(rng.start.line, 0), end);
-	return doc.validateRange(r);
+	return doc.validateRange(r);;
 };
 
 const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
@@ -59,13 +47,16 @@ const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VAL
 // gets bound
 function fullEdit(type, doc, formattingOptions) {
 	const rng = fullRange(doc);
-	return beautifyDoc(doc, rng, type, formattingOptions)
-		.then(newText => documentEdit(rng, newText), dumpError);
+	return beautifyDocRanges(doc, [rng], type, formattingOptions)
+		.then(newText => documentEdit(rng, newText[0]), dumpError);
 }
 
-const rangeEdit = (type, doc, rng, formattingOptions) => beautifyDoc(doc, extendRange(doc, rng), type,
-		formattingOptions)
-	.then(newText => documentEdit(rng, newText), dumpError);
+function rangeEdit(type, doc, rng, formattingOptions) {
+	// Fixes bug #106
+	rng = extendRange(doc, rng);
+	return beautifyDocRanges(doc, [rng], type, formattingOptions)
+		.then(newText => documentEdit(rng, newText[0]), dumpError);
+};
 
 const register = (type, selector, partial) => {
 	if (partial) return vscode.languages.registerDocumentRangeFormattingEditProvider(selector, {
@@ -171,14 +162,36 @@ class Formatters {
 const formatters = new Formatters();
 formatters.configure();
 
+const applyEdits = (editor, ranges, edits) => {
+	if (ranges.length !== edits.length) {
+		console.log("FAILED:", ranges.length, edits.length, ":failed");
+		vscode.window.showInformationMessage(
+			"Beautify ranges didin't get back the right number of edits");
+		throw "";
+	}
+	return editor.edit(editorEdit => {
+		for (let i = 0; i < ranges.length; i++) {
+			editorEdit.replace(ranges[i], edits[i]);
+		}
+	});
+};
+
 const formatActiveDocument = ranged => {
 	const active = vscode.window.activeTextEditor;
 	if (!active || !active.document) return;
-	let range = fullRange(active.document);
-	if (ranged && active.selection && !active.selection.isEmpty) range = extendRange(active.document, active.selection);
+
 	const type = formatters.getFormat(active.document);
-	return beautifyDoc(active.document, range, type)
-		.then(newText => active.edit(editor => editor.replace(range, newText)), dumpError);
+	let ranges = [];
+	if (ranged && active.selection)
+		ranges = active.selections.filter(selection => !selection.isEmpty)
+		.map(range => extendRange(active.document, range));
+	if (ranges.length === 0)
+		ranges = [fullRange(active.document)];
+
+	if (ranges.length) {
+		return beautifyDocRanges(active.document, ranges, type)
+			.then(edits => applyEdits(active, ranges, edits), dumpError);
+	} else return Promise.reslove();
 };
 
 //register on activation
