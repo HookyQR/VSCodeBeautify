@@ -87,7 +87,7 @@ _Note:_ This used to be controlled by the `beautify.*Files` settings. If you sti
 
 Beautify on save will be enabled when `"editor.formatOnSave"` is true.
 
-Embedded version of js-beautify is v1.6.10
+Embedded version of js-beautify is v1.6.11
 
 ### Keyboard Shortcut
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.

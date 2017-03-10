@@ -1,39 +1,26 @@
-### 0.8.9: 06 Mar 2017
+### 1.0.0: 11 Mar 2017
+* Got a new icon, thanks @Slulego
+* Extension is mature enough to go to 1.0
+* Fixed some typos
+
+### 0.8.0 - 0.8.9: 06 Mar 2017
 * Add multi select format capability.
 * Fix bug #106 Copy and paste issue when `formatOnPaste = true`
-
-### 0.8.8: 23 Feb 2017
 * Update js-beautify version to 1.6.11. This reverts the css `preserve_newlines` option. Work is in progress to fix the bugs. The settings references to `preserve_newlines` have not been changed.
-
-### 0.8.7: 22 Feb 2017
 * Fix `preserve_newlines` bad interaction with `newline_between_rules`.
 * Stop deleting text when no beautify type selected when prompted.
-
-### 0.8.6: 22 Feb 2017
 * Update docs for `preserve_newlines` and `file.insertFinalNewLine` -> `end_with_newline`
 * Direct VS Code settings for `config` to updated [schemastore.org](schemastore.org) nested version.
-
-### 0.8.5: 22 Feb 2017
 * Update to version 1.6.10 of `js-beautify`.
 * Add `preserve_newlines` to schema for `css`.
 * Fix `beautify.config` complaining about string (path) value.
-
-### 0.8.4: 19 Feb 2017
 * Add schema reference for VS Code settings of `beautify.config`.
   * *Note:* For now, this will show some out of date settings, and all settings under the root, `js`, `css` and `html` parts. A PR has been submitted to [schemastore.org](http://schemastore.org) which will update and allow the correct seperation of settings once approved.
-
-### 0.8.3: 18 Feb 2017
 * Fix default copy of `max_preserve_newlines` from VS Code settings
-
-### 0.8.2: 18 Feb 2017
 * Fix bug where `beautify.config = null` would cause beautify to clear files when not working within a folder.
-
-### 0.8.1: 17 Feb 2017
 * Allow `.jsbeautifyrc` settings object under `beautify.config` instead of file.
 * Use VS Code `file.insertFinalNewLine` as root option for `end_with_newline`.
   * *Note:* In HTML this is over ridden by `html.format.endWithNewline`.
-
-### 0.8.0: 15 Feb 2017
 * Add config file location setting to VS Code `beautify` settings group. (thanks @IgorNovozhilov)
   * *Note:* This is a breaking change, see the README for details on the new `.jsbeautifyrc` search order.
 

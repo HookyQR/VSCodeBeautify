@@ -39,7 +39,7 @@ const extendRange = (doc, rng) => {
 	if (end.character === 0) end = end.translate(-1, Number.MAX_VALUE);
 	else end = end.translate(0, Number.MAX_VALUE);
 	const r = new vscode.Range(new vscode.Position(rng.start.line, 0), end);
-	return doc.validateRange(r);;
+	return doc.validateRange(r);
 };
 
 const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
@@ -56,7 +56,7 @@ function rangeEdit(type, doc, rng, formattingOptions) {
 	rng = extendRange(doc, rng);
 	return beautifyDocRanges(doc, [rng], type, formattingOptions)
 		.then(newText => documentEdit(rng, newText[0]), dumpError);
-};
+}
 
 const register = (type, selector, partial) => {
 	if (partial) return vscode.languages.registerDocumentRangeFormattingEditProvider(selector, {
@@ -191,7 +191,7 @@ const formatActiveDocument = ranged => {
 	if (ranges.length) {
 		return beautifyDocRanges(active.document, ranges, type)
 			.then(edits => applyEdits(active, ranges, edits), dumpError);
-	} else return Promise.reslove();
+	} else return Promise.resolve();
 };
 
 //register on activation
