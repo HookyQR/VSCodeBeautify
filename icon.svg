@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3
-c//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+<!DOCTYPE svg PUBLIC "-//W3c//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
 	<def>
-		<path id="bracket" d="M50,123 h-8 c-20,0 -24,-6 -20,-30 c2,-15 2,-18 -10,-20 v-10 c12,-2 12,-5 10,-20 c-4,-24 0,-30 20,-30 h8 v9 h-6 c-13,0 -13,2 -11,20 c2,20, 1,23 -10,25.5 v1 c11,2.5 12,5.5 10,25.5 c-2,18 -2,20 11,20 h6z"
-		/>
-		<g id="pet">
+		<g id="petal">
 			<path fill="#D500DF" d="M0,0 C0,0 -10,-10 -10,-20 C-10,-26 -6,-30 0,-30 C6,-30 10,-26 10,-20 C10,-10 0,0 0,0" />
 			<path fill="#FFFFFF" d="M0,0 C0,0  -7,-10  -7,-18 C -7,-23 -4,-26 0,-26 C4,-26  7,-23  7,-18 C 7,-10 0,0 0,0" />
 			<path fill="#D500DF" d="M0,0 C-2,0 -2,-20 0,-20 C2,-20, 2,0 0,0" />
 		</g>
-		<g id="main">
-			<use xlink:href="#bracket" transform="translate(-6)" />
-			<use transform="matrix(-1 0 0 1 118 0)" xlink:href="#bracket" />
-			<g text-anchor="middle" font-size="16" font-weight="bold" font-family="monospace">
-				<text x="56" y="39">js</text>
-				<text x="56" y="56">json</text>
-				<text x="56" y="73">html</text>
-				<text x="56" y="89">css</text>
-				<text x="56" y="105">scss</text>
-			</g>
-		</g>
+		<circle id="inner" cx="64" cy="64" r="58"></circle>
+		<circle id="outer" cx="64" cy="64" r="64" ></circle>
+		<path id="shadow"  d="M 74,25.5 l 24,32 L 102,48 l 24,32 L 128,128 L 61,128 l -24,-32 L 48.5,94 l-24,-32 L 64,64"></path>
 	</def>
-	<rect x="0" y="0" width="128" height="128" rx="16" ry="16" fill="#e8e030" />
-	<use xlink:href="#main" />
-	<g transform="matrix(0.75 0 0 0.75 100 30)">
-		<use transform="rotate(0)" xlink:href="#pet" />
-		<use transform="rotate(72)" xlink:href="#pet" />
-		<use transform="rotate(144)" xlink:href="#pet" />
-		<use transform="rotate(216)" xlink:href="#pet" />
-		<use transform="rotate(288)" xlink:href="#pet" />
+	<clipPath id="clipCenter">
+		<circle r="10" cx="-4" cy="-4"/>
+	</clipPath>
+	<clipPath id="clipInner">
+		<use xlink:href="#inner"/>
+	</clipPath>
+	<clipPath id="clipOuter">
+		<use xlink:href="#outer"/>
+	</clipPath>
+	<mask id="maskOutline">
+		<use xlink:href="#outer" fill="white"/>			
+		<use xlink:href="#inner" fill="black"/>			
+	</mask>
+	<use xlink:href="#outer" fill="#D91CE8"/>
+	<use xlink:href="#inner" fill="#e8e030"/>
+	<use xlink:href="#shadow" fill="#E5C230" clip-path="url(#clipInner)"/>
+	<use xlink:href="#shadow" fill="#D500DF" mask="url(#maskOutline)"/>
+	<g transform="translate(64 64) scale(1.4)">
+		<use xlink:href="#petal" />
+		<use transform="rotate(72)" xlink:href="#petal" />
+		<use transform="rotate(144)" xlink:href="#petal" />
+		<use transform="rotate(216)" xlink:href="#petal" />
+		<use transform="rotate(288)" xlink:href="#petal" />
 		<circle fill="#D500DF" cx="0" cy="0" r="10" />
+		<circle clip-path="url(#clipCenter)" fill="#D91CE8" cx="0" cy="0" r="10" />
 	</g>
 </svg>
