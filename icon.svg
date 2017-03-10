@@ -1,57 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 21.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#E8E030;}
-	.st1{fill:#D91CE8;}
-	.st2{fill:#E5C230;}
-	.st3{fill:#D500DF;}
-	.st4{fill:#FFFFFF;}
-</style>
-<g id="Circle">
-	<circle class="st0" cx="64" cy="64" r="64"/>
-	<path class="st1" d="M64,0C28.7,0,0,28.7,0,64s28.7,64,64,64s64-28.7,64-64S99.3,0,64,0z M64,122.5C31.7,122.5,5.5,96.3,5.5,64
-		S31.7,5.5,64,5.5s58.5,26.2,58.5,58.5S96.3,122.5,64,122.5z M54.8,127.4L54.8,127.4"/>
-	<path class="st2" d="M125.7,80.9L101.3,48l-10,3.1L75.8,29.7L57.2,54.8l-31.1,7.9L41,87l-4.4,6.8l20.6,33.8
-		c2.3,0.2,4.5,0.4,6.9,0.4C93.5,128,118.3,108,125.7,80.9z"/>
-	<path class="st3" d="M125.7,80.9l-4.3-5.8c-5.2,27-28.9,47.4-57.4,47.4c-3.6,0-7.1-0.3-10.6-1l3.7,6.1c2.3,0.2,4.5,0.4,6.9,0.4
-		C93.5,128,118.3,108,125.7,80.9z"/>
-</g>
-<g id="Flower">
-	<g id="Pedals">
-		<g id="pet">
-			<path class="st3" d="M64,64.1c0,0-13.7-13.6-13.7-27.3c0-8.2,5.5-13.6,13.7-13.6s13.7,5.5,13.7,13.7C77.7,50.5,64,64.1,64,64.1"
-				/>
-			<path class="st4" d="M64,64.1c0,0-9.5-13.6-9.5-24.6c0-6.8,4.1-10.9,9.5-10.9s9.6,4.1,9.6,10.9C73.6,50.5,64,64.1,64,64.1"/>
-			<path class="st1" d="M64,64.1c-2.7,0-2.7-27.3,0-27.3C66.7,36.9,66.7,64.1,64,64.1"/>
+<!DOCTYPE svg PUBLIC "-//W3c//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+	<def>
+		<g id="petal">
+			<path fill="#D500DF" d="M0,0 C0,0 -10,-10 -10,-20 C-10,-26 -6,-30 0,-30 C6,-30 10,-26 10,-20 C10,-10 0,0 0,0" />
+			<path fill="#FFFFFF" d="M0,0 C0,0  -7,-10  -7,-18 C -7,-23 -4,-26 0,-26 C4,-26  7,-23  7,-18 C 7,-10 0,0 0,0" />
+			<path fill="#D500DF" d="M0,0 C-2,0 -2,-20 0,-20 C2,-20, 2,0 0,0" />
 		</g>
-		<g id="pet-2">
-			<path class="st3" d="M64,64.1c0,0,8.8-17.2,21.7-21.4c7.8-2.5,14.7,1,17.2,8.8s-0.9,14.7-8.7,17.2C81.2,72.9,64,64.1,64,64.1"/>
-			<path class="st4" d="M64,64.1c0,0,10-13.3,20.4-16.7c6.5-2.1,11.7,0.5,13.3,5.7s-0.9,10.3-7.4,12.5C79.9,69,64,64.1,64,64.1"/>
-			<path class="st3" d="M64,64.1c-0.8-2.6,25.1-11,26-8.4S64.8,66.7,64,64.1"/>
-		</g>
-		<g id="pet-3">
-			<path class="st3" d="M64,64.1c0,0,19.1,3,27.1,14.1c4.8,6.6,3.6,14.3-3,19.1s-14.3,3.6-19.1-3C61,83.3,64,64.2,64,64.1"/>
-			<path class="st4" d="M64,64.1c0,0,15.8,5.4,22.2,14.3c4,5.5,3.1,11.2-1.3,14.4s-10.1,2.3-14.2-3.2C64.3,80.8,64,64.1,64,64.1"/>
-			<path class="st3" d="M64,64.1c2.2-1.6,18.3,20.5,16,22.1S61.8,65.8,64,64.1"/>
-		</g>
-		<g id="pet-4">
-			<path class="st3" d="M64,64.1c0,0,3,19.1-5,30.1c-4.8,6.6-12.4,7.8-19.1,3s-7.8-12.4-3-19.1C44.9,67.2,64,64.1,64,64.1"/>
-			<path class="st4" d="M64,64.1c0,0-0.3,16.7-6.7,25.5c-4,5.5-9.7,6.4-14.2,3.2s-5.3-8.9-1.3-14.4C48.3,69.6,64,64.1,64,64.1"/>
-			<path class="st3" d="M64,64.1c2.2,1.6-13.8,23.7-16,22.1S61.8,62.5,64,64.1"/>
-		</g>
-		<g id="pet-5">
-			<path class="st3" d="M64,64.1c0,0-17.2,8.8-30.2,4.6C26,66.2,22.5,59.3,25,51.5s9.4-11.3,17.2-8.8C55.2,47,64,64.1,64,64.1"/>
-			<path class="st4" d="M64,64.1c0,0-15.9,4.9-26.3,1.5c-6.5-2.1-9.1-7.3-7.4-12.5c1.7-5.2,6.8-7.8,13.3-5.7
-				C54,50.8,64,64.1,64,64.1"/>
-			<path class="st1" d="M64,64.1c-0.8,2.6-26.8-5.8-26-8.4S64.8,61.5,64,64.1"/>
-		</g>
+		<circle id="inner" cx="64" cy="64" r="58"></circle>
+		<circle id="outer" cx="64" cy="64" r="64" ></circle>
+		<path id="shadow"  d="M 74,25.5 l 24,32 L 102,48 l 24,32 L 128,128 L 61,128 l -24,-32 L 48.5,94 l-24,-32 L 64,64"></path>
+	</def>
+	<clipPath id="clipCenter">
+		<circle r="10" cx="-4" cy="-4"/>
+	</clipPath>
+	<clipPath id="clipInner">
+		<use xlink:href="#inner"/>
+	</clipPath>
+	<clipPath id="clipOuter">
+		<use xlink:href="#outer"/>
+	</clipPath>
+	<mask id="maskOutline">
+		<use xlink:href="#outer" fill="white"/>			
+		<use xlink:href="#inner" fill="black"/>			
+	</mask>
+	<use xlink:href="#outer" fill="#D91CE8"/>
+	<use xlink:href="#inner" fill="#e8e030"/>
+	<use xlink:href="#shadow" fill="#E5C230" clip-path="url(#clipInner)"/>
+	<use xlink:href="#shadow" fill="#D500DF" mask="url(#maskOutline)"/>
+	<g transform="translate(64 64) scale(1.4)">
+		<use xlink:href="#petal" />
+		<use transform="rotate(72)" xlink:href="#petal" />
+		<use transform="rotate(144)" xlink:href="#petal" />
+		<use transform="rotate(216)" xlink:href="#petal" />
+		<use transform="rotate(288)" xlink:href="#petal" />
+		<circle fill="#D500DF" cx="0" cy="0" r="10" />
+		<circle clip-path="url(#clipCenter)" fill="#D91CE8" cx="0" cy="0" r="10" />
 	</g>
-	<g id="Center">
-		<circle class="st3" cx="64" cy="64" r="13.7"/>
-		<path class="st1" d="M50.3,64c0,1.8,0.4,3.7,1.1,5.3c6.9,3,15-0.3,17.9-7.2c1.5-3.4,1.5-7.3,0-10.7c-6.9-3-15,0.3-17.9,7.2
-			C50.7,60.4,50.4,62.2,50.3,64L50.3,64z"/>
-	</g>
-</g>
 </svg>
