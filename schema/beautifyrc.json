@@ -36,7 +36,7 @@
 					"description": "Preserve line-breaks. [JS,CSS,HTML]",
 					"type": "boolean",
 					"default": true
-				},
+				}
 			}
 		},
 		"HJProperties": {

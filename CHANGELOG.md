@@ -1,3 +1,6 @@
+### 1.0.1: 13 Mar 2017
+* Drop trailing comma on schema file
+
 ### 1.0.0: 11 Mar 2017
 * Got a new icon, thanks @Slulego
 * Extension is mature enough to go to 1.0
