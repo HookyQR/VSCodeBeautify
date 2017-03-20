@@ -1,3 +1,7 @@
+### 1.0.2: 20 Mar 2017
+* Update to version 1.6.10 of `js-beautify`.
+  * This returns `preserve_newlines` for `css`.
+
 ### 1.0.1: 13 Mar 2017
 * Drop trailing comma on schema file
 

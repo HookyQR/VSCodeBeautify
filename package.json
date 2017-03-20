@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "Beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "HookyQR",
 	"engines": { "vscode": "^1.6.0" },
 	"categories": ["Other", "Languages", "Formatters"],
@@ -126,7 +126,7 @@
 		}
 	},
 	"dependencies": {
-		"js-beautify": "1.6.11",
+		"js-beautify": "1.6.12",
 		"editorconfig": "0.13.2"
 	},
 	"devDependencies": {
