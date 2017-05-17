@@ -1,0 +1,17 @@
+{
+    "BackendUrl": "http://dev-prod-01.escapefromtarkov.com",
+    "Version": "bgkidft87ddd",
+    "BuildVersion": "000",
+    "LocalGame": false,
+    "AmmoPoolSize": -1,
+    "WeaponsPoolSize": -1,
+    "MagsPoolSize": -1,
+    "ItemsPoolSize": -1,
+    "PlayersPoolSize": -1,
+    "ObservedFix": 1,
+    "TargetFrameRate": -1,
+    "BotsCount": -1,
+    "ResetSettings": false,
+    "SaveResuls": true,
+    "FixedFrameRate": 60
+}
