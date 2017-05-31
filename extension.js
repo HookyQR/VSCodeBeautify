@@ -1,9 +1,11 @@
 "use strict";
 const vscode = require('vscode'),
 	beautify = require('js-beautify'),
-	options = require('./options');
+	options = require('./options'),
+	minimatch = require('minimatch'),
+	path = require('path');
 const dumpError = e => {
-//	if (e) console.log('beautify err:', e);
+	//	if (e) console.log('beautify err:', e);
 };
 
 const getBeautifyType = () => {
@@ -46,6 +48,14 @@ const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VAL
 
 // gets bound
 function fullEdit(type, doc, formattingOptions) {
+	let name = doc.fileName;
+	let base = vscode.workspace.rootPath || '';
+	let ignore = vscode.workspace.getConfiguration('beautify')
+		.ignore;
+	if (!Array.isArray(ignore)) ignore = [ignore];
+	if (base && name.startsWith(base)) name = path.relative(base, name);
+	if (ignore.some(glob => minimatch(name, glob))) return [];
+
 	const rng = fullRange(doc);
 	return beautifyDocRanges(doc, [rng], type, formattingOptions)
 		.then(newText => documentEdit(rng, newText[0]), dumpError);

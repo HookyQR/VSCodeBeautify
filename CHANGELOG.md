@@ -1,11 +1,12 @@
-### 1.0.2: 20 Mar 2017
+### 1.1.0: 31 May 2017
+* Add `ignore` option for VS Code formatting
+* Update to version 1.6.14 of `js-beautify`
+  * This adds the `void_elements` option for `html`.
+
+### 1.0.0 - 1.0.2: 20 Mar 2017
 * Update to version 1.6.10 of `js-beautify`.
   * This returns `preserve_newlines` for `css`.
-
-### 1.0.1: 13 Mar 2017
 * Drop trailing comma on schema file
-
-### 1.0.0: 11 Mar 2017
 * Got a new icon, thanks @Slulego
 * Extension is mature enough to go to 1.0
 * Fixed some typos

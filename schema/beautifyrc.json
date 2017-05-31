@@ -48,7 +48,7 @@
 					"default": 10
 				},
 				"brace_style": {
-					"description": "[collapse|collapse|expand|end-expand|none][,preserve-inline]  [JS,HTML]",
+					"description": "[collapse|expand|end-expand|none][,preserve-inline]  [JS,HTML]",
 					"type": "string",
 					"default": "collapse",
 					"enum": ["collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline",
@@ -89,6 +89,15 @@
 		"HProperties": {
 			"type": "object",
 			"properties": {
+				"void_elements": {
+					"description": "HTLM void elements - aka self-closing tags. [HTML]",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta",
+						"param", "source", "track", "wbr", "!doctype", "?xml", "?php", "basefont", "isindex"]
+				},
 				"wrap_attributes": {
 					"description": "Wrap attributes to new lines. [HTML]",
 					"type": "string",

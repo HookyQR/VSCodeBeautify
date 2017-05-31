@@ -67,8 +67,6 @@ If the file is unsaved, or the type is undetermined, you'll be prompted for whic
 
 You can contol which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
 
-_Note:_ This used to be controlled by the `beautify.*Files` settings. If you still have those settings in your configuration, you'll be told that they're deprecated. Note that you may have to fix your global and project settings before the notification stops.
-
 ```javascript
 {
   "beautify.language": {
@@ -87,7 +85,23 @@ _Note:_ This used to be controlled by the `beautify.*Files` settings. If you sti
 
 Beautify on save will be enabled when `"editor.formatOnSave"` is true.
 
-Embedded version of js-beautify is v1.6.11
+Beautification on particular files using the built in **Format Document** (which includes formatting on save) can be skipped with the `beautify.ignore` option. Using the `Beautify file` and `Beautify selection` will still work. For files opened from within the workspace directory, the glob patterns will match from the workspace root. For files opened from elsewhere, or when no workspace is open, the patterns will match from the system root.
+
+
+Examples:
+```javascript
+/* ignore all files named 'test.js' not in the root folder,
+   all files directly in any 'spec' directory, and
+   all files in any 'test' directory at any depth
+*/
+"beautify.ignore": ["*/test.js", "**/spec/*", "**/test/**/*"]
+
+/* ignore all files ending in '_test.js' anywhere */
+"beautify.ignore": "**/*_test.js"
+```
+Note that the glob patterns are not used to test against the containing folder. You must match the filename as well.
+
+Embedded version of js-beautify is v1.6.14
 
 ### Keyboard Shortcut
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.
