@@ -16,7 +16,7 @@ indent_body_inner_html          | HTML      |  [Boolean] **Indent elements withi
 indent_handlebars               | HTML      |  [Boolean] **format and indent `{{#foo}}` and `{{/foo}}`.** <br> false
 indent_head_inner_html          | HTML      |  [Boolean] **Indent elements within html &lt;head> element.** <br> true
 indent_inner_html               | HTML      |  [Boolean] **Indent `<head>` and `<body>` sections.** <br> false
-indent_scripts                  | HTML      |  [Boolean] **"keep", "separate", or "normal"** <br> "normal"
+indent_scripts                  | HTML      |  [String] **"keep", "separate", or "normal"** <br> "normal"
 wrap_attributes                 | HTML      |  [String] **Wrap attributes to new lines. "auto", "force", "force-aligned" or "force-expand-multiline"** <br> "auto"
 wrap_attributes_indent_size     | HTML      |  [Boolean] **Indent wrapped attributes to after N characters. Defaults to 'indent_size'.** <br> false
 unformatted                     | HTML      |  [Array&lt;String>] **List of tags that should not be reformatted.** <br> ["a", "abbr", "area", "audio", "b", "bdi", "bdo", "br", "button", "canvas", "cite", "code", "data", "datalist", "del", "dfn", "em", "embed", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "map", "mark", "math", "meter", "noscript", "object", "output", "progress", "q", "ruby", "s", "samp", "select", "small", "span", "strong", "sub", "sup", "svg", "template", "textarea", "time", "u", "var", "video", "wbr", "text", "acronym", "address", "big", "dt", "ins", "strike", "tt"]
