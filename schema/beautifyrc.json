@@ -132,7 +132,7 @@
 						"acronym", "address", "big", "dt", "ins", "strike", "tt"]
 				},
 				"content_unformatted": {
-					"description": "List of tags who's content should not be reformatted. [HTML]",
+					"description": "List of tags whose content should not be reformatted. [HTML]",
 					"type": "array",
 					"items": {
 						"type": "string"
@@ -232,7 +232,12 @@
 					"description": "Pass E4X xml literals through untouched. [JS]",
 					"type": "boolean",
 					"default": false
-				}
+				},
+				"unindent_chained_methods": {
+					"description": "Unindent chained methods. [JS]",
+					"type": "boolean",
+					"default": false
+				},
 			}
 		}
 	},

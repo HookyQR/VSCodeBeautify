@@ -38,3 +38,4 @@ space_before_conditional        | JS        |  [Boolean] **Ensure a space before
 space_in_empty_paren            | JS        |  [Boolean] **Leave space in empty parentheses, ie. `f( )`.** <br> false
 space_in_paren                  | JS        |  [Boolean] **Add padding spaces within parentheses, ie. `f( a, b )`.** <br> false
 unescape_strings                | JS        |  [Boolean] **Decode printable characters encoded in xNN notation.** <br> false
+unindent_chained_methods        | JS        |  [Boolean] **Unindent chained methods**

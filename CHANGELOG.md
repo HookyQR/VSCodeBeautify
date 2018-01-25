@@ -1,3 +1,10 @@
+### 1.2.0: 26 Oct 2017
+* Update to version 1.7.5 of `js-beautify`
+
+### 1.1.1: 01 Jun 2017
+* Fix the broken things from using the wrong VSCE version to package
+  * Adds `unindent_chained_methods` for `js`.
+
 ### 1.1.0: 31 May 2017
 * Add `ignore` option for VS Code formatting
 * Update to version 1.6.14 of `js-beautify`
