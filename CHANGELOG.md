@@ -1,4 +1,7 @@
-### 1.2.0: 26 Oct 2017
+### 1.3.0: 26 Jan 2018
+* Update to work with multi-root workspaces
+
+### 1.2.0: 26 Jan 2018
 * Update to version 1.7.5 of `js-beautify`
 
 ### 1.1.1: 01 Jun 2017

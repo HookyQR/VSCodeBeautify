@@ -10,13 +10,16 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 For help on the settings in the `.jsbeautifyrc` see [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md)
 
 ### How we determine what settings to use:
-
-1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
-2. If an option is a file path or object of configuration specified in the user or workspace settings like this:
+1. When not using a multi-root workspace:
+    1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
+    2. If an option is a file path or object of configuration specified in the user or workspace settings like this:
 `"beautify.config" : "string|Object.<string,string|number|boolean>"`, these will be the only settings used.
 The file path is interpreted relative to the workspace's root folder.
-3. If there is a valid `.jsbeautifyrc` in the file's path tree, above project root, these will be the only settings used.
-4. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
+    3. If there is a valid `.jsbeautifyrc` in the file's path tree, above project root, these will be the only settings used.
+    4. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
+
+2. When using a multi-root workspace:
+  Same as above, but the search ends at the nearest parent workspace root to the open file.
 
 otherwise...
 

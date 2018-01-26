@@ -46,10 +46,19 @@ const extendRange = (doc, rng) => {
 
 const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
 
+const getWorkspaceRoot = doc => {
+	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0 ) return;
+	if (!doc || doc.isUntitled) return vscode.workspace.workspaceFolders[0].uri.fsPath;
+
+	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
+	if (!folder) return;
+	return folder.uri.fsPath;
+}
+
 // gets bound
 function fullEdit(type, doc, formattingOptions) {
 	let name = doc.fileName;
-	let base = vscode.workspace.rootPath || '';
+	let base = getWorkspaceRoot(doc) || vscode.workspace.rootPath || '';
 	let ignore = vscode.workspace.getConfiguration('beautify')
 		.ignore;
 	if (!Array.isArray(ignore)) ignore = [ignore];
