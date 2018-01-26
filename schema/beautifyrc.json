@@ -237,7 +237,7 @@
 					"description": "Unindent chained methods. [JS]",
 					"type": "boolean",
 					"default": false
-				},
+				}
 			}
 		}
 	},
