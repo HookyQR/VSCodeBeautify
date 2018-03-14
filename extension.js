@@ -185,7 +185,7 @@ const applyEdits = (editor, ranges, edits) => {
 	if (ranges.length !== edits.length) {
 		console.log("FAILED:", ranges.length, edits.length, ":failed");
 		vscode.window.showInformationMessage(
-			"Beautify ranges didin't get back the right number of edits");
+			"Beautify ranges didn't get back the right number of edits");
 		throw "";
 	}
 	return editor.edit(editorEdit => {
