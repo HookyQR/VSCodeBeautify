@@ -137,19 +137,19 @@ class Formatters {
 			// dispose of the current
 			let selector = [];
 			if (Array.isArray(cfg[a])) {
-				selector = [].concat(cfg[a]);
+				selector = [].concat(cfg[a].map(language => ({ language, scheme: 'file' })));
 			} else {
 				for (let b in cfg[a]) {
 					let adder;
 					switch (b) {
 						case 'type':
-							adder = cfg[a][b];
+							adder = cfg[a][b].map(language => ({ language, scheme: 'file' }));
 							break;
 						case 'ext':
-							adder = [{ pattern: `**/*.{${cfg[a][b].join(',')}}` }];
+							adder = [{ pattern: `**/*.{${cfg[a][b].join(',')}}`, scheme: 'file' }];
 							break;
 						case 'filename':
-							adder = [{ pattern: `**/{${cfg[a][b].join(',')}}` }];
+							adder = [{ pattern: `**/{${cfg[a][b].join(',')}}`, scheme: 'file' }];
 							break;
 						default:
 							continue;
