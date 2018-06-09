@@ -4,7 +4,9 @@ const vscode = require('vscode'),
 	os = require('os'),
 	fs = require('fs'),
 	editorconfig = require('editorconfig');
-const dropComments = inText => inText.replace(/(\/\*.*\*\/)|\/\/.*(?:[\r\n]|$)/g, "");
+const dropComments = inText => inText
+	.replace(/\/\*.*\*\//g, "")
+	.replace(/("(?:[^\\"\r\n]|\\")*?")|(?:\/\/.*(?=[\r\n]|$))/g, (_, str) => str || "");
 
 const mergeOpts = (opts, kind) => {
 	const finOpts = {};
@@ -117,7 +119,7 @@ function set_file_editorconfig_opts(file, config) {
 }
 
 const getWorkspaceRoot = doc => {
-	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0 ) return;
+	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) return;
 	if (!doc || doc.isUntitled) return vscode.workspace.workspaceFolders[0].uri.fsPath;
 
 	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
