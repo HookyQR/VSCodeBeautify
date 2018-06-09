@@ -22,6 +22,11 @@ const getBeautifyType = () => {
 		});
 };
 
+const removeNewLineEndForPartial = (config, isPartial) => {
+	if (isPartial) { config.end_with_newline = false; }
+	return Promise.resolve(config);
+}
+
 const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
 	if (!doc) {
 		vscode.window.showInformationMessage(
@@ -30,8 +35,9 @@ const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
 	}
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
-			.then(config => Promise.all(ranges.map(range =>
-				beautify[type](doc.getText(range), config)))));
+			.then(config => removeNewLineEndForPartial(config, formattingOptions.isPartial))
+      .then(config => Promise.all(ranges.map(range =>
+        beautify[type](doc.getText(range), config)))));
 };
 
 const documentEdit = (range, newText) => [vscode.TextEdit.replace(range, newText)];
@@ -47,7 +53,7 @@ const extendRange = (doc, rng) => {
 const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
 
 const getWorkspaceRoot = doc => {
-	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0 ) return;
+	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) return;
 	if (!doc || doc.isUntitled) return vscode.workspace.workspaceFolders[0].uri.fsPath;
 
 	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
@@ -73,6 +79,7 @@ function fullEdit(type, doc, formattingOptions) {
 function rangeEdit(type, doc, rng, formattingOptions) {
 	// Fixes bug #106
 	rng = extendRange(doc, rng);
+	formattingOptions.isPartial = true;
 	return beautifyDocRanges(doc, [rng], type, formattingOptions)
 		.then(newText => documentEdit(rng, newText[0]), dumpError);
 }
@@ -183,7 +190,6 @@ formatters.configure();
 
 const applyEdits = (editor, ranges, edits) => {
 	if (ranges.length !== edits.length) {
-		console.log("FAILED:", ranges.length, edits.length, ":failed");
 		vscode.window.showInformationMessage(
 			"Beautify ranges didin't get back the right number of edits");
 		throw "";
@@ -208,7 +214,7 @@ const formatActiveDocument = ranged => {
 		ranges = [fullRange(active.document)];
 
 	if (ranges.length) {
-		return beautifyDocRanges(active.document, ranges, type)
+		return beautifyDocRanges(active.document, ranges, type, { isPartial: ranged })
 			.then(edits => applyEdits(active, ranges, edits), dumpError);
 	} else return Promise.resolve();
 };
@@ -217,7 +223,7 @@ const formatActiveDocument = ranged => {
 exports.activate = (context) => {
 	let sub = context.subscriptions;
 	sub.push(vscode.commands.registerCommand('HookyQR.beautify', formatActiveDocument.bind(0, true)));
-	sub.push(vscode.commands.registerCommand('HookyQR.beautifyFile', formatActiveDocument));
+	sub.push(vscode.commands.registerCommand('HookyQR.beautifyFile', formatActiveDocument.bind(0, false)));
 	sub.push(vscode.workspace.onDidChangeConfiguration(formatters.configure.bind(formatters)));
 	sub.push(vscode.workspace.onDidOpenTextDocument(formatters.onFileOpen.bind(formatters)));
 };
