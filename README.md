@@ -23,7 +23,7 @@ The file path is interpreted relative to the workspace's root folder.
 
 otherwise...
 
-3. Settings are translated from your VS Code workspace/user setttings.
+3. Settings are translated from your VS Code workspace/user settings.
 4. Any open editor settings (indent spaces/tabs) for the specific file are merged in.
 5. Editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
 
@@ -68,7 +68,7 @@ Will result in the `indent_size` being set to 4 for Javascript and HTML, but set
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
-You can contol which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
+You can control which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
 
 ```javascript
 {
