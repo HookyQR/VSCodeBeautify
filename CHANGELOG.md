@@ -1,3 +1,7 @@
+### 1.3.1: 11 Jun 2018
+* Improve comment removal for `.jsbeautifyrc` parser
+* Stop adding extra lines on partial format and format on save
+
 ### 1.3.0: 26 Jan 2018
 * Update to work with multi-root workspaces
 
