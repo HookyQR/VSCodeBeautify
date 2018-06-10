@@ -114,6 +114,7 @@ describe("VS code beautify", function() {
 			let config = {
 				jsbeautify: [{
 					indent_size: 4,
+					indent_with_tabs: false,
 					eol
 					}, null],
 				editorconfig: [null,
@@ -223,6 +224,7 @@ describe("VS code beautify", function() {
 		after(clean);
 		beautifyPartialEach(['partial', vscode.EndOfLine.LF]);
 	});
+
 	context('on save', function() {
 		this.timeout(slow * 4);
 		this.slow(slow * 2);

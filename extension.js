@@ -27,7 +27,7 @@ const removeNewLineEndForPartial = (config, isPartial) => {
 	return Promise.resolve(config);
 }
 
-const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
+const beautifyDocRanges = (doc, ranges, type, formattingOptions, isPartial) => {
 	if (!doc) {
 		vscode.window.showInformationMessage(
 			"Beautify can't get the file information because the editor won't supply it. (File probably too large)");
@@ -35,9 +35,9 @@ const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
 	}
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
-			.then(config => removeNewLineEndForPartial(config, formattingOptions.isPartial))
-      .then(config => Promise.all(ranges.map(range =>
-        beautify[type](doc.getText(range), config)))));
+			.then(config => removeNewLineEndForPartial(config, isPartial))
+			.then(config => Promise.all(ranges.map(range =>
+				beautify[type](doc.getText(range), config)))));
 };
 
 const documentEdit = (range, newText) => [vscode.TextEdit.replace(range, newText)];
@@ -79,8 +79,7 @@ function fullEdit(type, doc, formattingOptions) {
 function rangeEdit(type, doc, rng, formattingOptions) {
 	// Fixes bug #106
 	rng = extendRange(doc, rng);
-	formattingOptions.isPartial = true;
-	return beautifyDocRanges(doc, [rng], type, formattingOptions)
+	return beautifyDocRanges(doc, [rng], type, formattingOptions, true)
 		.then(newText => documentEdit(rng, newText[0]), dumpError);
 }
 
@@ -214,7 +213,7 @@ const formatActiveDocument = ranged => {
 		ranges = [fullRange(active.document)];
 
 	if (ranges.length) {
-		return beautifyDocRanges(active.document, ranges, type, { isPartial: ranged })
+		return beautifyDocRanges(active.document, ranges, type, null, ranged)
 			.then(edits => applyEdits(active, ranges, edits), dumpError);
 	} else return Promise.resolve();
 };
