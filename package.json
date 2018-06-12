@@ -2,7 +2,7 @@
 	"name": "beautify",
 	"displayName": "Beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "1.3.1",
+	"version": "1.3.2",
 	"publisher": "HookyQR",
 	"engines": { "vscode": "^1.22.0" },
 	"categories": ["Other", "Programming Languages", "Formatters"],
@@ -48,9 +48,9 @@
 					"default": null,
 					"anyOf": [
 						{ "type": "string" },
-						{ "$ref": "http://json.schemastore.org/jsbeautifyrc-nested#" }
+						{ "$ref": "http://json.schemastore.org/jsbeautifyrc-nested" }
 					],
-					"description": "A path to file or object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
+					"description": "A path to file, or an object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
 				},
 				"beautify.language": {
 					"type": "object",

@@ -143,19 +143,19 @@ class Formatters {
 			// dispose of the current
 			let selector = [];
 			if (Array.isArray(cfg[a])) {
-				selector = [].concat(cfg[a]);
+				selector = cfg[a].map(language => ({ language, scheme: 'file' }));
 			} else {
 				for (let b in cfg[a]) {
 					let adder;
 					switch (b) {
 						case 'type':
-							adder = cfg[a][b];
+							adder = cfg[a][b].map(language => ({ language, scheme: 'file' }));
 							break;
 						case 'ext':
-							adder = [{ pattern: `**/*.{${cfg[a][b].join(',')}}` }];
+							adder = [{ pattern: `**/*.{${cfg[a][b].join(',')}}`, scheme: 'file' }];
 							break;
 						case 'filename':
-							adder = [{ pattern: `**/{${cfg[a][b].join(',')}}` }];
+							adder = [{ pattern: `**/{${cfg[a][b].join(',')}}`, scheme: 'file' }];
 							break;
 						default:
 							continue;
@@ -163,6 +163,12 @@ class Formatters {
 					selector = selector.concat(adder);
 				}
 			}
+			selector = selector.concat(selector.map(s => {
+				const ss = Object.create(s);
+				ss.scheme = 'untitled';
+				return ss;
+			}));
+
 			this.handlers[a] = {
 				selector,
 				full: register(a, selector),
@@ -190,7 +196,7 @@ formatters.configure();
 const applyEdits = (editor, ranges, edits) => {
 	if (ranges.length !== edits.length) {
 		vscode.window.showInformationMessage(
-			"Beautify ranges didin't get back the right number of edits");
+			"Beautify ranges didn't get back the right number of edits");
 		throw "";
 	}
 	return editor.edit(editorEdit => {

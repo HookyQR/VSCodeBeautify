@@ -1,3 +1,6 @@
+### 1.3.2: 13 Jun 2018
+* Include `scheme` (file|untitled) in selectors (Tks @lostintangent)
+
 ### 1.3.1: 11 Jun 2018
 * Improve comment removal for `.jsbeautifyrc` parser
 * Stop adding extra lines on partial format and format on save
