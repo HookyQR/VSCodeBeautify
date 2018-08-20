@@ -32,7 +32,7 @@ indent_level                    | JS        |  [Integer] **Initial indentation l
 jslint_happy                    | JS        |  [Boolean] **Enable jslint-stricter mode. (Forces 'space_after_anon_function')** <br> false
 keep_array_indentation          | JS        |  [Boolean] **Preserve array indentation.** <br> false
 keep_function_indentation       | JS        |  [Boolean] **Preserve function indentation.** <br> false
-operator_position               | JS        |  [Boolean] **Move operators to before or after a new line, or keep as is.** <br> "before-newline"
+operator_position               | JS        |  [String] **Move operators to before or after a new line, or keep as is. "before-newline", "after-newline", or "preserve-newline"** <br> "before-newline"
 space_after_anon_function       | JS        |  [Boolean] **Add a space before an anonymous function's parens, ie. `function ()`.** <br> false
 space_before_conditional        | JS        |  [Boolean] **Ensure a space before conditional statement.** <br> true
 space_in_empty_paren            | JS        |  [Boolean] **Leave space in empty parentheses, ie. `f( )`.** <br> false
