@@ -16,6 +16,6 @@
 		"html": ["htm", "html"]
 	},
 	"html.format.unformatted": "a, var",
-    "editor.formatOnSave": false,
-    "beautify.config": null
+  "editor.formatOnSave": false,
+  "beautify.config": null
 }

@@ -2,11 +2,19 @@
 	"name": "beautify",
 	"displayName": "Beautify",
 	"description": "Beautify code in place for VS Code",
-	"version": "1.3.2",
+	"version": "1.4.2",
 	"publisher": "HookyQR",
-	"engines": { "vscode": "^1.22.0" },
-	"categories": ["Other", "Programming Languages", "Formatters"],
-	"activationEvents": ["*"],
+	"engines": {
+		"vscode": "^1.22.0"
+	},
+	"categories": [
+		"Other",
+		"Programming Languages",
+		"Formatters"
+	],
+	"activationEvents": [
+		"*"
+	],
 	"icon": "icon.png",
 	"galleryBanner": {
 		"color": "#e8e030",
@@ -15,28 +23,43 @@
 	"license": "MIT",
 	"main": "./extension",
 	"contributes": {
-		"languages": [{
-			"id": "json",
-			"aliases": ["JSON"],
-			"filenames": [".jsbeautifyrc", ".jshintrc"]
-			}],
-		"jsonValidation": [{
-			"fileMatch": ".jsbeautifyrc",
-			"url": "./schema/beautifyrc.json"
-			}],
-		"commands": [{
-			"command": "HookyQR.beautify",
-			"title": "Beautify selection"
-			}, {
-			"command": "HookyQR.beautifyFile",
-			"title": "Beautify file"
-			}],
+		"languages": [
+			{
+				"id": "json",
+				"aliases": [
+					"JSON"
+				],
+				"filenames": [
+					".jsbeautifyrc",
+					".jshintrc"
+				]
+			}
+		],
+		"jsonValidation": [
+			{
+				"fileMatch": ".jsbeautifyrc",
+				"url": "./schema/beautifyrc.json"
+			}
+		],
+		"commands": [
+			{
+				"command": "HookyQR.beautify",
+				"title": "Beautify selection"
+			},
+			{
+				"command": "HookyQR.beautifyFile",
+				"title": "Beautify file"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "Beautify config",
 			"properties": {
 				"beautify.ignore": {
-					"type": ["string", "array"],
+					"type": [
+						"string",
+						"array"
+					],
 					"items": {
 						"type": "string"
 					},
@@ -44,11 +67,299 @@
 					"description": "List of paths to ignore when using VS Code format command, including format on save. Uses glob pattern matching."
 				},
 				"beautify.config": {
-					"type": ["string", "object", "null"],
+					"type": [
+						"string",
+						"object",
+						"null"
+					],
 					"default": null,
 					"anyOf": [
 						{ "type": "string" },
-						{ "$ref": "http://json.schemastore.org/jsbeautifyrc-nested" }
+						{
+							"type": "object",
+							"definitions": {
+								"CHJProperties": {
+									"type": "object",
+									"properties": {
+										"indent_size": {
+											"description": "Indent size. [JS,CSS,HTML]",
+											"type": "integer",
+											"default": 4
+										},
+										"indent_char": {
+											"description": "Indentation character. [JS,CSS,HTML]",
+											"type": "string",
+											"default": " ",
+											"maxLength": 1
+										},
+										"eol": {
+											"description": "Character(s) to use as line terminators. [JS,CSS,HTML]",
+											"type": "string",
+											"default": "\n"
+										},
+										"indent_with_tabs": {
+											"description": "Indent with tabs, overrides 'indent_size' and 'indent_char' [JS,CSS,HTML]",
+											"type": "boolean",
+											"default": false
+										},
+										"end_with_newline": {
+											"description": "Ensure newline at end of file. [JS,CSS,HTML]",
+											"type": "boolean",
+											"default": false
+										},
+										"preserve_newlines": {
+											"description": "Preserve line-breaks. [JS,CSS,HTML]",
+											"type": "boolean",
+											"default": true
+										}
+									}
+								},
+								"HJProperties": {
+									"type": "object",
+									"properties": {
+										"max_preserve_newlines": {
+											"description": "Number of line-breaks to be preserved in one chunk. [JS,HTML]",
+											"type": "integer",
+											"default": 10
+										},
+										"brace_style": {
+											"description": "[collapse|expand|end-expand|none][,preserve-inline]  [JS,HTML]",
+											"type": "string",
+											"default": "collapse",
+											"enum": ["collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline",
+												"end-expand,preserve-inline", "none,preserve-inline"]
+										},
+										"wrap_line_length": {
+											"description": "Wrap lines at next opportunity after N characters. [JS,HTML]",
+											"type": "integer",
+											"default": 0
+										}
+									}
+								},
+								"CProperties": {
+									"type": "object",
+									"properties": {
+										"selector_separator_newline": {
+											"description": "Add a newline between multiple selectors. [CSS]",
+											"type": "boolean",
+											"default": true
+										},
+										"newline_between_rules": {
+											"description": "Add a newline between CSS rules. [CSS]",
+											"type": "boolean",
+											"default": false
+										},
+										"space_around_selector_separator": {
+											"description": "(Deprecated: use space_around_combinator) [CSS]",
+											"type": "boolean",
+											"default": false
+										},
+										"space_around_combinator": {
+											"description": "Ensure space around selector separators (>+~). [CSS]",
+											"type": "boolean",
+											"default": false
+										}
+									}
+								},
+								"HProperties": {
+									"type": "object",
+									"properties": {
+										"void_elements": {
+											"description": "HTLM void elements - aka self-closing tags. [HTML]",
+											"type": "array",
+											"items": {
+												"type": "string"
+											},
+											"default": ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem",
+												"meta", "param", "source", "track", "wbr", "!doctype", "?xml", "?php", "?=", "basefont", "isindex"]
+										},
+										"inline": {
+											"description": "",
+											"type": "array",
+											"items": {
+												"type": "string"
+											},
+											"default": [
+												"a", "abbr", "area", "audio", "b", "bdi", "bdo", "br", "button", "canvas", "cite",
+												"code", "data", "datalist", "del", "dfn", "em", "embed", "i", "iframe", "img",
+												"input", "ins", "kbd", "keygen", "label", "map", "mark", "math", "meter", "noscript",
+												"object", "output", "progress", "q", "ruby", "s", "samp", "select", "small",
+												"span", "strong", "sub", "sup", "svg", "template", "textarea", "time", "u", "var",
+												"video", "wbr", "text",
+												"acronym", "address", "big", "dt", "ins", "strike", "tt"
+											]
+										},
+										"wrap_attributes": {
+											"description": "Wrap attributes to new lines. [HTML]",
+											"type": "string",
+											"default": "auto",
+											"enum": ["auto", "force", "force-aligned", "force-expand-multiline", "align-multiple"]
+										},
+										"wrap_attributes_indent_size": {
+											"description": "Indent wrapped attributes to after N characters. Defaults to 'indent_size'. [HTML]",
+											"type": "number"
+										},
+										"indent_inner_html": {
+											"description": "Indent <head> and <body> sections. [HTML]",
+											"type": "boolean",
+											"default": false
+										},
+										"indent_scripts": {
+											"description": "[keep|separate|normal] [HTML]",
+											"type": "string",
+											"default": "normal",
+											"enum": ["keep", "separate", "normal"]
+										},
+										"unformatted": {
+											"description": "List of tags that should not be reformatted. [HTML]",
+											"type": "array",
+											"items": {
+												"type": "string"
+											},
+											"default": []
+										},
+										"content_unformatted": {
+											"description": "List of tags whose content should not be reformatted. [HTML]",
+											"type": "array",
+											"items": {
+												"type": "string"
+											},
+											"default": ["pre", "textarea"]
+										},
+										"extra_liners": {
+											"description": "List of tags that should have an extra newline before them. [HTML]",
+											"type": "array",
+											"items": {
+												"type": "string"
+											},
+											"default": ["head", "body", "/html"]
+										},
+										"indent_body_inner_html": {
+											"description": "Indent elements within html <body> element. [HTML]",
+											"type": "boolean",
+											"default": true
+										},
+										"indent_head_inner_html": {
+											"description": "Indent elements within html <head> element. [HTML]",
+											"type": "boolean",
+											"default": true
+										},
+										"indent_handlebars": {
+											"description": "format and indent {{#foo}} and {{/foo}}. [HTML]",
+											"type": "boolean",
+											"default": false
+										}
+									}
+								},
+								"JProperties": {
+									"type": "object",
+									"properties": {
+										"indent_level": {
+											"description": "Initial indentation level. [JS]",
+											"type": "integer",
+											"default": 0
+										},
+										"space_in_paren": {
+											"description": "Add padding spaces within parentheses, ie. f( a, b ). [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"space_in_empty_paren": {
+											"description": "Leave space in empty parentheses, ie. f( ). [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"jslint_happy": {
+											"description": "Enable jslint-stricter mode. (Forces 'space_after_anon_function') [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"space_after_anon_function": {
+											"description": "Add a space before an anonymous function's parens, ie. function (). [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"break_chained_methods": {
+											"description": "Break chained method calls across subsequent lines. [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"keep_array_indentation": {
+											"description": "Preserve array indentation. [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"keep_function_indentation": {
+											"description": "Preserve function indentation. [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"space_before_conditional": {
+											"description": "Ensure a space before conditional statement. [JS]",
+											"type": "boolean",
+											"default": true
+										},
+										"unescape_strings": {
+											"description": "Decode printable characters encoded in xNN notation. [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"comma_first": {
+											"description": "Put commas at the beginning of new line instead of end. [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"operator_position": {
+											"description": "Move operators to before or after a new line, or keep as is. [JS]",
+											"type": "string",
+											"enum": ["before-newline", "after-newline", "preserve-newline"],
+											"default": "before-newline"
+										},
+										"e4x": {
+											"description": "Pass E4X xml literals through untouched. [JS]",
+											"type": "boolean",
+											"default": false
+										},
+										"unindent_chained_methods": {
+											"description": "Unindent chained methods. [JS]",
+											"type": "boolean",
+											"default": false
+										}
+									}
+								}
+							},
+							"allOf": [
+								{ "$ref": "#/definitions/CHJProperties" },
+								{ "$ref": "#/definitions/HJProperties" },
+								{ "$ref": "#/definitions/CProperties" },
+								{ "$ref": "#/definitions/HProperties" },
+								{ "$ref": "#/definitions/JProperties" },
+								{
+									"properties": {
+										"css": {
+											"type": "object",
+											"allOf": [
+												{ "$ref": "#/definitions/CHJProperties" },
+												{ "$ref": "#/definitions/CProperties" }]
+										},
+										"js": {
+											"type": "object",
+											"allOf": [
+												{ "$ref": "#/definitions/CHJProperties" },
+												{ "$ref": "#/definitions/HJProperties" },
+												{ "$ref": "#/definitions/JProperties" }
+											]
+										},
+										"html": {
+											"type": "object",
+											"allOf": [
+												{ "$ref": "#/definitions/CHJProperties" },
+												{ "$ref": "#/definitions/HJProperties" },
+												{ "$ref": "#/definitions/HProperties" }]
+										}
+									}
+								}]
+						}
 					],
 					"description": "A path to file, or an object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
 				},
@@ -57,75 +368,121 @@
 					"description": "Link file types to the beautifier type",
 					"default": {
 						"js": {
-							"type": ["javascript", "json", "jsonc"],
-							"filename": [".jshintrc", ".jsbeautifyrc"]
+							"type": [
+								"javascript",
+								"json",
+								"jsonc"
+							],
+							"filename": [
+								".jshintrc",
+								".jsbeautifyrc"
+							]
 						},
-						"css": ["css", "scss"],
-						"html": ["htm", "html"]
+						"css": [
+							"css",
+							"scss"
+						],
+						"html": [
+							"htm",
+							"html"
+						]
 					},
 					"properties": {
 						"js": {
-							"type": ["object", "array"],
-							"items": { "type": "string" },
+							"type": [
+								"object",
+								"array"
+							],
+							"items": {
+								"type": "string"
+							},
 							"description": "Array of language types, or an object containing types, extensions and filenames to associate",
 							"properties": {
 								"type": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "VS Code language name"
 								},
 								"ext": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "File extensions (without the leading dot)"
 								},
 								"filename": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "Full filenames (eg: '.jsbeautifyrc')"
 								}
 							}
 						},
 						"css": {
-							"type": ["object", "array"],
-							"items": { "type": "string" },
+							"type": [
+								"object",
+								"array"
+							],
+							"items": {
+								"type": "string"
+							},
 							"description": "Array of language types, or an object containing types, extensions and filenames to associate",
 							"properties": {
 								"type": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "VS Code language name"
 								},
 								"ext": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "File extensions (without the leading dot)"
 								},
 								"filename": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "Full filenames (eg: '.jsbeautifyrc')"
 								}
 							}
 						},
 						"html": {
-							"type": ["object", "array"],
-							"items": { "type": "string" },
+							"type": [
+								"object",
+								"array"
+							],
+							"items": {
+								"type": "string"
+							},
 							"description": "Array of language types, or an object containing types, extensions and filenames to associate",
 							"properties": {
 								"type": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "VS Code language name"
 								},
 								"ext": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "File extensions (without the leading dot)"
 								},
 								"filename": {
 									"type": "array",
-									"items": { "type": "string" },
+									"items": {
+										"type": "string"
+									},
 									"description": "Full filenames (eg: '.jsbeautifyrc')"
 								}
 							}
@@ -137,7 +494,7 @@
 	},
 	"dependencies": {
 		"editorconfig": "0.15.0",
-		"js-beautify": "^1.7.5",
+		"js-beautify": "^1.8.1",
 		"minimatch": "^3.0.4"
 	},
 	"devDependencies": {
