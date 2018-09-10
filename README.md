@@ -105,7 +105,7 @@ Examples:
 ```
 Note that the glob patterns are not used to test against the containing folder. You must match the filename as well.
 
-Embedded version of js-beautify is v1.6.14
+Embedded version of js-beautify is v1.8.4
 
 ### Keyboard Shortcut
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.

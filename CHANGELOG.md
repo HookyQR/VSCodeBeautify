@@ -1,4 +1,10 @@
-### 1.4.3: 28 Aug 2018
+### 1.4.3: 10 Sep 2018
+* Update to version 1.8.4 of `js-beautify`
+* Remove settings hints for VS Code settings file. [#266](https://github.com/HookyQR/VSCodeBeautify/issues/)
+* Honour VS Code html.format.wrapAttributes setting - thanks @admosity
+* Clean up Settings.md - thanks @romanrandom
+
+### 1.4.2: 28 Aug 2018
 * Update to version 1.8.1 of `js-beautify`
   * This includes some major change to the HTML beautifier mainly, but includes changes to the CSS and JS beautifiers as well. See the `js-beautify` [change log](https://github.com/beautify-web/js-beautify/blob/master/CHANGELOG.md)
 

@@ -22,7 +22,7 @@ wrap_attributes                 | HTML      |  [String] **Wrap attributes to new
 wrap_attributes_indent_size     | HTML      |  [Boolean] **Indent wrapped attributes to after N characters. Defaults to 'indent_size'.** <br> false
 unformatted                     | HTML      |  [Array&lt;String>] **List of tags that should not be reformatted.** <br> []
 content_unformatted             | HTML      |  [Array&lt;String>] **List of tags who's content should not be reformatted**<br>["pre", "textarea"]
-void_elements                   | HTML      |  [Array&lt;String>] **HTLM void elements - aka self-closing tags**<br> ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr", "!doctype", "?xml", "?php", "?=", "basefont", "isindex"]
+void_elements                   | HTML      |  [Array&lt;String>] **HTML void elements - aka self-closing tags**<br> ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr", "!doctype", "?xml", "?php", "?=", "basefont", "isindex"]
 newline_between_rules           | CSS       |  [Boolean] **Add a newline between CSS rules.** <br> false
 selector_separator_newline      | CSS       |  [Boolean] **Add a newline between multiple selectors.** <br> true
 space_around_combinator         | CSS       |  [Boolean] **Ensure space around selector separators (>+~).** <br> false
