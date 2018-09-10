@@ -66,6 +66,7 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		options.indent_inner_html = config.html.format.indentInnerHtml;
 		options.max_preserve_newlines = config.html.format.maxPreserveNewLines;
 		options.preserve_newlines = config.html.format.preserveNewLines;
+		options.wrap_attributes = config.html.format.wrapAttributes;
 
 		if (typeof config.html.format.unformatted === 'string') {
 			options.unformatted = config.html.format.unformatted

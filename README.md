@@ -35,6 +35,7 @@ eol                           | files.eol
 tab_size                      | editor.tabSize
 indent_with_tabs&nbsp;_(inverted)_ | editor.insertSpaces
 wrap_line_length              | html.format.wrapLineLength
+wrap_attributes               | html.format.wrapAttributes
 unformatted                   | html.format.unformatted
 indent_inner_html             | html.format.indentInnerHtml
 preserve_newlines             | html.format.preserveNewLines
