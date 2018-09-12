@@ -1,3 +1,30 @@
+### 1.4.3: 10 Sep 2018
+* Update to version 1.8.4 of `js-beautify`
+* Remove settings hints for VS Code settings file. [#266](https://github.com/HookyQR/VSCodeBeautify/issues/)
+* Honour VS Code html.format.wrapAttributes setting - thanks @admosity
+* Clean up Settings.md - thanks @romanrandom
+
+### 1.4.2: 28 Aug 2018
+* Update to version 1.8.1 of `js-beautify`
+  * This includes some major change to the HTML beautifier mainly, but includes changes to the CSS and JS beautifiers as well. See the `js-beautify` [change log](https://github.com/beautify-web/js-beautify/blob/master/CHANGELOG.md)
+
+### 1.3.2: 13 Jun 2018
+* Include `scheme` (file|untitled) in selectors (Tks @lostintangent)
+
+### 1.3.1: 11 Jun 2018
+* Improve comment removal for `.jsbeautifyrc` parser
+* Stop adding extra lines on partial format and format on save
+
+### 1.3.0: 26 Jan 2018
+* Update to work with multi-root workspaces
+
+### 1.2.0: 26 Jan 2018
+* Update to version 1.7.5 of `js-beautify`
+
+### 1.1.1: 01 Jun 2017
+* Fix the broken things from using the wrong VSCE version to package
+  * Adds `unindent_chained_methods` for `js`.
+
 ### 1.1.0: 31 May 2017
 * Add `ignore` option for VS Code formatting
 * Update to version 1.6.14 of `js-beautify`

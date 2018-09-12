@@ -4,7 +4,9 @@ const vscode = require('vscode'),
 	os = require('os'),
 	fs = require('fs'),
 	editorconfig = require('editorconfig');
-const dropComments = inText => inText.replace(/(\/\*.*\*\/)|\/\/.*(?:[\r\n]|$)/g, "");
+const dropComments = inText => inText
+	.replace(/\/\*.*\*\//g, "")
+	.replace(/("(?:[^\\"\r\n]|\\")*?")|(?:\/\/.*(?=[\r\n]|$))/g, (_, str) => str || "");
 
 const mergeOpts = (opts, kind) => {
 	const finOpts = {};
@@ -64,6 +66,7 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
 		options.indent_inner_html = config.html.format.indentInnerHtml;
 		options.max_preserve_newlines = config.html.format.maxPreserveNewLines;
 		options.preserve_newlines = config.html.format.preserveNewLines;
+		options.wrap_attributes = config.html.format.wrapAttributes;
 
 		if (typeof config.html.format.unformatted === 'string') {
 			options.unformatted = config.html.format.unformatted
@@ -116,8 +119,17 @@ function set_file_editorconfig_opts(file, config) {
 	} catch (e) {}
 }
 
+const getWorkspaceRoot = doc => {
+	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) return;
+	if (!doc || doc.isUntitled) return vscode.workspace.workspaceFolders[0].uri.fsPath;
+
+	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
+	if (!folder) return;
+	return folder.uri.fsPath;
+}
+
 module.exports = (doc, type, formattingOptions) => {
-	let root = vscode.workspace.rootPath;
+	let root = getWorkspaceRoot(doc) || vscode.workspace.rootPath;
 	let dir = doc.isUntitled ? root : path.dirname(doc.fileName);
 	let opts = optionsFromVSCode(doc, formattingOptions, type);
 	set_file_editorconfig_opts(doc.fileName, opts); // this does nothing if no ec file was found

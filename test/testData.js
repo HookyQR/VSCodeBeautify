@@ -39,7 +39,7 @@ const outputFiles = {
 		js: 'var a = 1;\n\nfunction b(){a=      5}',
 		json: '{\n  "a": true,\n"b":false}',
 		html: '<div>\n  <article id=\'my_id\'>\nArticle Content         </article></div>',
-		css: '  a,\nb>c {\n  border:\n1px;color:blue}',
+		css: 'a,\nb>c {\n  border:\n1px;color:blue}',
 		scss: 'a {\n  border: 1\n}\n@mixin first(){\n&:before,&:after{content:\n"|"} border: 1px    solid green} .a {@include first();\nmargin:1px}'
 	}
 };

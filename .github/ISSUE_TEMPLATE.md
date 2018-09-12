@@ -10,7 +10,6 @@ eg.:
 VS Code:
 ```javascript
 {
-	"beautify.editorconfig": false,
 	"editor.formatOnSave": true
 }
 ```

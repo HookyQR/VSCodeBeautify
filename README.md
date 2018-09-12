@@ -1,7 +1,7 @@
 # js-beautify for VS Code
 
 [![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify) [![Build status](https://ci.appveyor.com/api/projects/status/mu73cgat3r1t0weu/branch/master?svg=true)](https://ci.appveyor.com/project/HookyQR/vscodebeautify) [![Licence](https://img.shields.io/github/license/HookyQR/VSCodeBeautify.svg)](https://github.com/HookyQR/VSCodeBeautify)
-[![VS Code Marketplace](http://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](http://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Installs](http://vsmarketplacebadge.apphb.com/installs/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
+[![VS Code Marketplace](https://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Installs](https://vsmarketplacebadge.apphb.com/installs/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
 
 Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
@@ -10,17 +10,20 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 For help on the settings in the `.jsbeautifyrc` see [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md)
 
 ### How we determine what settings to use:
-
-1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
-2. If an option is a file path or object of configuration specified in the user or workspace settings like this:
+1. When not using a multi-root workspace:
+    1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
+    2. If an option is a file path or object of configuration specified in the user or workspace settings like this:
 `"beautify.config" : "string|Object.<string,string|number|boolean>"`, these will be the only settings used.
 The file path is interpreted relative to the workspace's root folder.
-3. If there is a valid `.jsbeautifyrc` in the file's path tree, above project root, these will be the only settings used.
-4. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
+    3. If there is a valid `.jsbeautifyrc` in the file's path tree, above project root, these will be the only settings used.
+    4. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
+
+2. When using a multi-root workspace:
+  Same as above, but the search ends at the nearest parent workspace root to the open file.
 
 otherwise...
 
-3. Settings are translated from your VS Code workspace/user setttings.
+3. Settings are translated from your VS Code workspace/user settings.
 4. Any open editor settings (indent spaces/tabs) for the specific file are merged in.
 5. Editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
 
@@ -32,6 +35,7 @@ eol                           | files.eol
 tab_size                      | editor.tabSize
 indent_with_tabs&nbsp;_(inverted)_ | editor.insertSpaces
 wrap_line_length              | html.format.wrapLineLength
+wrap_attributes               | html.format.wrapAttributes
 unformatted                   | html.format.unformatted
 indent_inner_html             | html.format.indentInnerHtml
 preserve_newlines             | html.format.preserveNewLines
@@ -61,11 +65,11 @@ Settings are inherited from the base of the file. Thus:
 }
 ```
 
-Will result in the `indent_size` being set to 4 for Javascript and HTML, but set to 2 for CSS. All will get the same `indent_char` setting.
+Will result in the `indent_size` being set to 4 for JavaScript and HTML, but set to 2 for CSS. All will get the same `indent_char` setting.
 
 If the file is unsaved, or the type is undetermined, you'll be prompted for which beautifier to use.
 
-You can contol which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
+You can control which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
 
 ```javascript
 {
@@ -101,7 +105,7 @@ Examples:
 ```
 Note that the glob patterns are not used to test against the containing folder. You must match the filename as well.
 
-Embedded version of js-beautify is v1.6.14
+Embedded version of js-beautify is v1.8.4
 
 ### Keyboard Shortcut
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.

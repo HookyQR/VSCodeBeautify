@@ -22,7 +22,12 @@ const getBeautifyType = () => {
 		});
 };
 
-const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
+const removeNewLineEndForPartial = (config, isPartial) => {
+	if (isPartial) { config.end_with_newline = false; }
+	return Promise.resolve(config);
+}
+
+const beautifyDocRanges = (doc, ranges, type, formattingOptions, isPartial) => {
 	if (!doc) {
 		vscode.window.showInformationMessage(
 			"Beautify can't get the file information because the editor won't supply it. (File probably too large)");
@@ -30,6 +35,7 @@ const beautifyDocRanges = (doc, ranges, type, formattingOptions) => {
 	}
 	return Promise.resolve(type ? type : getBeautifyType())
 		.then(type => options(doc, type, formattingOptions)
+			.then(config => removeNewLineEndForPartial(config, isPartial))
 			.then(config => Promise.all(ranges.map(range =>
 				beautify[type](doc.getText(range), config)))));
 };
@@ -46,10 +52,19 @@ const extendRange = (doc, rng) => {
 
 const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
 
+const getWorkspaceRoot = doc => {
+	if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) return;
+	if (!doc || doc.isUntitled) return vscode.workspace.workspaceFolders[0].uri.fsPath;
+
+	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
+	if (!folder) return;
+	return folder.uri.fsPath;
+}
+
 // gets bound
 function fullEdit(type, doc, formattingOptions) {
 	let name = doc.fileName;
-	let base = vscode.workspace.rootPath || '';
+	let base = getWorkspaceRoot(doc) || vscode.workspace.rootPath || '';
 	let ignore = vscode.workspace.getConfiguration('beautify')
 		.ignore;
 	if (!Array.isArray(ignore)) ignore = [ignore];
@@ -64,7 +79,7 @@ function fullEdit(type, doc, formattingOptions) {
 function rangeEdit(type, doc, rng, formattingOptions) {
 	// Fixes bug #106
 	rng = extendRange(doc, rng);
-	return beautifyDocRanges(doc, [rng], type, formattingOptions)
+	return beautifyDocRanges(doc, [rng], type, formattingOptions, true)
 		.then(newText => documentEdit(rng, newText[0]), dumpError);
 }
 
@@ -128,19 +143,19 @@ class Formatters {
 			// dispose of the current
 			let selector = [];
 			if (Array.isArray(cfg[a])) {
-				selector = [].concat(cfg[a]);
+				selector = cfg[a].map(language => ({ language, scheme: 'file' }));
 			} else {
 				for (let b in cfg[a]) {
 					let adder;
 					switch (b) {
 						case 'type':
-							adder = cfg[a][b];
+							adder = cfg[a][b].map(language => ({ language, scheme: 'file' }));
 							break;
 						case 'ext':
-							adder = [{ pattern: `**/*.{${cfg[a][b].join(',')}}` }];
+							adder = [{ pattern: `**/*.{${cfg[a][b].join(',')}}`, scheme: 'file' }];
 							break;
 						case 'filename':
-							adder = [{ pattern: `**/{${cfg[a][b].join(',')}}` }];
+							adder = [{ pattern: `**/{${cfg[a][b].join(',')}}`, scheme: 'file' }];
 							break;
 						default:
 							continue;
@@ -148,6 +163,12 @@ class Formatters {
 					selector = selector.concat(adder);
 				}
 			}
+			selector = selector.concat(selector.map(s => {
+				const ss = Object.create(s);
+				ss.scheme = 'untitled';
+				return ss;
+			}));
+
 			this.handlers[a] = {
 				selector,
 				full: register(a, selector),
@@ -174,9 +195,8 @@ formatters.configure();
 
 const applyEdits = (editor, ranges, edits) => {
 	if (ranges.length !== edits.length) {
-		console.log("FAILED:", ranges.length, edits.length, ":failed");
 		vscode.window.showInformationMessage(
-			"Beautify ranges didin't get back the right number of edits");
+			"Beautify ranges didn't get back the right number of edits");
 		throw "";
 	}
 	return editor.edit(editorEdit => {
@@ -199,7 +219,7 @@ const formatActiveDocument = ranged => {
 		ranges = [fullRange(active.document)];
 
 	if (ranges.length) {
-		return beautifyDocRanges(active.document, ranges, type)
+		return beautifyDocRanges(active.document, ranges, type, null, ranged)
 			.then(edits => applyEdits(active, ranges, edits), dumpError);
 	} else return Promise.resolve();
 };
@@ -208,7 +228,7 @@ const formatActiveDocument = ranged => {
 exports.activate = (context) => {
 	let sub = context.subscriptions;
 	sub.push(vscode.commands.registerCommand('HookyQR.beautify', formatActiveDocument.bind(0, true)));
-	sub.push(vscode.commands.registerCommand('HookyQR.beautifyFile', formatActiveDocument));
+	sub.push(vscode.commands.registerCommand('HookyQR.beautifyFile', formatActiveDocument.bind(0, false)));
 	sub.push(vscode.workspace.onDidChangeConfiguration(formatters.configure.bind(formatters)));
 	sub.push(vscode.workspace.onDidOpenTextDocument(formatters.onFileOpen.bind(formatters)));
 };
