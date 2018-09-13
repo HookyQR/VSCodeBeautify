@@ -9,12 +9,11 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 
 For help on the settings in the `.jsbeautifyrc` see [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md)
 
-### How we determine what settings to use:
+## How we determine what settings to use:
+
 1. When not using a multi-root workspace:
     1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
-    2. If an option is a file path or object of configuration specified in the user or workspace settings like this:
-`"beautify.config" : "string|Object.<string,string|number|boolean>"`, these will be the only settings used.
-The file path is interpreted relative to the workspace's root folder.
+    2. If an option is a file path or object of configuration specified in the user or workspace settings like this: `"beautify.config" : "string|Object.<string,string|number|boolean>"`, these will be the only settings used. The file path is interpreted relative to the workspace's root folder.
     3. If there is a valid `.jsbeautifyrc` in the file's path tree, above project root, these will be the only settings used.
     4. If there is a valid `.jsbeautifyrc` in your home directory, these will be the only settings used.
 
@@ -27,7 +26,7 @@ otherwise...
 4. Any open editor settings (indent spaces/tabs) for the specific file are merged in.
 5. Editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
 
-### VS Code | .jsbeautifyrc settings map:
+## VS Code | .jsbeautifyrc settings map:
 
 .jsbeautifyrc setting         | VS Code setting
 ---                           | ---
@@ -91,8 +90,8 @@ Beautify on save will be enabled when `"editor.formatOnSave"` is true.
 
 Beautification on particular files using the built in **Format Document** (which includes formatting on save) can be skipped with the `beautify.ignore` option. Using the `Beautify file` and `Beautify selection` will still work. For files opened from within the workspace directory, the glob patterns will match from the workspace root. For files opened from elsewhere, or when no workspace is open, the patterns will match from the system root.
 
-
 Examples:
+
 ```javascript
 /* ignore all files named 'test.js' not in the root folder,
    all files directly in any 'spec' directory, and
@@ -103,11 +102,13 @@ Examples:
 /* ignore all files ending in '_test.js' anywhere */
 "beautify.ignore": "**/*_test.js"
 ```
+
 Note that the glob patterns are not used to test against the containing folder. You must match the filename as well.
 
 Embedded version of js-beautify is v1.8.4
 
-### Keyboard Shortcut
+## Keyboard Shortcut
+
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.
 
 ```javascript
@@ -117,3 +118,7 @@ Use the following to embed a beautify shortcut in keybindings.json. Replace with
   "when": "editorFocus"
 }
 ```
+
+### Contributing
+
+For information on contributing see [Contributing.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/.github/CONTRIBUTING.md)
