@@ -9,7 +9,7 @@ VS Code uses js-beautify internally, but it lacks the ability to modify the styl
 
 For help on the settings in the `.jsbeautifyrc` see [Settings.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/Settings.md)
 
-## How we determine what settings to use:
+## How we determine what settings to use
 
 1. When not using a multi-root workspace:
     1. If there is a valid `.jsbeautifyrc` in the file's path tree, up to project root, these will be the only settings used.
@@ -24,9 +24,9 @@ otherwise...
 
 3. Settings are translated from your VS Code workspace/user settings.
 4. Any open editor settings (indent spaces/tabs) for the specific file are merged in.
-5. Editorconfig settings are searched for (See http://editorconfig.org/) and are merged in.
+5. Editorconfig settings are searched for (See [http://editorconfig.org/](http://editorconfig.org/)) and are merged in.
 
-## VS Code | .jsbeautifyrc settings map:
+### VS Code | .jsbeautifyrc settings map
 
 .jsbeautifyrc setting         | VS Code setting
 ---                           | ---
@@ -107,7 +107,7 @@ Note that the glob patterns are not used to test against the containing folder. 
 
 Embedded version of js-beautify is v1.8.4
 
-## Keyboard Shortcut
+### Keyboard Shortcut
 
 Use the following to embed a beautify shortcut in keybindings.json. Replace with your preferred key bindings.
 
