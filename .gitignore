@@ -1,6 +1,5 @@
 node_modules
 *.vsix
-.vscodeignore
 .vscode-test
 !**/test/.vscode
 typings

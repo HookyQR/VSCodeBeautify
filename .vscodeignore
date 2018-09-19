@@ -1,0 +1,6 @@
+test
+.git*
+.jsbeautifyrc
+.jshintrc
+.travis.yml
+.vscode
