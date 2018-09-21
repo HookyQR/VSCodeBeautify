@@ -61,7 +61,7 @@ const openFileWithInput = async (extension, text) => {
 };
 
 let codeSettings;
-const settingFilename = vscode.workspace.workspaceFolders[0].uri.path + "/.vscode/settings.json";
+const settingFilename = vscode.workspace.workspaceFolders[0].uri.fsPath + '/.vscode/settings.json';
 
 const storeCodeSettings = () => codeSettings = fs.readFileSync(settingFilename);
 const restoreCodeSettings = () => fs.writeFileSync(settingFilename, codeSettings);
@@ -74,8 +74,8 @@ describe('Issues', () => {
       it('fixed', async () => {
         const issue = issues[issueId];
         if ( process.platform.startsWith('win')) {
-          issue.input = issue.input.map( l => l.replace(/\n/g, '\r\n'));
-          issue.expected = issue.expected.map( l => l.replace(/\n/g, '\r\n'));
+          issue.input = issue.input.replace(/\n/g, '\r\n');
+          issue.expected = issue.expected.replace(/\n/g, '\r\n');
         }
         if (issue.codeSetting) {
           fs.writeFileSync(settingFilename, JSON.stringify(issue.codeSettings));
