@@ -1,5 +1,6 @@
 environment:
   ELECTRON_NO_ATTACH_CONSOLE: 1
+  CODE_TESTS_WORKSPACE: "%APPVEYOR_BUILD_FOLDER%\\test\\data"
 
 install:
   - ps: Install-Product node 7.9.0 x64
