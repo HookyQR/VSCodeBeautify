@@ -74,8 +74,8 @@ describe('Issues', () => {
       it('fixed', async () => {
         const issue = issues[issueId];
         if ( process.platform.startsWith('win')) {
-          issue.input = issue.input.map( l => l.replace('\n', '\r\n'));
-          issue.expected = issue.expected.map( l => l.replace('\n', '\r\n'));
+          issue.input = issue.input.map( l => l.replace(/\n/g, '\r\n'));
+          issue.expected = issue.expected.map( l => l.replace(/\n/g, '\r\n'));
         }
         if (issue.codeSetting) {
           fs.writeFileSync(settingFilename, JSON.stringify(issue.codeSettings));
