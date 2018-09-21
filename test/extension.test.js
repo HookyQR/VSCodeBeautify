@@ -1,251 +1,129 @@
-'use strict';
-const vscode = require('vscode'),
-	expect = require('expect.js'),
-	path = require('path'),
-	fs = require('fs'),
-	testData = require('./testData'),
-	os = require('os');
+const vscode = require('vscode');
+const expect = require('expect.js');
 
-const slow = 10 * (1000000 / os.cpus()
-	.slice(0, 4)
-	.reduce((t, cpu) => t + cpu.speed, 0)) | 0;
+const createEditor = extension => vscode.window.showTextDocument(
+  vscode.Uri.parse(`untitled:./test.${extension}`)
+);
 
-const root = path.join(__dirname, 'data', '');
+const fillEditor = (text, edits) => edits.replace(
+  new vscode.Range(0, 0, Infinity, Infinity),
+  text
+);
 
-const lag = () => new Promise(resolve => setTimeout(resolve, slow / 4 | 0));
+const openFileWithInput = async (extension) => await createEditor(extension);
 
-const setupConfigs = (beautify, editor) => {
-	fs.writeFileSync(path.join(root, '.jsbeautifyrc'), beautify ? JSON.stringify(beautify) : '');
-	fs.writeFileSync(path.join(root, '.editorconfig'), editor ? editor : '');
-	return lag();
+const beautified = async editor => {
+  await vscode.commands.executeCommand('HookyQR.beautifyFile');
+  return editor.document.getText();
 };
 
-const executeWithCommand = (cmd, texteditorAction, name, eol) => vscode.workspace.openTextDocument(name)
-	.then(doc => vscode.window.showTextDocument(doc)
-		.then(editor => {
-			return editor.edit(te => {
-					te.setEndOfLine(eol);
-					if (texteditorAction) return texteditorAction(te)
-						.then(lag);
-				})
-				.then(() => vscode.commands.executeCommand(cmd)
-					.then(() => doc.getText()));
-		}));
+const formatter = async editor => {
+  await vscode.commands.executeCommand('editor.action.formatDocument');
+  return editor.document.getText();
+};
 
-const getPartialBeautifiedText = (name, eol) => executeWithCommand(
-	'HookyQR.beautify', () => vscode.commands.executeCommand(
-		'cursorMove', {
-			to: 'right',
-			by: 'character',
-			amount: 1,
-			select: true
-		}), name, eol);
+const beautifiedFirstLine = async editor => {
+  await vscode.commands.executeCommand('cursorMove', {
+    to: 'viewPortTop',
+    select: false
+  });
+  await vscode.commands.executeCommand('cursorMove', {
+    to: 'right',
+    by: 'character',
+    amount: 1,
+    select: true
+  });
+  await vscode.commands.executeCommand('HookyQR.beautify');
+  return editor.document.getText();
+};
 
-const getBeautifiedText = (name, eol) => executeWithCommand('HookyQR.beautifyFile', null, name, eol);
-const getFormattedText = (name, eol) => executeWithCommand('editor.action.formatDocument', null, name, eol);
-const getOnSaveText = (name, eol) => executeWithCommand('workbench.action.files.save', te => {
-		te.setEndOfLine(eol);
-		te.insert(new vscode.Position(Infinity, Infinity), ' ');
-		return Promise.resolve();
-	}, name, eol)
-	.then(lag)
-	.then(() => fs.readFileSync(name, "utf8"));
+const beautifyTests = {
+  js: {
+    '"end_with_newline":true': ['var a=1;\n  var b=2;  ', 'var a = 1;\nvar b = 2;\n', 'var a = 1;\n  var b=2;  '],
+    '"end_with_newline":false': ['var a=1;\n  var b=2;  \n', 'var a = 1;\nvar b = 2;', 'var a = 1;\n  var b=2;  \n'],
+  },
+  html: {
+    '"end_with_newline":true': [
+      '<div><span></span>\n   </div>',
+      '<div><span></span>\n</div>\n',
+      '<div><span></span>\n   </div>'
+    ],
+    '"end_with_newline":false': [
+      '<div><span></span>\n   </div>\n',
+      '<div><span></span>\n</div>',
+      '<div><span></span>\n   </div>\n'
+    ],
+    '"wrap_attributes":"force"': [
+      '<div data-thing="abc" class="a" style=""></div>',
+      '<div data-thing="abc"\n    class="a"\n    style=""></div>'
+    ],
+    '"wrap_attributes":"force-expand-multiline"': [
+      '<div data-thing="abc" class="a" style=""></div>',
+      '<div\n    data-thing="abc"\n    class="a"\n    style=""\n></div>'
+    ]
+  },
+  css: {
+    '"end_with_newline":true': [
+      '.a,   .b { color:blue;\ndisplay:block;}',
+      '.a,\n.b {\n    color: blue;\n    display: block;\n}\n',
+      '.a,\n.b {\n    color: blue;\ndisplay:block;}'
+    ],
+    '"end_with_newline":false': [
+      '.a,   .b { color:blue;\ndisplay:block;}\n',
+      '.a,\n.b {\n    color: blue;\n    display: block;\n}',
+      '.a,\n.b {\n    color: blue;\ndisplay:block;}\n'
+    ],
+    '"newline_between_rules":true': [
+      '.a{}.b{}',
+      '.a {}\n\n.b {}'
+    ],
+  },
+  scss: {
+    '"newline_between_rules":true': [
+      '.a,.b { &.c{} &.d{}\ncolor:blue;display:block;}',
+      '.a,\n.b {\n    &.c {}\n\n    &.d {}\n\n    color:blue;\n    display:block;\n}'
+    ],
+    '"newline_between_rules":false': [
+      '.a,.b { &.c{} &.d{}\ncolor:blue;display:block;}',
+      '.a,\n.b {\n    &.c {}\n    &.d {}\n    color:blue;\n    display:block;\n}'
+    ]
+  }
+};
 
-function beautifyEach(fmt) {
-	testData.types.forEach(function(ext) {
-		it(`For '${ext}' "beautifyFile" changes for ${fmt[0]}`, function() {
-			return getBeautifiedText(path.join(root, 'test.' + ext), fmt[1])
-				.then(txt => expect(txt)
-					.to.be(testData.expected(fmt[0], ext)));
-		});
-	});
-}
+describe('Beautify', () => {
+  for (let ext in beautifyTests) {
+    context(`${ext} file`, () => {
+      for (let setting in beautifyTests[ext]) {
+        let line = beautifyTests[ext][setting];
+        context(`with: ${setting}`, () => {
+          let editor;
+          before(async () => {
+            editor = await vscode.window.showTextDocument(
+              vscode.Uri.parse(vscode.workspace.workspaceFolders[0].uri.toString() +
+                '/.jsbeautifyrc')
+            );
+            await editor.edit(fillEditor.bind(0, `{${setting}}`));
+            await editor.document.save();
+            await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
 
-function formatEach(fmt) {
-	testData.types.forEach(function(ext) {
-		// inbuild format command doesn't allow beautify to run. Maybe in 1.6?
-		if (ext === 'json') return;
-		it(`For '${ext}' "format" changes for ${fmt[0]}`, function() {
-			return getFormattedText(path.join(root, 'test.' + ext), fmt[1])
-				.then(txt => expect(txt)
-					.to.be(testData.expected(fmt[0], ext)));
-		});
-	});
-}
-
-function beautifyPartialEach(fmt) {
-	testData.types.forEach(function(ext) {
-		it(`For '${ext}' "beautify" changes for ${fmt[0]}`, function() {
-			return getPartialBeautifiedText(path.join(root, 'test.' + ext), fmt[1])
-				.then(txt => expect(txt)
-					.to.be(testData.expected(fmt[0], ext)));
-		});
-	});
-}
-
-function doSaveEach(fmt) {
-	testData.types.forEach(function(ext) {
-		it(`For '${ext}' "beautify on save" changes`, function() {
-			return getOnSaveText(path.join(root, 'test.' + ext), fmt[1])
-				.then(txt => expect(txt)
-					.to.be(testData.expected(fmt[0], ext)));
-		});
-	});
-}
-
-const clean = () => vscode.commands.executeCommand('workbench.action.closeAllEditors')
-	.then(() => testData.clean(root));
-
-// delay test start to give vscode a chance to load (For Travis OSX)
-describe("VS code beautify", function() {
-	this.timeout(slow * 2);
-	this.slow(slow);
-	before(() => {
-		testData.clean(root);
-		vscode.commands.executeCommand("workbench.action.toggleSidebarVisibility");
-	});
-
-	let eolstr = {
-		"\n": ["lf", vscode.EndOfLine.LF],
-		"\r\n": ["crlf", vscode.EndOfLine.CRLF]
-	};
-	Object.keys(eolstr)
-		.forEach(eol => {
-			let config = {
-				jsbeautify: [{
-					indent_size: 4,
-					indent_with_tabs: false,
-					eol
-					}, null],
-				editorconfig: [null,
-					`root = true\r\n[*]\r\nend_of_line = ${eolstr[eol][0]}\r\nindent_style = space\r\nindent_size = 4`],
-				'vs code': [null, ""]
-			};
-			Object.keys(config)
-				.forEach(cfg => {
-					context(`with ${cfg} cr set to ${JSON.stringify(eol)}`, function() {
-						before(() => setupConfigs(config[cfg][0], config[cfg][1]));
-						context('beautify', function() {
-							after(clean);
-							beautifyEach(eolstr[eol]);
-						});
-						// this combo doesn't work on AV.
-						// There are some conversion errors that seem to happen in
-						// the editor.
-						if (process.platform === 'win32' && cfg === 'vs code' && eol === "\n") return;
-						context('format', function() {
-							after(clean);
-
-							formatEach(eolstr[eol]);
-						});
-					});
-				});
-		});
-	let config = {
-		jsbeautify: [{
-			eol: "\n",
-			indent_with_tabs: true
-		}, ""],
-		editorconfig: [null, `root = true\r\n[*]\r\nend_of_line = lf\r\nindent_style = tab\r\nindent_size = 2\r\n`]
-	};
-	Object.keys(config)
-		.forEach(cfg => {
-			context(`with ${cfg} indent set to 'tab'`, function() {
-				before(() => setupConfigs(config[cfg][0], config[cfg][1]));
-				context('beautify', function() {
-					after(clean);
-					beautifyEach(['tab', vscode.EndOfLine.LF]);
-				});
-				context('format', function() {
-					after(clean);
-					formatEach(['tab', vscode.EndOfLine.LF]);
-				});
-			});
-		});
-	// nested config
-	context('with nested config', function() {
-		before(() => setupConfigs({
-			js: {
-				indent_size: 5
-			},
-			css: {
-				indent_size: 4
-			},
-			html: {
-				indent_size: 3
-			},
-			eol: "\r\n",
-			indent_with_tabs: false,
-			indent_size: 2
-		}));
-		context('beautify', function() {
-			after(clean);
-			beautifyEach(['nested', vscode.EndOfLine.CRLF]);
-		});
-		context('format', function() {
-			after(clean);
-			formatEach(['nested', vscode.EndOfLine.CRLF]);
-		});
-	});
-
-	context('Using `config` setting', function() {
-		const config = vscode.workspace.getConfiguration();
-		let revert = config.get("beautify.config");
-
-		before(() => fs.renameSync(path.join(root, ".jsbeautifyrc"), path.join(root, "tmp.jsbeautifyrc")));
-		after(() => fs.renameSync(path.join(root, "tmp.jsbeautifyrc"), path.join(root, ".jsbeautifyrc")));
-
-		context('with file name', function() {
-			before(() => config.update("beautify.config", path.join(root, "jsbeautify_config.json"))
-				.then(lag));
-			beautifyEach(['tab', vscode.EndOfLine.LF]);
-			after(() => clean()
-				.then(() => config.update("beautify.config", revert)));
-		});
-
-		context('with inline settings', function() {
-			before(() => config.update("beautify.config", {
-					"eol": "\n",
-					"indent_with_tabs": true
-				})
-				.then(lag));
-			after(() => clean()
-				.then(() => config.update("beautify.config", revert)));
-			beautifyEach(['tab', vscode.EndOfLine.LF]);
-		});
-	});
-
-	context('partial', function() {
-		before(() => setupConfigs({
-			eol: "\r\n",
-			indent_with_tabs: false,
-			indent_size: 2
-		}));
-		after(clean);
-		beautifyPartialEach(['partial', vscode.EndOfLine.LF]);
-	});
-
-	context('on save', function() {
-		this.timeout(slow * 4);
-		this.slow(slow * 2);
-		const config = vscode.workspace.getConfiguration();
-		before(() => config.update("editor.formatOnSave", true)
-			.then(() => setupConfigs({
-				js: {
-					indent_size: 5
-				},
-				css: {
-					indent_size: 4
-				},
-				html: {
-					indent_size: 3
-				},
-				eol: "\r\n",
-				indent_with_tabs: false,
-				indent_size: 2
-			})));
-		after(() => config.update("editor.formatOnSave", false)
-			.then(clean));
-		doSaveEach(['nested', vscode.EndOfLine.CRLF]);
-	});
+            editor = await openFileWithInput(ext);
+          });
+          beforeEach(async () => {
+            await editor.edit(fillEditor.bind(0, line[0]));
+          });
+          after(async () => {
+            await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+          });
+          it('beautifies the file', async () => expect(await beautified(editor))
+            .to.be(line[1]));
+          if (line.length > 2) {
+            it('beautifies a single line', async () => expect(await beautifiedFirstLine(editor))
+              .to.be(line[2]));
+            it('formats the file', async () => expect(await formatter(editor))
+              .to.be(line[1]));
+          }
+        });
+      }
+    });
+  }
 });
