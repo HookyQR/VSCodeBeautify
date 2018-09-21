@@ -100,7 +100,8 @@ describe('Beautify', () => {
         }
         context(`with: ${setting}`, () => {
           let editor;
-          before(async () => {
+          before(async function() {
+            this.timeout(0);
             editor = await vscode.window.showTextDocument(
               vscode.Uri.parse(vscode.workspace.workspaceFolders[0].uri.toString() +
                 '/.jsbeautifyrc')
