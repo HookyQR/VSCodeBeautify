@@ -3,7 +3,7 @@ environment:
   CODE_TESTS_WORKSPACE: "%APPVEYOR_BUILD_FOLDER%\\test\\data"
 
 install:
-  - ps: Install-Product node 7.9.0 x64
+  - ps: Install-Product node 8.12.0 x64
   - npm install -g npm
   - npm install
 
