@@ -1,227 +1,231 @@
 {
-	"name": "beautify",
-	"displayName": "Beautify",
-	"description": "Beautify code in place for VS Code",
-	"version": "1.4.3",
-	"publisher": "HookyQR",
-	"engines": {
-		"vscode": "^1.22.0"
-	},
-	"categories": [
-		"Other",
-		"Programming Languages",
-		"Formatters"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"icon": "icon.png",
-	"galleryBanner": {
-		"color": "#e8e030",
-		"theme": "light"
-	},
-	"license": "MIT",
-	"main": "./extension",
-	"contributes": {
-		"languages": [
-			{
-				"id": "json",
-				"aliases": [
-					"JSON"
-				],
-				"filenames": [
-					".jsbeautifyrc",
-					".jshintrc"
-				]
-			}
-		],
-		"jsonValidation": [
-			{
-				"fileMatch": ".jsbeautifyrc",
-				"url": "./schema/beautifyrc.json"
-			}
-		],
-		"commands": [
-			{
-				"command": "HookyQR.beautify",
-				"title": "Beautify selection"
-			},
-			{
-				"command": "HookyQR.beautifyFile",
-				"title": "Beautify file"
-			}
-		],
-		"configuration": {
-			"type": "object",
-			"title": "Beautify config",
-			"properties": {
-				"beautify.ignore": {
-					"type": [
-						"string",
-						"array"
-					],
-					"items": {
-						"type": "string"
-					},
-					"default": [],
-					"description": "List of paths to ignore when using VS Code format command, including format on save. Uses glob pattern matching."
-				},
-				"beautify.config": {
-					"type": [
-						"string",
-						"object",
-						"null"
-					],
-					"default": null,
-					"description": "A path to a file, or an object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
-				},
-				"beautify.language": {
-					"type": "object",
-					"description": "Link file types to the beautifier type",
-					"default": {
-						"js": {
-							"type": [
-								"javascript",
-								"json",
-								"jsonc"
-							],
-							"filename": [
-								".jshintrc",
-								".jsbeautifyrc"
-							]
-						},
-						"css": [
-							"css",
-							"scss"
-						],
-						"html": [
-							"htm",
-							"html"
-						]
-					},
-					"properties": {
-						"js": {
-							"type": [
-								"object",
-								"array"
-							],
-							"items": {
-								"type": "string"
-							},
-							"description": "Array of language types, or an object containing types, extensions and filenames to associate",
-							"properties": {
-								"type": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "VS Code language name"
-								},
-								"ext": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "File extensions (without the leading dot)"
-								},
-								"filename": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "Full filenames (eg: '.jsbeautifyrc')"
-								}
-							}
-						},
-						"css": {
-							"type": [
-								"object",
-								"array"
-							],
-							"items": {
-								"type": "string"
-							},
-							"description": "Array of language types, or an object containing types, extensions and filenames to associate",
-							"properties": {
-								"type": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "VS Code language name"
-								},
-								"ext": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "File extensions (without the leading dot)"
-								},
-								"filename": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "Full filenames (eg: '.jsbeautifyrc')"
-								}
-							}
-						},
-						"html": {
-							"type": [
-								"object",
-								"array"
-							],
-							"items": {
-								"type": "string"
-							},
-							"description": "Array of language types, or an object containing types, extensions and filenames to associate",
-							"properties": {
-								"type": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "VS Code language name"
-								},
-								"ext": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "File extensions (without the leading dot)"
-								},
-								"filename": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									},
-									"description": "Full filenames (eg: '.jsbeautifyrc')"
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"dependencies": {
-		"editorconfig": "0.15.0",
-		"js-beautify": "^1.8.4",
-		"minimatch": "^3.0.4"
-	},
-	"devDependencies": {
-		"expect.js": "~0.3.1",
-		"mocha": "^3.5.3",
-		"vscode": "~1.1.18"
-	},
-	"scripts": {
-		"test": "node ./node_modules/vscode/bin/test"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/HookyQR/VSCodeBeautify"
-	},
-	"bugs": {
-		"url": "https://github.com/HookyQR/VSCodeBeautify/issues"
-	}
+  "name": "beautify",
+  "displayName": "Beautify",
+  "description": "Beautify code in place for VS Code",
+  "version": "1.4.4",
+  "publisher": "HookyQR",
+  "engines": {
+    "vscode": "^1.22.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#e8e030",
+    "theme": "light"
+  },
+  "license": "MIT",
+  "main": "./extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "json",
+        "aliases": [
+          "JSON"
+        ],
+        "filenames": [
+          ".jsbeautifyrc",
+          ".jshintrc"
+        ]
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": ".jsbeautifyrc",
+        "url": "./schema/beautifyrc.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "HookyQR.beautify",
+        "title": "Beautify selection"
+      },
+      {
+        "command": "HookyQR.beautifyFile",
+        "title": "Beautify file"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Beautify config",
+      "properties": {
+        "beautify.ignore": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "List of paths to ignore when using VS Code format command, including format on save. Uses glob pattern matching."
+        },
+        "beautify.config": {
+          "type": [
+            "string",
+            "object",
+            "null"
+          ],
+          "default": null,
+          "description": "A path to a file, or an object containing the configuration options for js-beautify. If the .jsbeautifyrc file exists in project root, it overrides this configuration."
+        },
+        "beautify.language": {
+          "type": "object",
+          "description": "Link file types to the beautifier type",
+          "default": {
+            "js": {
+              "type": [
+                "javascript",
+                "json",
+                "jsonc"
+              ],
+              "filename": [
+                ".jshintrc",
+                ".jsbeautifyrc"
+              ]
+            },
+            "css": [
+              "css",
+              "scss"
+            ],
+            "html": [
+              "htm",
+              "html"
+            ]
+          },
+          "properties": {
+            "js": {
+              "type": [
+                "object",
+                "array"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "Array of language types, or an object containing types, extensions and filenames to associate",
+              "properties": {
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "VS Code language name"
+                },
+                "ext": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "File extensions (without the leading dot)"
+                },
+                "filename": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Full filenames (eg: '.jsbeautifyrc')"
+                }
+              }
+            },
+            "css": {
+              "type": [
+                "object",
+                "array"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "Array of language types, or an object containing types, extensions and filenames to associate",
+              "properties": {
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "VS Code language name"
+                },
+                "ext": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "File extensions (without the leading dot)"
+                },
+                "filename": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Full filenames (eg: '.jsbeautifyrc')"
+                }
+              }
+            },
+            "html": {
+              "type": [
+                "object",
+                "array"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "Array of language types, or an object containing types, extensions and filenames to associate",
+              "properties": {
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "VS Code language name"
+                },
+                "ext": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "File extensions (without the leading dot)"
+                },
+                "filename": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Full filenames (eg: '.jsbeautifyrc')"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "editorconfig": "0.15.0",
+    "js-beautify": "^1.8.6",
+    "minimatch": "^3.0.4"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^5.2.0",
+    "vscode": "~1.1.18",
+    "typescript": "^2.6.1",
+    "@types/node": "^8.10.25",
+    "@types/mocha": "^2.2.42"
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HookyQR/VSCodeBeautify"
+  },
+  "bugs": {
+    "url": "https://github.com/HookyQR/VSCodeBeautify/issues"
+  }
 }

@@ -1,3 +1,7 @@
+### 1.4.4: 21 Sep 2018
+* Update to version 1.8.6 of `js-beautify`
+* Get the tests back to green.
+
 ### 1.4.3: 10 Sep 2018
 * Update to version 1.8.4 of `js-beautify`
 * Remove settings hints for VS Code settings file. [#266](https://github.com/HookyQR/VSCodeBeautify/issues/)
