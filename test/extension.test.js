@@ -95,6 +95,9 @@ describe('Beautify', () => {
     context(`${ext} file`, () => {
       for (let setting in beautifyTests[ext]) {
         let line = beautifyTests[ext][setting];
+        if ( process.platform.startsWith('win')) {
+          line = line.map( l => l.replace('\n', '\r\n'));
+        }
         context(`with: ${setting}`, () => {
           let editor;
           before(async () => {
