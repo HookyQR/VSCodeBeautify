@@ -2,7 +2,8 @@
 let runner = require('vscode/lib/testrunner');
 
 runner.configure({
-  useColors: true
+  useColors: true,
+  slow: 200
 });
 
 module.exports = runner;

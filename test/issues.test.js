@@ -18,7 +18,12 @@ const issues = {
       'files.associations': {
         '.jsbeautifyrc': 'jsonc'
       },
-      'beautify.language.css': 'scss'
+      'beautify.config': {
+        newline_between_rules: false
+      },
+      'beautify.language':{
+        'css': ['scss']
+      }
     },
     input: `$color-variable:    #000;
 .offers-table {
@@ -60,30 +65,58 @@ const openFileWithInput = async (extension, text) => {
   return editor;
 };
 
-let codeSettings;
-const settingFilename = vscode.workspace.workspaceFolders[0].uri.fsPath + '/.vscode/settings.json';
+let codeSettings, beautifySettings;
+const codeSettingFilename = vscode.workspace.workspaceFolders[0].uri.fsPath + '/.vscode/settings.json';
+const beautifySettingFilename = vscode.workspace.workspaceFolders[0].uri.fsPath + '/.jsbeautifyrc';
 
-const storeCodeSettings = () => codeSettings = fs.readFileSync(settingFilename);
-const restoreCodeSettings = () => fs.writeFileSync(settingFilename, codeSettings);
+const storeCodeSettings = () => codeSettings = fs.readFileSync(codeSettingFilename);
+const storeBeautifySettings = () => beautifySettings = fs.readFileSync(beautifySettingFilename);
+const restoreBeautifySettings = () => fs.writeFileSync(beautifySettingFilename, beautifySettings);
+const restoreCodeSettings = () => fs.writeFileSync(codeSettingFilename, codeSettings);
 
 describe('Issues', () => {
   for (let issueId in issues) {
     context(issueId, () => {
-      beforeEach(() => storeCodeSettings());
-      afterEach(() => restoreCodeSettings());
+      const issue = issues[issueId];
+      beforeEach(async function() {
+        this.timeout(0);
+        await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+        storeCodeSettings();
+        storeBeautifySettings();
+        if ('beautifySetting' in issue) {
+          const editor = await vscode.window.showTextDocument(
+            vscode.Uri.file(beautifySettingFilename)
+          );
+          await editor.edit(fillEditor.bind(0, JSON.stringify(issue.beautifySetting)));
+          await editor.document.save();
+          await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+        } else {
+          await new Promise(resolve => fs.unlink(beautifySettingFilename, resolve));
+        }
+        if ('codeSetting' in issue) {
+          const editor = await vscode.window.showTextDocument(
+            vscode.Uri.file(codeSettingFilename)
+          );
+          await editor.edit(fillEditor.bind(0, JSON.stringify(issue.codeSetting)));
+          await editor.document.save();
+          await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+        }
+        await new Promise(resolve => setTimeout(resolve, 400));
+      });
+      afterEach(() => {
+        restoreCodeSettings();
+        restoreBeautifySettings();
+      });
       it('fixed', async () => {
-        const issue = issues[issueId];
-        if ( process.platform.startsWith('win')) {
+        if (process.platform.startsWith('win')) {
           issue.input = issue.input.replace(/\n/g, '\r\n');
           issue.expected = issue.expected.replace(/\n/g, '\r\n');
-        }
-        if (issue.codeSetting) {
-          fs.writeFileSync(settingFilename, JSON.stringify(issue.codeSettings));
         }
         const editor = await openFileWithInput(issue.extension, issue.input);
         await vscode.commands.executeCommand(issue.command);
 
-        expect(editor.document.getText()).to.be(issue.expected);
+        expect(editor.document.getText())
+          .to.be(issue.expected);
       });
     });
   }
