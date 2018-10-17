@@ -1,3 +1,7 @@
+### 1.4.5: 17 Oct 2018
+* Update to version 1.8.6 of `js-beautify`
+* Add `space_after_named_function` details
+
 ### 1.4.4: 21 Sep 2018
 * Update to version 1.8.6 of `js-beautify`
 * Get the tests back to green.

@@ -35,6 +35,7 @@ keep_array_indentation          | JS        |  [Boolean] **Preserve array indent
 keep_function_indentation       | JS        |  [Boolean] **Preserve function indentation.** <br> false
 operator_position               | JS        |  [String] **Move operators to before or after a new line, or keep as is. "before-newline", "after-newline", or "preserve-newline"** <br> "before-newline"
 space_after_anon_function       | JS        |  [Boolean] **Add a space before an anonymous function's parens, ie. `function ()`.** <br> false
+space_after_named_function      | JS        |  [Boolean] **Add a space before a named function's parens, ie. `function example ()`.** <br> false
 space_before_conditional        | JS        |  [Boolean] **Ensure a space before conditional statement.** <br> true
 space_in_empty_paren            | JS        |  [Boolean] **Leave space in empty parentheses, ie. `f( )`.** <br> false
 space_in_paren                  | JS        |  [Boolean] **Add padding spaces within parentheses, ie. `f( a, b )`.** <br> false

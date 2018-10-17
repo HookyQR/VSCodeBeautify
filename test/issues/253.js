@@ -1,4 +1,3 @@
-
 module.exports = {
   extension: 'scss',
   command: 'HookyQR.beautifyFile',
