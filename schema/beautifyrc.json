@@ -47,13 +47,6 @@
           "type": "integer",
           "default": 10
         },
-        "brace_style": {
-          "description": "[collapse|expand|end-expand|none][,preserve-inline]  [JS,HTML]",
-          "type": "string",
-          "default": "collapse",
-          "enum": ["collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline",
-            "end-expand,preserve-inline", "none,preserve-inline"]
-        },
         "wrap_line_length": {
           "description": "Wrap lines at next opportunity after N characters. [JS,HTML]",
           "type": "integer",
@@ -179,6 +172,13 @@
     "JProperties": {
       "type": "object",
       "properties": {
+        "brace_style": {
+          "description": "[collapse|expand|end-expand|none][,preserve-inline]  [JS]",
+          "type": "string",
+          "default": "collapse",
+          "enum": ["collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline",
+            "end-expand,preserve-inline", "none,preserve-inline"]
+        },
         "indent_level": {
           "description": "Initial indentation level. [JS]",
           "type": "integer",

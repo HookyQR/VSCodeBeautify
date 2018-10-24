@@ -8,7 +8,6 @@ indent_char                     | _All_     |  [String] **Indentation character.
 indent_size                     | _All_     |  [Integer] **Indent size.** <br> 4
 indent_with_tabs                | _All_     |  [Boolean] **Indent with tabs, overrides 'indent_size' and 'indent_char'** <br> false
 preserve_newlines               | _All_     |  [Boolean] **Preserve line-breaks.** <br> true
-brace_style                     | JS, HTML  |  [String] **"collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline", "end-expand,preserve-inline", or "none,preserve-inline"** <br> "collapse"
 max_preserve_newlines           | JS, HTML  |  [Integer] **Number of line-breaks to be preserved in one chunk.** <br> 10
 wrap_line_length                | JS, HTML  |  [Integer] **Wrap lines at next opportunity after N characters. (Set zero to ignore wrapping)** <br> 0
 extra_liners                    | HTML      |  [Array&lt;String>] **List of tags that should have an extra newline before them.** <br> ["head", "body", "/html"]
@@ -26,6 +25,7 @@ void_elements                   | HTML      |  [Array&lt;String>] **HTML void el
 newline_between_rules           | CSS       |  [Boolean] **Add a newline between CSS rules.** <br> false
 selector_separator_newline      | CSS       |  [Boolean] **Add a newline between multiple selectors.** <br> true
 space_around_combinator         | CSS       |  [Boolean] **Ensure space around selector separators (>+~).** <br> false
+brace_style                     | JS        |  [String] **"collapse", "expand", "end-expand", "none", "collapse,preserve-inline", "expand,preserve-inline", "end-expand,preserve-inline", or "none,preserve-inline"** <br> "collapse"
 break_chained_methods           | JS        |  [Boolean] **Break chained method calls across subsequent lines.** <br> false
 comma_first                     | JS        |  [Boolean] **Put commas at the beginning of new line instead of end.** <br> false
 e4x                             | JS        |  [Boolean] **Pass E4X xml literals through untouched.** <br> false
