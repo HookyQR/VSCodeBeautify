@@ -1,5 +1,8 @@
+### 1.4.7: 20 Oct 2018
+* Update to version 1.8.8 of `js-beautify`
+
 ### 1.4.6: 17 Oct 2018
-* Update to version 1.8.6 of `js-beautify`
+* Update to version 1.8.7 of `js-beautify`
 * Add `space_after_named_function` details
 
 ### 1.4.4: 21 Sep 2018
