@@ -1,7 +1,3 @@
-### 1.4.8: 16 Jan 2019
-* Update to version 1.8.9 of `js-beautify`
-* Added schema for `.leaf` file.
-
 ### 1.4.7: 20 Oct 2018
 * Update to version 1.8.8 of `js-beautify`
 

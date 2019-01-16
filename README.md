@@ -4,7 +4,7 @@
 [![VS Code Marketplace](https://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Installs](https://vsmarketplacebadge.apphb.com/installs/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
 [![Donate](https://img.shields.io/badge/donate-paypal-brightgreen.svg)](https://paypal.me/HookyQR)
 
-Beautify `javascript`, `JSON`, `CSS`, `Sass`, `HTML` and `Leaf` in Visual Studio Code.
+Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
 VS Code uses js-beautify internally, but it lacks the ability to modify the style you wish to use. This extension enables running [js-beautify](http://jsbeautifier.org/) in VS Code, _AND_ honouring any `.jsbeautifyrc` file in the open file's path tree to load *your* code styling. Run with  **F1** `Beautify` (to beautify a selection) or **F1** `Beautify file`.
 
@@ -82,7 +82,7 @@ You can control which file types, extensions, or specific file names should be b
       // ^^ to set extensions to be beautified using the javascript beautifier
     },
     "css": ["css", "scss"],
-    "html": ["htm", "html", "leaf"]
+    "html": ["htm", "html"]
     // ^^ providing just an array sets the VS Code file type
   }
 }

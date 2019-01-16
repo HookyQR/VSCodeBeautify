@@ -13,7 +13,7 @@
 			"filename": [".jshintrc", ".jsbeautify"]
 		},
 		"css": ["css", "scss"],
-		"html": ["htm", "html", "leaf"]
+		"html": ["htm", "html"]
   },
 	"html.format.unformatted": "a, var",
   "editor.formatOnSave": false,

@@ -15,7 +15,7 @@ const getBeautifyType = () => {
       [
         { label: 'JS', description: 'Does JavaScript and JSON' },
         { label: 'CSS', description: 'Does CSS and SCSS' },
-        { label: 'HTML', description: 'Does HTML and Leaf' }
+        { label: 'HTML' }
       ], {
         matchOnDescription: true,
         placeHolder: 'Couldn\'t determine type to beautify, please choose.'
