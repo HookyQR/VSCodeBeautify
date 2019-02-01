@@ -1,6 +1,9 @@
-### 1.4.8: 14 Nov 2018
+
+### 1.4.8: 01 Feb 2019
 * Add `less` to default config `beautify.language.css`
-* Add preserve and preserve_align to html: [beautify-web/js-beautify@c413de0](https://github.com/beautify-web/js-beautify/commit/c413de0ef72a4458bd2519758942528c921f340e)
+* Fix issue #284 correctly convert VSCode `html.format.extraLiners`
+* Fix issue # add 'force-expand-multiline', 'aligned-multiple', 'preserve', 'preserve-aligned' options to "wrap_attributes".
+* Update to version 1.8.9 of `js-beautify`
 
 ### 1.4.7: 20 Oct 2018
 * Update to version 1.8.8 of `js-beautify`

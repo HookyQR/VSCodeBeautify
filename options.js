@@ -57,7 +57,7 @@ const optionsFromVSCode = (doc, formattingOptions, type) => {
   };
   if (type === 'html') {
     options.end_with_newline = config.html.format.endWithNewline;
-    if (typeof config.html.format.extra_liners === 'string') {
+    if (typeof config.html.format.extraLiners === 'string') {
       options.extra_liners = config.html.format.extraLiners
         .split(',')
         .map(s => s.trim());
