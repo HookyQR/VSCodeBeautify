@@ -9,7 +9,7 @@ If the formatter is working, but doesn't seem to working _properly_:
 
 If this isn't the problem, go ahead and log an issue. Or better yet, if you know how to fix the problem, submit a pull request.
 
-If you want to start hacking away, please check out [VSCode Hello World Extension](https://code.visualstudio.com/docs/extensions/example-hello-world) first. The first steps to editing this extensions are:
+If you want to start hacking away, please check out [js-beautify for VS Code](https://github.com/HookyQR/VSCodeBeautify) first. The first steps to editing this extensions are:
 
 1. Fork this repo!
 2. git clone your repo into your working project directory
@@ -28,8 +28,6 @@ Please note we have a code of conduct, please follow it in all your interactions
    variables, exposed ports, useful file locations and container parameters.
 3. Increase the version numbers in any examples files and the README.md to the new version that this
    Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you
-   do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Code of Conduct
 
