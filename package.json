@@ -97,7 +97,8 @@
             ],
             "html": [
               "htm",
-              "html"
+              "html",
+              "django-html"
             ]
           },
           "properties": {
