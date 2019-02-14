@@ -69,7 +69,7 @@ const getWorkspaceRoot = doc => {
 function fullEdit(type, doc, formattingOptions) {
   let name = doc.fileName;
   let base = getWorkspaceRoot(doc) || vscode.workspace.rootPath || '';
-  let ignore = vscode.workspace.getConfiguration('beautify')
+  let ignore = vscode.workspace.getConfiguration('beautify',doc.uri)
     .ignore;
   if (!Array.isArray(ignore)) ignore = [ignore];
   if (base && name.startsWith(base)) name = path.relative(base, name);
@@ -195,7 +195,7 @@ class Formatters {
 }
 
 const formatters = new Formatters();
-formatters.configure();
+formatters.configureWorkspace();
 
 const applyEdits = (editor, ranges, edits) => {
   if (ranges.length !== edits.length) {
