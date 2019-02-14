@@ -195,7 +195,7 @@ class Formatters {
 }
 
 const formatters = new Formatters();
-formatters.configureWorkspace();
+formatters.configure();
 
 const applyEdits = (editor, ranges, edits) => {
   if (ranges.length !== edits.length) {
