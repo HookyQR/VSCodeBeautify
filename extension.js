@@ -69,7 +69,7 @@ const getWorkspaceRoot = doc => {
 function fullEdit(type, doc, formattingOptions) {
   let name = doc.fileName;
   let base = getWorkspaceRoot(doc) || vscode.workspace.rootPath || '';
-  let ignore = vscode.workspace.getConfiguration('beautify',doc.uri)
+  let ignore = vscode.workspace.getConfiguration('beautify', doc.uri)
     .ignore;
   if (!Array.isArray(ignore)) ignore = [ignore];
   if (base && name.startsWith(base)) name = path.relative(base, name);
