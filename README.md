@@ -89,7 +89,7 @@ You can control which file types, extensions, or specific file names should be b
 
 Beautify on save will be enabled when `"editor.formatOnSave"` is true.
 
-Beautification on particular files using the built in **Format Document** (which includes formatting on save) can be skipped with the `beautify.ignore` option. Using the `Beautify file` and `Beautify selection` will still work. For files opened from within the workspace directory, the glob patterns will match from the workspace root. For files opened from elsewhere, or when no workspace is open, the patterns will match from the system root.
+Beautification on particular files using the built in **Format Document** (which includes formatting on save) can be skipped with the `beautify.ignore` option. Using the `Beautify file` and `Beautify selection` will still work. For files opened from within the workspace directory, the glob patterns will match from the workspace folder root. For files opened from elsewhere, or when no workspace is open, the patterns will match from the system root.
 
 Examples:
 

@@ -1,4 +1,7 @@
 
+### 1.4.9: 01 Feb 2019
+* Change `beautify.ignore` scope to resource to enable folder configurations in multi-root workspaces to set their own ignored files.
+
 ### 1.4.8: 01 Feb 2019
 * Add `less` to default config `beautify.language.css`
 * Fix issue #284 correctly convert VSCode `html.format.extraLiners`

@@ -2,7 +2,7 @@
   "name": "beautify",
   "displayName": "Beautify",
   "description": "Beautify code in place for VS Code",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "publisher": "HookyQR",
   "engines": {
     "vscode": "^1.22.0"
@@ -64,7 +64,8 @@
             "type": "string"
           },
           "default": [],
-          "description": "List of paths to ignore when using VS Code format command, including format on save. Uses glob pattern matching."
+          "description": "List of paths to ignore when using VS Code format command, including format on save. Uses glob pattern matching.",
+          "scope": "resource"
         },
         "beautify.config": {
           "type": [
