@@ -1,3 +1,5 @@
+### 1.4.10: 20 Mar 2019
+* Update to version 1.9.0 of `js-beautify`
 
 ### 1.4.9: 01 Feb 2019
 * Change `beautify.ignore` scope to resource to enable folder configurations in multi-root workspaces to set their own ignored files.
