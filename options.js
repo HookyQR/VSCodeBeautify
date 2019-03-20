@@ -84,12 +84,13 @@ function set_file_editorconfig_opts(file, config) {
     const eConfigs = editorconfig.parseSync(file);
     if (eConfigs.indent_style === 'tab') {
       config.indent_with_tabs = true;
+      config.indent_char = '\t';
     } else if (eConfigs.indent_style === 'space') {
       config.indent_with_tabs = false;
       config.indent_char = ' ';
     }
 
-    if (eConfigs.indent_size) {
+    if (eConfigs.indent_size && eConfigs.indent_size !== 'tab') {
       config.indent_size = eConfigs.indent_size;
     }
 
