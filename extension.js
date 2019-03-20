@@ -173,11 +173,15 @@ class Formatters {
         return ss;
       }));
 
-      this.handlers[a] = {
-        selector,
-        full: register(a, selector),
-        partial: register(a, selector, true)
-      };
+      if (selector.length) {
+        this.handlers[a] = {
+          selector,
+          full: register(a, selector),
+          partial: register(a, selector, true)
+        };
+      } else {
+        delete this.handlers[a];
+      }
     }
   }
   getFormat(doc) {

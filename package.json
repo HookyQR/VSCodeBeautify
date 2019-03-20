@@ -2,7 +2,7 @@
   "name": "beautify",
   "displayName": "Beautify",
   "description": "Beautify code in place for VS Code",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "publisher": "HookyQR",
   "engines": {
     "vscode": "^1.22.0"
@@ -105,7 +105,8 @@
             "js": {
               "type": [
                 "object",
-                "array"
+                "array",
+                "null"
               ],
               "items": {
                 "type": "string"
@@ -138,7 +139,8 @@
             "css": {
               "type": [
                 "object",
-                "array"
+                "array",
+                "null"
               ],
               "items": {
                 "type": "string"
@@ -171,7 +173,8 @@
             "html": {
               "type": [
                 "object",
-                "array"
+                "array",
+                "null"
               ],
               "items": {
                 "type": "string"
