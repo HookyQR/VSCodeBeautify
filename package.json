@@ -212,7 +212,9 @@
   "dependencies": {
     "editorconfig": "0.15.0",
     "js-beautify": "^1.9.0",
-    "minimatch": "^3.0.4"
+    "minimatch": "^3.0.4",
+    "opencollective-postinstall": "^2.0.2",
+    "opencollective": "^1.0.3"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.42",
@@ -223,7 +225,7 @@
     "vscode": "~1.1.18"
   },
   "scripts": {
-    "postinstall": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install && opencollective-postinstall",
     "test": "node ./node_modules/vscode/bin/test"
   },
   "repository": {
@@ -232,5 +234,9 @@
   },
   "bugs": {
     "url": "https://github.com/HookyQR/VSCodeBeautify/issues"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/VSCodeBeautify"
   }
 }

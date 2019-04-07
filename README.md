@@ -3,6 +3,8 @@
 [![Build Status](https://api.travis-ci.org/HookyQR/VSCodeBeautify.svg?branch=master)](https://travis-ci.org/HookyQR/VSCodeBeautify) [![Build status](https://ci.appveyor.com/api/projects/status/mu73cgat3r1t0weu/branch/master?svg=true)](https://ci.appveyor.com/project/HookyQR/vscodebeautify) [![Licence](https://img.shields.io/github/license/HookyQR/VSCodeBeautify.svg)](https://github.com/HookyQR/VSCodeBeautify)
 [![VS Code Marketplace](https://vsmarketplacebadge.apphb.com/version-short/HookyQR.beautify.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/HookyQR.beautify.svg) ![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/HookyQR.beautify.svg) ![Installs](https://vsmarketplacebadge.apphb.com/installs-short/HookyQR.beautify.svg)](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
 [![Donate](https://img.shields.io/badge/donate-paypal-brightgreen.svg)](https://paypal.me/HookyQR)
+[![Backers on Open Collective](https://opencollective.com/VSCodeBeautify/backers/badge.svg)](#backers) 
+[![Sponsors on Open Collective](https://opencollective.com/VSCodeBeautify/sponsors/badge.svg)](#sponsors) 
 
 Beautify `javascript`, `JSON`, `CSS`, `Sass`, and `HTML` in Visual Studio Code.
 
@@ -123,3 +125,33 @@ Use the following to embed a beautify shortcut in keybindings.json. Replace with
 ## Contributing
 
 For information on contributing see [Contributing.md](https://github.com/HookyQR/VSCodeBeautify/blob/master/.github/CONTRIBUTING.md)
+
+## Contributors
+
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/HookyQR/VSCodeBeautify/graphs/contributors"><img src="https://opencollective.com/VSCodeBeautify/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/VSCodeBeautify#backer)]
+
+<a href="https://opencollective.com/VSCodeBeautify#backers" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/VSCodeBeautify#sponsor)]
+
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/0/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/1/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/2/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/3/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/4/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/5/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/6/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/7/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/8/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/VSCodeBeautify/sponsor/9/website" target="_blank"><img src="https://opencollective.com/VSCodeBeautify/sponsor/9/avatar.svg"></a>
+
+
