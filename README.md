@@ -55,7 +55,7 @@ The `.jsbeautifyrc` config parser accepts sub elements of `html`, `js` and `css`
 
 Settings are inherited from the base of the file. Thus:
 
-```json
+```javascript
 {
   "indent_size": 4,
   "indent_char": " ",
@@ -71,7 +71,7 @@ If the file is unsaved, or the type is undetermined, you'll be prompted for whic
 
 You can control which file types, extensions, or specific file names should be beautified with the `beautify.language` setting.
 
-```json
+```javascript
 {
   "beautify.language": {
     "js": {
@@ -93,7 +93,7 @@ Beautification on particular files using the built in **Format Document** (which
 
 Examples:
 
-```json
+```javascript
 {
   /* Ignore all files named 'test.js' not in the root folder,
      all files directly in any 'spec' directory, and
@@ -118,7 +118,7 @@ The embedded version of js-beautify is version 1.8.4.
 
 Use the following to embed a beautify shortcut in `keybindings.json`. Replace with your preferred key bindings.
 
-```json
+```javascript
 {
   "key": "cmd+b",
   "command": "HookyQR.beautify",
