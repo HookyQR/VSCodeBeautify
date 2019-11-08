@@ -2,7 +2,7 @@ Within VS Code, subordinate settings on `js`, `html`, and `css` are accepted. No
 
 Setting                         | Formatter | [Type] Description / Default
 ---------------------------------|-----------|------------------------------
-eol                             | _All_     |  [String] **Character(s) to use as line terminators.** <br> "\n"
+eol_ftw                         | _All_     |  [String] **Character(s) to use as line terminators.** <br> "\n"
 end_with_newline                | _All_     |  [Boolean] **Ensure newline at end of file.** <br> false
 indent_char                     | _All_     |  [String] **Indentation character.** <br> " "
 indent_size                     | _All_     |  [Integer] **Indent size.** <br> 4
