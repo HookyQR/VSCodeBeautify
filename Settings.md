@@ -5,7 +5,7 @@ Setting                         | Formatter | [Type] Description / Default
 eol                             | _All_     |  [String] **Character(s) to use as line terminators.** <br> "\n"
 end_with_newline                | _All_     |  [Boolean] **Ensure newline at end of file.** <br> false
 indent_char                     | _All_     |  [String] **Indentation character.** <br> " "
-indent_size                     | _All_     |  [Integer] **Indent size.** <br> 4
+indent_size                     | _All_     |  [Integer] **Indent size.** <br> 2
 indent_with_tabs                | _All_     |  [Boolean] **Indent with tabs, overrides 'indent_size' and 'indent_char'** <br> false
 preserve_newlines               | _All_     |  [Boolean] **Preserve line-breaks.** <br> true
 max_preserve_newlines           | JS, HTML  |  [Integer] **Number of line-breaks to be preserved in one chunk.** <br> 10
