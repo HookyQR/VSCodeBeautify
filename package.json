@@ -22,6 +22,7 @@
   },
   "license": "MIT",
   "main": "./extension",
+  "browser": "./dist/web/extension.js",
   "contributes": {
     "languages": [
       {
@@ -217,14 +218,25 @@
   "devDependencies": {
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.36",
+    "@types/vscode": "^1.59.0",
     "expect.js": "^0.3.1",
     "mocha": "^5.2.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "typescript": "^2.6.1",
-    "vscode": "~1.1.18"
+    "util": "^0.12.4",
+    "vscode": "^1.1.37",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test"
+    "test": "node ./node_modules/vscode/bin/test",
+    "compile-web": "webpack --config ./build/web-extension.webpack.config.js",
+    "watch-web": "webpack --watch --config ./build/web-extension.webpack.config.js",
+    "package-web": "webpack --mode production --devtool hidden-source-map --config ./build/web-extension.webpack.config.js",
+    "vscode:prepublish": "npm run package-web"
   },
   "repository": {
     "type": "git",
