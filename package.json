@@ -13,7 +13,12 @@
     "Formatters"
   ],
   "activationEvents": [
-    "*"
+    "onLanguage:html",
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:json"
   ],
   "icon": "icon.png",
   "galleryBanner": {
